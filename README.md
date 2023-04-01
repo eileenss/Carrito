@@ -1,7 +1,7 @@
 # Carrito de Compras 📖
 
 ## Objetivos 📋
-Desarrollar un sistema, que permita la administración general de un consultorio (de cara a los administradores): Prestaciones, Profesionales, Pacientes, etc., como así también, permitir a los pacientes, realizar reserva sobre turnos ofrecidos.
+Desarrollar un sistema, que permita la administración del stock de productos a una PYME que tiene algunas sucursales de venta de ropa (de cara a los empleados): Empleados, Clientes, Productos, Categorias, Compras, Carritos, Sucursal, StockItem, etc., como así también, permitir a los clientes, realizar compras Online.
 Utilizar Visual Studio 2019 preferentemente y crear una aplicación utilizando ASP.NET MVC Core (versión a definir por el docente 3.1 o 6.0).
 
 <hr />
