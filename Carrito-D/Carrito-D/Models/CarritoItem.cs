@@ -7,6 +7,6 @@
         public Producto Producto { get; set; }
         public double ValorUnitario { get; set; }
         public int Cantidad { get; set; }
-        public double Subtotal { get; set; }
+        public double Subtotal { get; set; } 
     }
 }

@@ -10,7 +10,7 @@
         public int Telefono { get; set; }   
         public string Direccion { get; set; }   
         public string Email { get; set; }
-        public DateTime FechaAlta { get; set; }
+        public DateTime FechaAlta { get; set; } = DateTime.Today;
 
     }
 }
