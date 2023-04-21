@@ -1,0 +1,121 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="Carrito_D.Models.Persona">
+    <Position X="3.25" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAACAAAAACAAAAEEACAAgAAAAAAAAAACAQAAAgAAAAA=</HashCode>
+      <FileName>Models\Persona.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Carrito_D.Models.Cliente">
+    <Position X="4.5" Y="3.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAACIAAAAAAAAA=</HashCode>
+      <FileName>Models\Cliente.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsCollectionAssociation>
+      <Property Name="Carritos" />
+      <Property Name="Compras" />
+    </ShowAsCollectionAssociation>
+  </Class>
+  <Class Name="Carrito_D.Models.Empleado">
+    <Position X="2.5" Y="3.75" Width="1.5" />
+    <InheritanceLine Type="Carrito_D.Models.Persona" FixedToPoint="true">
+      <Path>
+        <Point X="4" Y="3.142" />
+        <Point X="4" Y="3.45" />
+        <Point X="3.438" Y="3.45" />
+        <Point X="3.438" Y="3.75" />
+      </Path>
+    </InheritanceLine>
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Models\Empleado.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Carrito_D.Models.Carrito">
+    <Position X="6.75" Y="5.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAACAAAAAAAEAAAAAACAAAAAIAAAAAAgAAAAAAAAAAA=</HashCode>
+      <FileName>Models\Carrito.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Property Name="Cliente" />
+    </ShowAsAssociation>
+    <ShowAsCollectionAssociation>
+      <Property Name="CarritoItems" />
+    </ShowAsCollectionAssociation>
+  </Class>
+  <Class Name="Carrito_D.Models.CarritoItem">
+    <Position X="10" Y="5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>EAACAAEAAAAEAAAAQAAAAAAAAAAAAAAAAAAAIAAAAAA=</HashCode>
+      <FileName>Models\CarritoItem.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Property Name="Producto" />
+      <Property Name="Carrito" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="Carrito_D.Models.Categoria">
+    <Position X="15.25" Y="4" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAACAAAAAAAAAAAAQAAAgAABAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Models\Categoria.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsCollectionAssociation>
+      <Property Name="Productos" />
+    </ShowAsCollectionAssociation>
+  </Class>
+  <Class Name="Carrito_D.Models.Compra">
+    <Position X="6.5" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>EAACAAAAAAAAAAEAAACAAAAAAAAAQAABAAAAAAAAAAA=</HashCode>
+      <FileName>Models\Compra.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Property Name="Carrito" />
+      <Property Name="Cliente" />
+      <Property Name="Sucursal" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="Carrito_D.Models.Producto">
+    <Position X="15.25" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAACAAAAACAAAAAgAAAAgAABAAAAABAgAAAAAAAAAAA=</HashCode>
+      <FileName>Models\Producto.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Property Name="Categoria" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="Carrito_D.Models.Stock">
+    <Position X="12.75" Y="5.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAACAAAAAAAAAAgAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Models\Stock.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Carrito_D.Models.StockItem">
+    <Position X="12.5" Y="0.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAACAAEAAAAAAAAAQAAAAAAAAAAAAAABAAAAAAAAAAA=</HashCode>
+      <FileName>Models\StockItem.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Property Name="Producto" />
+      <Property Name="Sucursal" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="Carrito_D.Models.Sucursal">
+    <Position X="9.25" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAACAAAAACAAAAgAACAAgAAAAAAAAAAAAAAAAgAAAAA=</HashCode>
+      <FileName>Models\Sucursal.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsCollectionAssociation>
+      <Property Name="StockItems" />
+    </ShowAsCollectionAssociation>
+  </Class>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>
