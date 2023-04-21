@@ -8,6 +8,8 @@
         public int Telefono { get; set; }
         public string Email { get; set; }
         public List<StockItem> StockItems { get; set; }
+        public List<Compra> Compras { get; set; }
         
+
     }
 }
