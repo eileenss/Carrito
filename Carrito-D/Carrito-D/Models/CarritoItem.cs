@@ -18,7 +18,7 @@ namespace Carrito_D.Models
 
         [Required(ErrorMessage = ErrorMsg.Requerido)]
         [Range(50, 300000, ErrorMessage = ErrorMsg.Rango)]
-        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:$}")]
+        [DataType(DataType.Currency)]
         [Display(Name = "Precio unitario")]
         public float ValorUnitario { get; set; }
 
@@ -28,7 +28,7 @@ namespace Carrito_D.Models
 
         [Required(ErrorMessage = ErrorMsg.Requerido)]
         [Range(50, float.MaxValue, ErrorMessage = ErrorMsg.Rango)]
-        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:$}")]
+        [DataType(DataType.Currency)]
         public float Subtotal { get; set; }
 
     }

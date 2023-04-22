@@ -20,8 +20,9 @@ namespace Carrito_D.Models
 
         public Carrito Carrito { get; set; }
 
+        [Required(ErrorMessage = ErrorMsg.Requerido)]
         [Range(50, float.MaxValue, ErrorMessage = ErrorMsg.Rango)]
-        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:$}")]
+        [DataType(DataType.Currency)]
         public float Total { get; set; }
 
         [Required(ErrorMessage = ErrorMsg.Requerido)]

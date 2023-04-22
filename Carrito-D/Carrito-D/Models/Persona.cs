@@ -6,6 +6,7 @@ namespace Carrito_D.Models
     public class Persona
     {
         public int Id { get; set; }
+
         [Required(ErrorMessage = ErrorMsg.Requerido)]
         [Range(100000, 99999999, ErrorMessage = ErrorMsg.Rango)]
         //[DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:00.000.000")]
@@ -40,7 +41,8 @@ namespace Carrito_D.Models
         public string Direccion { get; set; }
 
         [Required(ErrorMessage = ErrorMsg.Requerido)]
-        [DataType(DataType.EmailAddress)]
+        [EmailAddress(ErrorMessage = ErrorMsg.Invalido)]
+        [Display(Name = "Correo elctrónico")]
         public string Email { get; set; }
 
         [Required(ErrorMessage = ErrorMsg.Requerido)]

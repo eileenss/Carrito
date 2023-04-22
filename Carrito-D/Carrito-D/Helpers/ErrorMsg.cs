@@ -14,6 +14,8 @@
 
         public const string Alfanumerico = "Solo se admiten caracteres alfanumericos.";
 
+        public const string Invalido = "{0} inválido.";
+
         
 
     }

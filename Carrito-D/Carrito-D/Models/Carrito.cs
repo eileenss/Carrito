@@ -22,7 +22,7 @@ namespace Carrito_D.Models
         public List<CarritoItem> CarritoItems { get; set; }
 
         [Range(50, float.MaxValue, ErrorMessage = ErrorMsg.Rango)]
-        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:$}")]
+        [DataType(DataType.Currency)]
         public float Subtotal { get; set; }
 
         public Compra Compra { get; set; }

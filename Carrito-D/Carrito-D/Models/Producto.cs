@@ -9,12 +9,11 @@ namespace Carrito_D.Models
         public int Id { get; set; }
 
         [Required(ErrorMessage = ErrorMsg.Requerido)]
-        [StringLength(85, MinimumLength = 2, ErrorMessage = ErrorMsg.CantCaracteres)]
+        [StringLength(85, MinimumLength = 3, ErrorMessage = ErrorMsg.CantCaracteres)]
         [RegularExpression(@"[a-zA-Z áéíóú]*", ErrorMessage = ErrorMsg.SoloLetras)]
         public string Nombre { get; set; }
 
-        [Required(ErrorMessage = ErrorMsg.Requerido)]
-        [StringLength(100, MinimumLength = 1, ErrorMessage = ErrorMsg.CantCaracteres)]
+        [StringLength(200, MinimumLength = 3, ErrorMessage = ErrorMsg.CantCaracteres)]
         [Display(Name = "Descripción")]
         public string Descripcion { get; set; }
 
@@ -22,8 +21,8 @@ namespace Carrito_D.Models
 
         [Required(ErrorMessage = ErrorMsg.Requerido)]
         [Range(50, 300000, ErrorMessage = ErrorMsg.Rango)]
-        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:$}")]
-        [Display(Name = "Precio vigente")]
+        [DataType(DataType.Currency)]
+        [Display(Name = "Precio")]
         public float PrecioVigente { get; set; }
 
         [Required(ErrorMessage = ErrorMsg.Requerido)]
