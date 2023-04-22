@@ -8,10 +8,10 @@
         public string Imagen { get; set; }
         public float PrecioVigente { get; set; }
         public bool Activo { get; set; }
+        public int CategoriaId { get; set; }    
         public Categoria Categoria { get; set; }
         public List<StockItem> StockItems { get; set;}
-        public List<CarritoItem> CarritoItem { get; set; }
-        
+        public List<CarritoItem> CarritoItems { get; set; }
 
 
     }
