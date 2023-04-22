@@ -12,6 +12,9 @@
 
         public const string Rango = "{0} tiene que estar entre {1} y {2}.";
 
+        public const string Alfanumerico = "Solo se admiten caracteres alfanumericos.";
+
+        
 
     }
 }

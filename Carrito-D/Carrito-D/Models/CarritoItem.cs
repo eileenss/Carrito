@@ -17,7 +17,7 @@ namespace Carrito_D.Models
         public Producto Producto { get; set; }
 
         [Required(ErrorMessage = ErrorMsg.Requerido)]
-        [Range(50, float.MaxValue, ErrorMessage = ErrorMsg.Rango)]
+        [Range(50, 300000, ErrorMessage = ErrorMsg.Rango)]
         [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:$}")]
         [Display(Name = "Precio unitario")]
         public float ValorUnitario { get; set; }
