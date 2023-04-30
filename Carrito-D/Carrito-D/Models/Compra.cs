@@ -21,7 +21,7 @@ namespace Carrito_D.Models
         public Carrito Carrito { get; set; }
 
         [Required(ErrorMessage = ErrorMsg.Requerido)]
-        [Range(50, decimal.MaxValue, ErrorMessage = ErrorMsg.Rango)]
+        [Range(50, float.MaxValue, ErrorMessage = ErrorMsg.Rango)]
         [DataType(DataType.Currency)]
         public decimal Total { get; set; }
 

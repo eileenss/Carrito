@@ -16,14 +16,14 @@ namespace Carrito_D.Models
 
         public Producto Producto { get; set; }
 
-        [Required(ErrorMessage = ErrorMsg.Requerido)]
-        [Range(50, 300000, ErrorMessage = ErrorMsg.Rango)]
-        [DataType(DataType.Currency)]
+
+        
+        //[DataType(DataType.Currency)]
         [Display(Name = "Precio unitario")]
         public decimal ValorUnitario { get; set; }
 
         [Required(ErrorMessage = ErrorMsg.Requerido)]
-        [Range(1, 500, ErrorMessage = ErrorMsg.Rango)]
+        [Range(1, int.MaxValue, ErrorMessage = ErrorMsg.Rango)]
         public int Cantidad { get; set; }
 
         [Required(ErrorMessage = ErrorMsg.Requerido)]

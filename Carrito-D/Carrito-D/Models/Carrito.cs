@@ -8,7 +8,7 @@ namespace Carrito_D.Models
     {
         public int Id { get; set; }
 
-        [Required(ErrorMessage = ErrorMsg.Requerido)]
+        
         [Display(Name = "Carrito activo")]
         public bool Activo { get; set; } = true;
 

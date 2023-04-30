@@ -34,7 +34,7 @@ namespace Carrito_D.Models
         [RegularExpression(@"[a-zA-Z áéíóú 0-9]*", ErrorMessage = ErrorMsg.SoloLetras)]
         public string Apellido { get; set; }
 
-        [DataType(DataType.PhoneNumber)]
+        
         public int Telefono { get; set; }
 
         [RegularExpression(@"[a-zA-Z áéíóú 0-9]*", ErrorMessage = ErrorMsg.Alfanumerico)]
@@ -46,7 +46,7 @@ namespace Carrito_D.Models
         [Display(Name = "Correo elctrónico")]
         public string Email { get; set; }
 
-        //[Required(ErrorMessage = ErrorMsg.Requerido)]
+        
         [Display (Name = "Fecha de alta")]
         [DataType(DataType.DateTime)]
         public DateTime FechaAlta { get; set; } = DateTime.Now;
