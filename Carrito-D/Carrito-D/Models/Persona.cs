@@ -25,19 +25,20 @@ namespace Carrito_D.Models
         public string Password { get; set; }
 
         [Required(ErrorMessage = ErrorMsg.Requerido)]
-        [StringLength(85, MinimumLength = 2, ErrorMessage = ErrorMsg.CantCaracteres)]
-        [RegularExpression(@"[a-zA-Z áéíóú]*", ErrorMessage = ErrorMsg.SoloLetras)]
+        [StringLength(85, MinimumLength = 1, ErrorMessage = ErrorMsg.CantCaracteres)]
+        [RegularExpression(@"[a-zA-Z áéíóú 0-9]*", ErrorMessage = ErrorMsg.SoloLetras)]
         public string Nombre { get; set; }
 
         [Required(ErrorMessage = ErrorMsg.Requerido)]
-        [StringLength(85, MinimumLength = 2, ErrorMessage = ErrorMsg.CantCaracteres)]
-        [RegularExpression(@"[a-zA-Z áéíóú]*", ErrorMessage = ErrorMsg.SoloLetras)]
+        [StringLength(85, MinimumLength = 1, ErrorMessage = ErrorMsg.CantCaracteres)]
+        [RegularExpression(@"[a-zA-Z áéíóú 0-9]*", ErrorMessage = ErrorMsg.SoloLetras)]
         public string Apellido { get; set; }
 
         [DataType(DataType.PhoneNumber)]
         public int Telefono { get; set; }
 
         [RegularExpression(@"[a-zA-Z áéíóú 0-9]*", ErrorMessage = ErrorMsg.Alfanumerico)]
+        [StringLength(100, MinimumLength = 1, ErrorMessage = ErrorMsg.CantCaracteres)]
         public string Direccion { get; set; }
 
         [Required(ErrorMessage = ErrorMsg.Requerido)]
@@ -45,7 +46,7 @@ namespace Carrito_D.Models
         [Display(Name = "Correo elctrónico")]
         public string Email { get; set; }
 
-        [Required(ErrorMessage = ErrorMsg.Requerido)]
+        //[Required(ErrorMessage = ErrorMsg.Requerido)]
         [Display (Name = "Fecha de alta")]
         [DataType(DataType.DateTime)]
         public DateTime FechaAlta { get; set; } = DateTime.Now;

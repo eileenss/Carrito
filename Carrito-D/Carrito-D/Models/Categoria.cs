@@ -9,7 +9,7 @@ namespace Carrito_D.Models
 
         [Required(ErrorMessage = ErrorMsg.Requerido)]
         [StringLength(50, MinimumLength = 3, ErrorMessage = ErrorMsg.CantCaracteres)]
-        [RegularExpression(@"[a-zA-Z áéíóú]*", ErrorMessage = ErrorMsg.SoloLetras)]
+        [RegularExpression(@"[a-zA-Z áéíóú 0-9]*", ErrorMessage = ErrorMsg.SoloLetras)]
         public string Nombre { get; set; }
 
         [StringLength(100, MinimumLength = 3, ErrorMessage = ErrorMsg.CantCaracteres)]

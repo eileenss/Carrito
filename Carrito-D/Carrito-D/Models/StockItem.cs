@@ -17,7 +17,7 @@ namespace Carrito_D.Models
         public Producto Producto { get; set; }
 
         [Required(ErrorMessage = ErrorMsg.Requerido)]
-        [Range(0, 500, ErrorMessage = ErrorMsg.Rango)]
+        [Range(0, int.MaxValue, ErrorMessage = ErrorMsg.Rango)]
         public int Cantidad { get; set; }
 
     }

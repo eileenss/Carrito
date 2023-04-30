@@ -12,11 +12,12 @@ namespace Carrito_D.Models
         public string Nombre { get; set; }
 
         [Required(ErrorMessage = ErrorMsg.Requerido)]
+        [StringLength(100, MinimumLength = 1, ErrorMessage = ErrorMsg.CantCaracteres)]
         [RegularExpression(@"[a-zA-Z áéíóú 0-9]*", ErrorMessage = ErrorMsg.Alfanumerico)]
         [Display(Name = "Dirección")]
         public string Direccion { get; set; }
 
-        [DataType(DataType.PhoneNumber)]
+        
         public int Telefono { get; set; }
 
         [EmailAddress(ErrorMessage = ErrorMsg.Invalido)]

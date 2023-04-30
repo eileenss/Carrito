@@ -20,16 +20,16 @@ namespace Carrito_D.Models
         [Range(50, 300000, ErrorMessage = ErrorMsg.Rango)]
         [DataType(DataType.Currency)]
         [Display(Name = "Precio unitario")]
-        public float ValorUnitario { get; set; }
+        public decimal ValorUnitario { get; set; }
 
         [Required(ErrorMessage = ErrorMsg.Requerido)]
         [Range(1, 500, ErrorMessage = ErrorMsg.Rango)]
         public int Cantidad { get; set; }
 
         [Required(ErrorMessage = ErrorMsg.Requerido)]
-        [Range(50, float.MaxValue, ErrorMessage = ErrorMsg.Rango)]
+        
         [DataType(DataType.Currency)]
-        public float Subtotal { get; set; }
+        public decimal Subtotal { get; set; }
 
     }
 }

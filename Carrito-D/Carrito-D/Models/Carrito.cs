@@ -10,7 +10,7 @@ namespace Carrito_D.Models
 
         [Required(ErrorMessage = ErrorMsg.Requerido)]
         [Display(Name = "Carrito activo")]
-        public bool Activo { get; set; }
+        public bool Activo { get; set; } = true;
 
         [Required(ErrorMessage = ErrorMsg.Requerido)]
         [ForeignKey("Cliente")]
@@ -21,9 +21,9 @@ namespace Carrito_D.Models
         [Display(Name = "Items")]
         public List<CarritoItem> CarritoItems { get; set; }
 
-        [Range(50, float.MaxValue, ErrorMessage = ErrorMsg.Rango)]
+        
         [DataType(DataType.Currency)]
-        public float Subtotal { get; set; }
+        public decimal Subtotal { get; set; }
 
         public Compra Compra { get; set; }
 

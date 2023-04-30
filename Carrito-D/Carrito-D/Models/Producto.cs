@@ -10,7 +10,7 @@ namespace Carrito_D.Models
 
         [Required(ErrorMessage = ErrorMsg.Requerido)]
         [StringLength(85, MinimumLength = 3, ErrorMessage = ErrorMsg.CantCaracteres)]
-        [RegularExpression(@"[a-zA-Z áéíóú]*", ErrorMessage = ErrorMsg.SoloLetras)]
+        [RegularExpression(@"[a-zA-Z áéíóú 0-9]*", ErrorMessage = ErrorMsg.SoloLetras)]
         public string Nombre { get; set; }
 
         [StringLength(200, MinimumLength = 3, ErrorMessage = ErrorMsg.CantCaracteres)]
@@ -20,14 +20,12 @@ namespace Carrito_D.Models
         public string Imagen { get; set; }
 
         [Required(ErrorMessage = ErrorMsg.Requerido)]
-        [Range(50, 300000, ErrorMessage = ErrorMsg.Rango)]
-        [DataType(DataType.Currency)]
+        [Range(0, double.MaxValue, ErrorMessage = ErrorMsg.Rango)]
         [Display(Name = "Precio")]
-        public float PrecioVigente { get; set; }
+        public decimal PrecioVigente { get; set; }
 
-        [Required(ErrorMessage = ErrorMsg.Requerido)]
         [Display(Name = "Producto activo")]
-        public bool Activo { get; set; }
+        public bool Activo { get; set; } = true;
 
         [Required(ErrorMessage = ErrorMsg.Requerido)]
         [ForeignKey("Categoria")]
