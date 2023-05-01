@@ -8,9 +8,8 @@ namespace Carrito_D.Models
         public int Id { get; set; }
 
         [Required(ErrorMessage = ErrorMsg.Requerido)]
-        [Range(100000, 99999999, ErrorMessage = ErrorMsg.Rango)]
-        //[DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:00.000.000")]
-        public int DNI { get; set; }
+        [RegularExpression(@"^\d{1,2}\.?\d{3}\.?\d{3}$", ErrorMessage = ErrorMsg.Invalido)]
+        public string DNI { get; set; }
 
         [Required(ErrorMessage = ErrorMsg.Requerido)]
         [StringLength(85, MinimumLength = 2, ErrorMessage = ErrorMsg.CantCaracteres)]
@@ -34,7 +33,7 @@ namespace Carrito_D.Models
         [RegularExpression(@"[a-zA-Z áéíóú 0-9]*", ErrorMessage = ErrorMsg.SoloLetras)]
         public string Apellido { get; set; }
 
-        
+        [RegularExpression(@"^(?:(?:00)?549?)?0?(?:11|[23]\d)(?:(?=\d{0,2}15)\d{2})??\d{8}$", ErrorMessage = ErrorMsg.Invalido)]
         public int Telefono { get; set; }
 
         [RegularExpression(@"[a-zA-Z áéíóú 0-9]*", ErrorMessage = ErrorMsg.Alfanumerico)]

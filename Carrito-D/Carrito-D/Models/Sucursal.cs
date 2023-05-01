@@ -17,7 +17,7 @@ namespace Carrito_D.Models
         [Display(Name = "Dirección")]
         public string Direccion { get; set; }
 
-        
+        [RegularExpression(@"^(?:(?:00)?549?)?0?(?:11|[23]\d)(?:(?=\d{0,2}15)\d{2})??\d{8}$", ErrorMessage = ErrorMsg.Invalido)]
         public int Telefono { get; set; }
 
         [EmailAddress(ErrorMessage = ErrorMsg.Invalido)]
