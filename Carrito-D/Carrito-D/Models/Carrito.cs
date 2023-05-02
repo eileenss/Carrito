@@ -1,6 +1,8 @@
 ﻿using Carrito_D.Helpers;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Globalization;
 
 namespace Carrito_D.Models
 {
@@ -21,8 +23,7 @@ namespace Carrito_D.Models
         [Display(Name = "Items")]
         public List<CarritoItem> CarritoItems { get; set; }
 
-        
-        [DataType(DataType.Currency)]
+      //[DataType(DataType.Currency)]
         public decimal Subtotal { get; set; }
 
         public Compra Compra { get; set; }

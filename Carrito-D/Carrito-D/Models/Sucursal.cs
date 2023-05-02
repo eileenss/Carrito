@@ -17,11 +17,12 @@ namespace Carrito_D.Models
         [Display(Name = "Dirección")]
         public string Direccion { get; set; }
 
-        [RegularExpression(@"^(?:(?:00)?549?)?0?(?:11|[23]\d)(?:(?=\d{0,2}15)\d{2})??\d{8}$", ErrorMessage = ErrorMsg.Invalido)]
+        //[RegularExpression(@"^(?:(?:00)?549?)?0?(?:11|[23]\d)(?:(?=\d{0,2}15)\d{2})??\d{8}$", ErrorMessage = ErrorMsg.Invalido)]
+        //[RegularExpression(@"^(549?)?(11\d{8})|([23]\d{9})$", ErrorMessage = ErrorMsg.Invalido)]
         public int Telefono { get; set; }
 
         [EmailAddress(ErrorMessage = ErrorMsg.Invalido)]
-        [Display(Name = "Correo elctrónico")]
+        [Display(Name = "Correo electrónico")]
         public string Email { get; set; }
 
         [Display(Name = "Stock")]

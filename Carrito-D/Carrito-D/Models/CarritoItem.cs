@@ -16,8 +16,6 @@ namespace Carrito_D.Models
 
         public Producto Producto { get; set; }
 
-
-        
         //[DataType(DataType.Currency)]
         [Display(Name = "Precio unitario")]
         public decimal ValorUnitario { get; set; }
@@ -26,10 +24,10 @@ namespace Carrito_D.Models
         [Range(1, int.MaxValue, ErrorMessage = ErrorMsg.Rango)]
         public int Cantidad { get; set; }
 
-        [Required(ErrorMessage = ErrorMsg.Requerido)]
-        
-        [DataType(DataType.Currency)]
-        public decimal Subtotal { get; set; }
+        //[Required(ErrorMessage = ErrorMsg.Requerido)] lo agregamos nosotros con lógica 
+        //[DataType(DataType.Currency)]
+        //[DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:C2}")]
+        public decimal Subtotal { get; set; }  
 
     }
 }

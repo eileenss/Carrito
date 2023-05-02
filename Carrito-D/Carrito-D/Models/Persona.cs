@@ -25,7 +25,7 @@ namespace Carrito_D.Models
 
         [Required(ErrorMessage = ErrorMsg.Requerido)]
         [StringLength(85, MinimumLength = 1, ErrorMessage = ErrorMsg.CantCaracteres)]
-        [RegularExpression(@"[a-zA-Z áéíóú 0-9]*", ErrorMessage = ErrorMsg.SoloLetras)]
+        [RegularExpression(@"[a-zA-Z áéíóú 0-9]*", ErrorMessage = ErrorMsg.Alfanumerico)]
         public string Nombre { get; set; }
 
         [Required(ErrorMessage = ErrorMsg.Requerido)]
@@ -33,7 +33,8 @@ namespace Carrito_D.Models
         [RegularExpression(@"[a-zA-Z áéíóú 0-9]*", ErrorMessage = ErrorMsg.SoloLetras)]
         public string Apellido { get; set; }
 
-        [RegularExpression(@"^(?:(?:00)?549?)?0?(?:11|[23]\d)(?:(?=\d{0,2}15)\d{2})??\d{8}$", ErrorMessage = ErrorMsg.Invalido)]
+        //[RegularExpression(@"^(?:(?:00)?549?)?0?(?:11|[23]\d)(?:(?=\d{0,2}15)\d{2})??\d{8}$", ErrorMessage = ErrorMsg.Invalido)]
+        //[RegularExpression(@"^(549?)?(11\d{8})|([23]\d{9})$", ErrorMessage = ErrorMsg.Invalido)]
         public int Telefono { get; set; }
 
         [RegularExpression(@"[a-zA-Z áéíóú 0-9]*", ErrorMessage = ErrorMsg.Alfanumerico)]

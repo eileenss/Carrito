@@ -9,11 +9,11 @@ namespace Carrito_D.Models
         public int Id { get; set; }
 
         [Required(ErrorMessage = ErrorMsg.Requerido)]
-        [StringLength(85, MinimumLength = 3, ErrorMessage = ErrorMsg.CantCaracteres)]
-        [RegularExpression(@"[a-zA-Z áéíóú 0-9]*", ErrorMessage = ErrorMsg.SoloLetras)]
+        [StringLength(85, MinimumLength = 2, ErrorMessage = ErrorMsg.CantCaracteres)]
+        [RegularExpression(@"[a-zA-Z áéíóú 0-9]*", ErrorMessage = ErrorMsg.Alfanumerico)]
         public string Nombre { get; set; }
 
-        [StringLength(200, MinimumLength = 3, ErrorMessage = ErrorMsg.CantCaracteres)]
+        [StringLength(200, MinimumLength = 2, ErrorMessage = ErrorMsg.CantCaracteres)]
         [Display(Name = "Descripción")]
         public string Descripcion { get; set; }
 

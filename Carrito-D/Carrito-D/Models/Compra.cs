@@ -20,14 +20,15 @@ namespace Carrito_D.Models
 
         public Carrito Carrito { get; set; }
 
-        [Required(ErrorMessage = ErrorMsg.Requerido)]
-        [Range(50, float.MaxValue, ErrorMessage = ErrorMsg.Rango)]
-        [DataType(DataType.Currency)]
+        //[Required(ErrorMessage = ErrorMsg.Requerido)] lo agregaremos nosotros con lógica
+        //[Range(50, float.MaxValue, ErrorMessage = ErrorMsg.Rango)]
+        //[DataType(DataType.Currency)]
+        //[DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:C2}")]
         public decimal Total { get; set; }
 
-        [Required(ErrorMessage = ErrorMsg.Requerido)]
+        //[Required(ErrorMessage = ErrorMsg.Requerido)]
         [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:dd/MM/yyyy HH:mm}")]
-        public DateTime Fecha { get; set; }
+        public DateTime Fecha { get; set; } // = DateTime.Now; que se agregue automaticamente al crearse
 
         [Required(ErrorMessage = ErrorMsg.Requerido)]
         [ForeignKey("Sucursal")]
