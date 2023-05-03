@@ -80,11 +80,11 @@ Nota: A medida que avancemos en la materia, las dudas seran canalizadas por medi
 - Empleado
 - Producto
 - Categoria
-- Stock
 - StockItem
 - Carrito
 - CarritoItem
 - Compra
+- Sucursal
 
 `Importante: Todas las entidades deben tener su identificador unico. Id`
 
@@ -95,47 +95,67 @@ De la misma manera Uds. deben definir los tipos de datos asociados a cada una de
 
 **Persona**
 ```
+- Id
+- DNI
 - UserName
 - Password
+- Nombre
+- Apellido
+- Telefono
+- Direccion
 - Email
 - FechaAlta
 ```
 
 **Cliente**
 ```
+- Id
+- DNI
+- UserName
+- Password
 - Nombre
 - Apellido
-- DNI
 - Telefono
 - Direccion
-- FechaAlta
 - Email
+- FechaAlta
 - Compras
 - Carritos
+- Cuil
 ```
 
 **Empleado**
 ```
+- Id
+- DNI
+- UserName
+- Password
 - Nombre
 - Apellido
 - Telefono
 - Direccion
-- FechaAlta
 - Email
+- FechaAlta
+- Legajo
 ```
 
 **Producto**
 ```
+- Id
 - Nombre
 - Descripcion
 - PrecioVigente
 - Activo
 - Categoria
+- CategoriaId
 - Imagen
+- StockItems
+- CarritoItems
 ```
 
 **Categoria**
 ```
+- Id
 - Nombre
 - Descripcion
 - Productos
@@ -143,15 +163,19 @@ De la misma manera Uds. deben definir los tipos de datos asociados a cada una de
 
 **Sucursal**
 ```
+- Id
 - Nombre
 - Direccion
 - Telefono
 - Email
 - StockItems
+- Compras
 ```
 
 **StockItem**
 ```
+- ProductoId
+- SucursalId
 - Sucursal
 - Producto
 - Cantidad
@@ -159,16 +183,21 @@ De la misma manera Uds. deben definir los tipos de datos asociados a cada una de
 
 **Carrito**
 ```
+- Id
 - Activo
 - Cliente
+- ClienteId
 - CarritoItems
 - Subtotal
+- Compra
 ```
 
 **CarritoItem**
 ```
 - Carrito 
+- CarritoId
 - Producto
+- ProductoId
 - ValorUnitario
 - Cantidad
 - Subtotal
@@ -176,9 +205,15 @@ De la misma manera Uds. deben definir los tipos de datos asociados a cada una de
 
 **Compra**
 ```
+- Id
 - Cliente 
+- ClienteId
 - Carrito
+- CarritoId
 - Total
+- Fecha
+- Sucursal
+- SucursalId
 ```
 
 
