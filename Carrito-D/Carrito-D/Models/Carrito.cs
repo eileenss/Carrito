@@ -10,7 +10,6 @@ namespace Carrito_D.Models
     {
         public int Id { get; set; }
 
-        
         [Display(Name = "Carrito activo")]
         public bool Activo { get; set; } = true;
 
@@ -23,7 +22,8 @@ namespace Carrito_D.Models
         [Display(Name = "Items")]
         public List<CarritoItem> CarritoItems { get; set; }
 
-      //[DataType(DataType.Currency)]
+        //[DataType(DataType.Currency)]
+        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:C2}")]
         public decimal Subtotal { get; set; }
 
         public Compra Compra { get; set; }

@@ -30,9 +30,11 @@ namespace Carrito_D.Models
         [Required(ErrorMessage = ErrorMsg.Requerido)]
         [ForeignKey("Categoria")]
         public int CategoriaId { get; set; }
+
         public Categoria Categoria { get; set; }
 
         public List<StockItem> StockItems { get; set;}
+
         public List<CarritoItem> CarritoItems { get; set; }
 
 

@@ -13,7 +13,9 @@ namespace Carrito_D.Models
         [Required(ErrorMessage = ErrorMsg.Requerido)]
         [ForeignKey("Sucursal")]
         public int SucursalId { get; set; }
+
         public Sucursal Sucursal { get; set; }
+
         public Producto Producto { get; set; }
 
         [Required(ErrorMessage = ErrorMsg.Requerido)]
