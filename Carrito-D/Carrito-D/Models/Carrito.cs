@@ -23,6 +23,7 @@ namespace Carrito_D.Models
         public List<CarritoItem> CarritoItems { get; set; }
 
         //[DataType(DataType.Currency)]
+        [NotMapped]
         [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:C2}")]
         public decimal Subtotal { get; set; }
 

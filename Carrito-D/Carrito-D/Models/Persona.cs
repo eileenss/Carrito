@@ -45,13 +45,12 @@ namespace Carrito_D.Models
 
         [Required(ErrorMessage = ErrorMsg.Requerido)]
         [EmailAddress(ErrorMessage = ErrorMsg.Invalido)]
-        [Display(Name = "Correo elctrónico")]
+        [Display(Name = "Correo electrónico")]
         public string Email { get; set; }
 
-        
         [Display (Name = "Fecha de registro")]
         [DataType(DataType.DateTime)]
-        public DateTime FechaAlta { get; set; } = DateTime.Now;
+        public DateTime? FechaAlta { get; set; } = DateTime.Now;
 
     }
 }

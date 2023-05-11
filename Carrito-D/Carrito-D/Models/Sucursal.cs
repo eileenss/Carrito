@@ -20,7 +20,7 @@ namespace Carrito_D.Models
         //[RegularExpression(@"^(?:(?:00)?549?)?0?(?:11|[23]\d)(?:(?=\d{0,2}15)\d{2})??\d{8}$", ErrorMessage = ErrorMsg.Invalido)]
         [RegularExpression(@"^(549?)?(11\d{8})|([23]\d{9})$", ErrorMessage = ErrorMsg.Invalido)]
         [Display(Name = "Teléfono")]
-        public int Telefono { get; set; }
+        public int? Telefono { get; set; }
 
         [EmailAddress(ErrorMessage = ErrorMsg.Invalido)]
         [Display(Name = "Correo electrónico")]
