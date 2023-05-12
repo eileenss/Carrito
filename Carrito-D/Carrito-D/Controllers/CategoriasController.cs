@@ -20,21 +20,21 @@ namespace Carrito_D.Controllers
         }
 
         // GET: Categorias
-        public async Task<IActionResult> Index()
+        public IActionResult Index()
         {
-              return View(await _context.Categorias.ToListAsync());
+              return View( _context.Categorias.ToListAsync());
         }
 
         // GET: Categorias/Details/5
-        public async Task<IActionResult> Details(int? id)
+        public IActionResult Details(int? id)
         {
             if (id == null || _context.Categorias == null)
             {
                 return NotFound();
             }
 
-            var categoria = await _context.Categorias
-                .FirstOrDefaultAsync(m => m.Id == id);
+            var categoria =  _context.Categorias
+                .FirstOrDefault(m => m.Id == id);
             if (categoria == null)
             {
                 return NotFound();
@@ -54,12 +54,12 @@ namespace Carrito_D.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Nombre,Descripcion")] Categoria categoria)
+        public IActionResult Create([Bind("Id,Nombre,Descripcion")] Categoria categoria)
         {
             if (ModelState.IsValid)
             {
                 _context.Add(categoria);
-                await _context.SaveChangesAsync();
+                _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
             return View(categoria);
@@ -86,7 +86,7 @@ namespace Carrito_D.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Nombre,Descripcion")] Categoria categoria)
+        public IActionResult Edit(int id, [Bind("Id,Nombre,Descripcion")] Categoria categoria)
         {
             if (id != categoria.Id)
             {
@@ -97,8 +97,17 @@ namespace Carrito_D.Controllers
             {
                 try
                 {
-                    _context.Update(categoria);
-                    await _context.SaveChangesAsync();
+                    var categoriaEnDB = _context.Categorias.Find(categoria.Id);
+                    if (categoriaEnDB != null)
+                    {
+                        categoriaEnDB.Nombre = categoria.Nombre;
+                        categoriaEnDB.Descripcion = categoria.Descripcion;
+                        
+
+                        _context.Update(categoriaEnDB);
+                        _context.SaveChangesAsync();
+                    }
+                    
                 }
                 catch (DbUpdateConcurrencyException)
                 {
