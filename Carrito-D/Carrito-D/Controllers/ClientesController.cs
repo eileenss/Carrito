@@ -22,7 +22,7 @@ namespace Carrito_D.Controllers
         // GET: Clientes
         public IActionResult Index()
         {
-              return View( _context.Clientes.ToList());
+              return View(_context.Clientes.ToList());
         }
 
         // GET: Clientes/Details/5
@@ -33,8 +33,7 @@ namespace Carrito_D.Controllers
                 return NotFound();
             }
 
-            var cliente =  _context.Clientes
-                .FirstOrDefault(m => m.Id == id);
+            var cliente = _context.Clientes.FirstOrDefault(c => c.Id == id);
             if (cliente == null)
             {
                 return NotFound();
@@ -58,8 +57,8 @@ namespace Carrito_D.Controllers
         {
             if (ModelState.IsValid)
             {
-                _context.Add(cliente);
-                _context.SaveChangesAsync();
+                _context.Clientes.Add(cliente);
+                _context.SaveChanges();
                 return RedirectToAction(nameof(Index));
             }
             return View(cliente);
@@ -74,6 +73,7 @@ namespace Carrito_D.Controllers
             }
 
             var cliente =  _context.Clientes.Find(id);
+
             if (cliente == null)
             {
                 return NotFound();
@@ -86,7 +86,7 @@ namespace Carrito_D.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Edit(int id, [Bind("Cuil,Id,DNI,UserName,Password,Nombre,Apellido,Telefono,Direccion,Email")] Cliente cliente)
+        public IActionResult Edit(int id, [Bind("Telefono,Direccion")] Cliente cliente)
         {
             if (id != cliente.Id)
             {
@@ -97,13 +97,10 @@ namespace Carrito_D.Controllers
             {
                 try
                 {
-
                     var clienteEnDB = _context.Clientes.Find(cliente.Id);
+
                     if (clienteEnDB != null)
                     {
-                        clienteEnDB.Nombre = cliente.Nombre;
-                        clienteEnDB.Apellido = cliente.Apellido;
-                        clienteEnDB.Password = cliente.Password;
                         clienteEnDB.Telefono = cliente.Telefono;
                         clienteEnDB.Direccion = cliente.Direccion;
 

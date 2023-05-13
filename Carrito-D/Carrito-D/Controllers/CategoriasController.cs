@@ -134,6 +134,7 @@ namespace Carrito_D.Controllers
             }
 
             var categoria = await _context.Categorias.FirstOrDefaultAsync(c => c.Id == id);
+
             if (categoria == null)
             {
                 return NotFound();

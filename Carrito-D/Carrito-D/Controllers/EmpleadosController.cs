@@ -33,8 +33,7 @@ namespace Carrito_D.Controllers
                 return NotFound();
             }
 
-            var empleado = _context.Empleados
-                .FirstOrDefault(e => e.Id == id);
+            var empleado = _context.Empleados.FirstOrDefault(e => e.Id == id);
             if (empleado == null)
             {
                 return NotFound();
@@ -58,7 +57,7 @@ namespace Carrito_D.Controllers
         {
             if (ModelState.IsValid)
             {
-                _context.Add(empleado);
+                _context.Empleados.Add(empleado);
                  _context.SaveChanges();
                 return RedirectToAction(nameof(Index));
             }
@@ -86,7 +85,7 @@ namespace Carrito_D.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Edit(int id, [Bind("Legajo,Id,DNI,UserName,Password,Nombre,Apellido,Telefono,Direccion,Email")] Empleado empleado)
+        public IActionResult Edit(int id, [Bind("Telefono,Direccion")] Empleado empleado)
         {
             if (id != empleado.Id)
             {
@@ -98,12 +97,9 @@ namespace Carrito_D.Controllers
                 try
                 {
                     var empleadoEnDB = _context.Empleados.Find(empleado.Id);
+
                     if(empleadoEnDB != null)
                     {
-                        empleadoEnDB.Nombre = empleado.Nombre;
-                        empleadoEnDB.Apellido = empleado.Apellido;
-                        empleadoEnDB.Legajo = empleado.Legajo;
-                        empleadoEnDB.Password = empleado.Password;
                         empleadoEnDB.Telefono = empleado.Telefono;
                         empleadoEnDB.Direccion = empleado.Direccion;
 
@@ -136,8 +132,8 @@ namespace Carrito_D.Controllers
                 return NotFound();
             }
 
-            var empleado = await _context.Empleados
-                .FirstOrDefaultAsync(m => m.Id == id);
+            var empleado = await _context.Empleados.FirstOrDefaultAsync(e => e.Id == id);
+
             if (empleado == null)
             {
                 return NotFound();
