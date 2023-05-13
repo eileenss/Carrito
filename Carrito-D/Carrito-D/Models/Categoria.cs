@@ -8,8 +8,8 @@ namespace Carrito_D.Models
         public int Id { get; set; }
 
         [Required(ErrorMessage = ErrorMsg.Requerido)]
-        [StringLength(50, MinimumLength = 3, ErrorMessage = ErrorMsg.CantCaracteres)]
-        [RegularExpression(@"[a-zA-Z áéíóú]*", ErrorMessage = ErrorMsg.SoloLetras)]
+        [StringLength(50, MinimumLength = 2, ErrorMessage = ErrorMsg.CantCaracteres)]
+        [RegularExpression(@"[a-zA-Z áéíóú 0-9]*", ErrorMessage = ErrorMsg.Alfanumerico)]
         public string Nombre { get; set; }
 
         [StringLength(100, MinimumLength = 3, ErrorMessage = ErrorMsg.CantCaracteres)]

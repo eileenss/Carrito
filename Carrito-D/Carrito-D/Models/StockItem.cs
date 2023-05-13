@@ -13,11 +13,13 @@ namespace Carrito_D.Models
         [Required(ErrorMessage = ErrorMsg.Requerido)]
         [ForeignKey("Sucursal")]
         public int SucursalId { get; set; }
+
         public Sucursal Sucursal { get; set; }
+
         public Producto Producto { get; set; }
 
         [Required(ErrorMessage = ErrorMsg.Requerido)]
-        [Range(0, 500, ErrorMessage = ErrorMsg.Rango)]
+        [Range(0, int.MaxValue, ErrorMessage = ErrorMsg.Rango)]
         public int Cantidad { get; set; }
 
     }

@@ -8,9 +8,8 @@ namespace Carrito_D.Models
         public int Id { get; set; }
 
         [Required(ErrorMessage = ErrorMsg.Requerido)]
-        [Range(100000, 99999999, ErrorMessage = ErrorMsg.Rango)]
-        //[DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:00.000.000")]
-        public int DNI { get; set; }
+        [RegularExpression(@"^\d{1,2}\.?\d{3}\.?\d{3}$", ErrorMessage = ErrorMsg.Invalido)]
+        public string DNI { get; set; }
 
         [Required(ErrorMessage = ErrorMsg.Requerido)]
         [StringLength(85, MinimumLength = 2, ErrorMessage = ErrorMsg.CantCaracteres)]
@@ -25,30 +24,33 @@ namespace Carrito_D.Models
         public string Password { get; set; }
 
         [Required(ErrorMessage = ErrorMsg.Requerido)]
-        [StringLength(85, MinimumLength = 2, ErrorMessage = ErrorMsg.CantCaracteres)]
-        [RegularExpression(@"[a-zA-Z áéíóú]*", ErrorMessage = ErrorMsg.SoloLetras)]
+        [StringLength(85, MinimumLength = 1, ErrorMessage = ErrorMsg.CantCaracteres)]
+        [RegularExpression(@"[a-zA-Z áéíóú 0-9]*", ErrorMessage = ErrorMsg.Alfanumerico)]
         public string Nombre { get; set; }
 
         [Required(ErrorMessage = ErrorMsg.Requerido)]
-        [StringLength(85, MinimumLength = 2, ErrorMessage = ErrorMsg.CantCaracteres)]
-        [RegularExpression(@"[a-zA-Z áéíóú]*", ErrorMessage = ErrorMsg.SoloLetras)]
+        [StringLength(85, MinimumLength = 1, ErrorMessage = ErrorMsg.CantCaracteres)]
+        [RegularExpression(@"[a-zA-Z áéíóú 0-9]*", ErrorMessage = ErrorMsg.SoloLetras)]
         public string Apellido { get; set; }
 
-        [DataType(DataType.PhoneNumber)]
-        public int Telefono { get; set; }
+        //[RegularExpression(@"^(?:(?:00)?549?)?0?(?:11|[23]\d)(?:(?=\d{0,2}15)\d{2})??\d{8}$", ErrorMessage = ErrorMsg.Invalido)]
+        [RegularExpression(@"^(549?)?(11\d{8})|([23]\d{9})$", ErrorMessage = ErrorMsg.Invalido)] //creada
+        [Display(Name = "Teléfono")]
+        public int? Telefono { get; set; }
 
         [RegularExpression(@"[a-zA-Z áéíóú 0-9]*", ErrorMessage = ErrorMsg.Alfanumerico)]
+        [StringLength(100, MinimumLength = 1, ErrorMessage = ErrorMsg.CantCaracteres)]
+        [Display(Name = "Dirección")]
         public string Direccion { get; set; }
 
         [Required(ErrorMessage = ErrorMsg.Requerido)]
         [EmailAddress(ErrorMessage = ErrorMsg.Invalido)]
-        [Display(Name = "Correo elctrónico")]
+        [Display(Name = "Correo electrónico")]
         public string Email { get; set; }
 
-        [Required(ErrorMessage = ErrorMsg.Requerido)]
-        [Display (Name = "Fecha de alta")]
+        [Display (Name = "Fecha de registro")]
         [DataType(DataType.DateTime)]
-        public DateTime FechaAlta { get; set; } = DateTime.Now;
+        public DateTime? FechaAlta { get; set; } = DateTime.Now;
 
     }
 }

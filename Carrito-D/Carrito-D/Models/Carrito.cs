@@ -1,6 +1,8 @@
 ﻿using Carrito_D.Helpers;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Globalization;
 
 namespace Carrito_D.Models
 {
@@ -8,9 +10,8 @@ namespace Carrito_D.Models
     {
         public int Id { get; set; }
 
-        [Required(ErrorMessage = ErrorMsg.Requerido)]
         [Display(Name = "Carrito activo")]
-        public bool Activo { get; set; }
+        public bool Activo { get; set; } = true;
 
         [Required(ErrorMessage = ErrorMsg.Requerido)]
         [ForeignKey("Cliente")]
@@ -21,9 +22,10 @@ namespace Carrito_D.Models
         [Display(Name = "Items")]
         public List<CarritoItem> CarritoItems { get; set; }
 
-        [Range(50, float.MaxValue, ErrorMessage = ErrorMsg.Rango)]
-        [DataType(DataType.Currency)]
-        public float Subtotal { get; set; }
+        //[DataType(DataType.Currency)]
+        [NotMapped]
+        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:C2}")]
+        public decimal Subtotal { get; set; }
 
         public Compra Compra { get; set; }
 

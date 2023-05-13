@@ -16,20 +16,21 @@ namespace Carrito_D.Models
 
         public Producto Producto { get; set; }
 
-        [Required(ErrorMessage = ErrorMsg.Requerido)]
-        [Range(50, 300000, ErrorMessage = ErrorMsg.Rango)]
-        [DataType(DataType.Currency)]
+        //[DataType(DataType.Currency)]
+        [NotMapped]
+        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:C2}")]
         [Display(Name = "Precio unitario")]
-        public float ValorUnitario { get; set; }
+        public decimal ValorUnitario { get; set; }
 
         [Required(ErrorMessage = ErrorMsg.Requerido)]
-        [Range(1, 500, ErrorMessage = ErrorMsg.Rango)]
+        [Range(1, int.MaxValue, ErrorMessage = ErrorMsg.Rango)]
         public int Cantidad { get; set; }
 
-        [Required(ErrorMessage = ErrorMsg.Requerido)]
-        [Range(50, float.MaxValue, ErrorMessage = ErrorMsg.Rango)]
-        [DataType(DataType.Currency)]
-        public float Subtotal { get; set; }
+        //[Required(ErrorMessage = ErrorMsg.Requerido)] lo agregamos nosotros con lógica 
+        //[DataType(DataType.Currency)]
+        [NotMapped]
+        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:C2}")]
+        public decimal Subtotal { get; set; }  
 
     }
 }
