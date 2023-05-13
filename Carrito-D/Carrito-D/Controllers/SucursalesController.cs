@@ -107,7 +107,7 @@ namespace Carrito_D.Controllers
                         sucursalEnDb.Telefono = sucursal.Telefono;
                         sucursalEnDb.Email = sucursal.Email;
 
-                        _context.Update(sucursal);
+                        _context.Update(sucursalEnDb);
                         _context.SaveChanges();
                     }
                     

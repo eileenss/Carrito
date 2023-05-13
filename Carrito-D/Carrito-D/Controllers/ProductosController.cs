@@ -117,7 +117,7 @@ namespace Carrito_D.Controllers
                         productoEnDb.Activo = producto.Activo;
                         productoEnDb.CategoriaId = producto.CategoriaId;
 
-                        _context.Productos.Update(producto);
+                        _context.Update(productoEnDb);
                         _context.SaveChanges();
                     }
                     else 
