@@ -85,7 +85,7 @@ namespace Carrito_D.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Edit(int id, [Bind("Telefono,Direccion")] Empleado empleado)
+        public IActionResult Edit(int id, [Bind("Legajo,Id,DNI,UserName,Password,Nombre,Apellido,Telefono,Direccion,Email")] Empleado empleado)
         {
             if (id != empleado.Id)
             {
@@ -103,7 +103,7 @@ namespace Carrito_D.Controllers
                         empleadoEnDB.Telefono = empleado.Telefono;
                         empleadoEnDB.Direccion = empleado.Direccion;
 
-                        _context.Update(empleadoEnDB);
+                        _context.Empleados.Update(empleadoEnDB);
                         _context.SaveChanges();
                     }
                     

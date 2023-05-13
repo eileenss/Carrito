@@ -95,7 +95,7 @@ namespace Carrito_D.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Nombre,Descripcion,Imagen,PrecioVigente,Activo,CategoriaId")] Producto producto)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Nombre,Descripcion,Imagen,PrecioVigente,Activo,CategoriaId")] Producto producto)
         {
             if (id != producto.Id)
             {
@@ -117,7 +117,7 @@ namespace Carrito_D.Controllers
                         productoEnDb.Activo = producto.Activo;
                         productoEnDb.CategoriaId = producto.CategoriaId;
 
-                        _context.Update(producto);
+                        _context.Productos.Update(producto);
                         _context.SaveChanges();
                     }
                     else 

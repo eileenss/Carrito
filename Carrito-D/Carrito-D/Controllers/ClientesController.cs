@@ -86,7 +86,7 @@ namespace Carrito_D.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Edit(int id, [Bind("Telefono,Direccion")] Cliente cliente)
+        public IActionResult Edit(int id, [Bind("Cuil,Id,DNI,UserName,Password,Nombre,Apellido,Telefono,Direccion,Email")] Cliente cliente)
         {
             if (id != cliente.Id)
             {
