@@ -1,12 +1,11 @@
-﻿@model Carrito_D.Models.Producto
+﻿@model Producto
 
 @{
     ViewData["Title"] = "Create";
 }
 
-<h1>Create</h1>
+<h1>Crear producto</h1>
 
-<h4>Producto</h4>
 <hr />
 <div class="row">
     <div class="col-md-4">
@@ -42,14 +41,14 @@
                 <select asp-for="CategoriaId" class ="form-control" asp-items="ViewBag.CategoriaId"></select>
             </div>
             <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
+                <input type="submit" value="Crear" class="btn btn-primary" />
             </div>
         </form>
     </div>
 </div>
 
 <div>
-    <a asp-action="Index">Back to List</a>
+    <a asp-action="Index">Volver a Productos</a>
 </div>
 
 @section Scripts {
