@@ -22,7 +22,7 @@ namespace Carrito_D.Controllers
         // GET: Categorias
         public IActionResult Index()
         {
-              return View( _context.Categorias.ToListAsync());
+              return View(_context.Categorias.ToList());
         }
 
         // GET: Categorias/Details/5
@@ -33,8 +33,8 @@ namespace Carrito_D.Controllers
                 return NotFound();
             }
 
-            var categoria =  _context.Categorias
-                .FirstOrDefault(m => m.Id == id);
+            var categoria = _context.Categorias.FirstOrDefault(c => c.Id == id);
+
             if (categoria == null)
             {
                 return NotFound();
@@ -58,8 +58,8 @@ namespace Carrito_D.Controllers
         {
             if (ModelState.IsValid)
             {
-                _context.Add(categoria);
-                _context.SaveChangesAsync();
+                _context.Categorias.Add(categoria);
+                _context.SaveChanges();
                 return RedirectToAction(nameof(Index));
             }
             return View(categoria);
@@ -86,7 +86,7 @@ namespace Carrito_D.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Edit(int id, [Bind("Id,Nombre,Descripcion")] Categoria categoria)
+        public IActionResult Edit(int id, [Bind("Nombre,Descripcion")] Categoria categoria)
         {
             if (id != categoria.Id)
             {
@@ -98,14 +98,14 @@ namespace Carrito_D.Controllers
                 try
                 {
                     var categoriaEnDB = _context.Categorias.Find(categoria.Id);
+
                     if (categoriaEnDB != null)
                     {
                         categoriaEnDB.Nombre = categoria.Nombre;
                         categoriaEnDB.Descripcion = categoria.Descripcion;
                         
-
-                        _context.Update(categoriaEnDB);
-                        _context.SaveChangesAsync();
+                        _context.Categorias.Update(categoriaEnDB);
+                        _context.SaveChanges();
                     }
                     
                 }
@@ -133,8 +133,7 @@ namespace Carrito_D.Controllers
                 return NotFound();
             }
 
-            var categoria = await _context.Categorias
-                .FirstOrDefaultAsync(m => m.Id == id);
+            var categoria = await _context.Categorias.FirstOrDefaultAsync(c => c.Id == id);
             if (categoria == null)
             {
                 return NotFound();
