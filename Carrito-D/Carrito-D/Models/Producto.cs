@@ -29,6 +29,7 @@ namespace Carrito_D.Models
 
         [Required(ErrorMessage = ErrorMsg.Requerido)]
         [ForeignKey("Categoria")]
+        [Display(Name = "Categoría")]
         public int CategoriaId { get; set; }
 
         public Categoria Categoria { get; set; }

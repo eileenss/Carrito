@@ -20,23 +20,22 @@ namespace Carrito_D.Controllers
         }
 
         // GET: Productos
-        public async Task<IActionResult> Index()
+        public IActionResult Index()
         {
-            var carritoContext = _context.Productos.Include(p => p.Categoria);
-            return View(await carritoContext.ToListAsync());
+            var carritoContext = _context.Productos.Include(p => p.Categoria); 
+            return View(carritoContext.ToList());
         }
 
         // GET: Productos/Details/5
-        public async Task<IActionResult> Details(int? id)
+        public IActionResult Details(int? id)
         {
             if (id == null || _context.Productos == null)
             {
                 return NotFound();
             }
 
-            var producto = await _context.Productos
-                .Include(p => p.Categoria)
-                .FirstOrDefaultAsync(m => m.Id == id);
+            var producto = _context.Productos.Include(p => p.Categoria).FirstOrDefault(p => p.Id == id);
+
             if (producto == null)
             {
                 return NotFound();
@@ -57,32 +56,37 @@ namespace Carrito_D.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Nombre,Descripcion,Imagen,PrecioVigente,Activo,CategoriaId")] Producto producto)
+        public IActionResult Create([Bind("Id,Nombre,Descripcion,Imagen,PrecioVigente,Activo,CategoriaId")] Producto producto)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(producto);
-                await _context.SaveChangesAsync();
+                _context.Productos.Add(producto);
+                _context.SaveChanges();
                 return RedirectToAction(nameof(Index));
             }
+
             ViewData["CategoriaId"] = new SelectList(_context.Categorias, "Id", "Nombre", producto.CategoriaId);
+
             return View(producto);
         }
 
         // GET: Productos/Edit/5
-        public async Task<IActionResult> Edit(int? id)
+        public IActionResult Edit(int? id)
         {
             if (id == null || _context.Productos == null)
             {
                 return NotFound();
             }
 
-            var producto = await _context.Productos.FindAsync(id);
+            var producto = _context.Productos.Find(id);
+
             if (producto == null)
             {
                 return NotFound();
             }
+
             ViewData["CategoriaId"] = new SelectList(_context.Categorias, "Id", "Nombre", producto.CategoriaId);
+
             return View(producto);
         }
 
@@ -91,7 +95,7 @@ namespace Carrito_D.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Nombre,Descripcion,Imagen,PrecioVigente,Activo,CategoriaId")] Producto producto)
+        public async Task<IActionResult> Edit(int id, [Bind("Nombre,Descripcion,Imagen,PrecioVigente,Activo,CategoriaId")] Producto producto)
         {
             if (id != producto.Id)
             {
@@ -102,8 +106,25 @@ namespace Carrito_D.Controllers
             {
                 try
                 {
-                    _context.Update(producto);
-                    await _context.SaveChangesAsync();
+                    var productoEnDb = _context.Productos.Find(producto.Id);
+
+                    if (productoEnDb != null)
+                    {
+                        productoEnDb.Nombre = producto.Nombre;
+                        productoEnDb.Descripcion = producto.Descripcion;
+                        productoEnDb.Imagen = producto.Imagen;
+                        productoEnDb.PrecioVigente = producto.PrecioVigente;
+                        productoEnDb.Activo = producto.Activo;
+                        productoEnDb.CategoriaId = producto.CategoriaId;
+
+                        _context.Update(producto);
+                        _context.SaveChanges();
+                    }
+                    else 
+                    {
+                        return NotFound();
+                    }
+                    
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -130,9 +151,8 @@ namespace Carrito_D.Controllers
                 return NotFound();
             }
 
-            var producto = await _context.Productos
-                .Include(p => p.Categoria)
-                .FirstOrDefaultAsync(m => m.Id == id);
+            var producto = await _context.Productos.Include(p => p.Categoria).FirstOrDefaultAsync(p => p.Id == id);
+
             if (producto == null)
             {
                 return NotFound();

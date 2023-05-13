@@ -20,21 +20,21 @@ namespace Carrito_D.Controllers
         }
 
         // GET: Sucursales
-        public async Task<IActionResult> Index()
+        public IActionResult Index()
         {
-              return View(await _context.Sucursales.ToListAsync());
+              return View(_context.Sucursales.ToList());
         }
 
         // GET: Sucursales/Details/5
-        public async Task<IActionResult> Details(int? id)
+        public IActionResult Details(int? id)
         {
             if (id == null || _context.Sucursales == null)
             {
                 return NotFound();
             }
 
-            var sucursal = await _context.Sucursales
-                .FirstOrDefaultAsync(m => m.Id == id);
+            var sucursal = _context.Sucursales.FirstOrDefault(s => s.Id == id);
+
             if (sucursal == null)
             {
                 return NotFound();
@@ -54,30 +54,32 @@ namespace Carrito_D.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Nombre,Direccion,Telefono,Email")] Sucursal sucursal)
+        public IActionResult Create([Bind("Id,Nombre,Direccion,Telefono,Email")] Sucursal sucursal)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(sucursal);
-                await _context.SaveChangesAsync();
+                _context.Sucursales.Add(sucursal);
+                _context.SaveChanges();
                 return RedirectToAction(nameof(Index));
             }
             return View(sucursal);
         }
 
         // GET: Sucursales/Edit/5
-        public async Task<IActionResult> Edit(int? id)
+        public IActionResult Edit(int? id)
         {
             if (id == null || _context.Sucursales == null)
             {
                 return NotFound();
             }
 
-            var sucursal = await _context.Sucursales.FindAsync(id);
+            var sucursal = _context.Sucursales.Find(id);
+
             if (sucursal == null)
             {
                 return NotFound();
             }
+
             return View(sucursal);
         }
 
@@ -86,7 +88,7 @@ namespace Carrito_D.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Nombre,Direccion,Telefono,Email")] Sucursal sucursal)
+        public async Task<IActionResult> Edit(int id, [Bind("Direccion,Telefono,Email")] Sucursal sucursal)
         {
             if (id != sucursal.Id)
             {
@@ -97,8 +99,18 @@ namespace Carrito_D.Controllers
             {
                 try
                 {
-                    _context.Update(sucursal);
-                    await _context.SaveChangesAsync();
+                    var sucursalEnDb = _context.Sucursales.Find(sucursal.Id);
+
+                    if(sucursalEnDb != null)
+                    {
+                        sucursalEnDb.Direccion = sucursal.Direccion;
+                        sucursalEnDb.Telefono = sucursal.Telefono;
+                        sucursalEnDb.Email = sucursal.Email;
+
+                        _context.Update(sucursal);
+                        _context.SaveChanges();
+                    }
+                    
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -124,8 +136,8 @@ namespace Carrito_D.Controllers
                 return NotFound();
             }
 
-            var sucursal = await _context.Sucursales
-                .FirstOrDefaultAsync(m => m.Id == id);
+            var sucursal = await _context.Sucursales.FirstOrDefaultAsync(s => s.Id == id); 
+
             if (sucursal == null)
             {
                 return NotFound();
