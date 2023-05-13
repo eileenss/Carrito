@@ -22,7 +22,7 @@ namespace Carrito_D.Controllers
         // GET: Clientes
         public IActionResult Index()
         {
-              return View( _context.Clientes.ToListAsync());
+              return View( _context.Clientes.ToList());
         }
 
         // GET: Clientes/Details/5
@@ -34,7 +34,7 @@ namespace Carrito_D.Controllers
             }
 
             var cliente =  _context.Clientes
-                .FirstOrDefaultAsync(m => m.Id == id);
+                .FirstOrDefault(m => m.Id == id);
             if (cliente == null)
             {
                 return NotFound();
@@ -73,7 +73,7 @@ namespace Carrito_D.Controllers
                 return NotFound();
             }
 
-            var cliente =  _context.Clientes.FindAsync(id);
+            var cliente =  _context.Clientes.Find(id);
             if (cliente == null)
             {
                 return NotFound();
