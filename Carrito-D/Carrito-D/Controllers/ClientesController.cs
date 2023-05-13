@@ -20,21 +20,21 @@ namespace Carrito_D.Controllers
         }
 
         // GET: Clientes
-        public async Task<IActionResult> Index()
+        public IActionResult Index()
         {
-              return View(await _context.Clientes.ToListAsync());
+              return View( _context.Clientes.ToList());
         }
 
         // GET: Clientes/Details/5
-        public async Task<IActionResult> Details(int? id)
+        public IActionResult Details(int? id)
         {
             if (id == null || _context.Clientes == null)
             {
                 return NotFound();
             }
 
-            var cliente = await _context.Clientes
-                .FirstOrDefaultAsync(m => m.Id == id);
+            var cliente =  _context.Clientes
+                .FirstOrDefault(m => m.Id == id);
             if (cliente == null)
             {
                 return NotFound();
@@ -54,26 +54,26 @@ namespace Carrito_D.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Cuil,Id,DNI,UserName,Password,Nombre,Apellido,Telefono,Direccion,Email,FechaAlta")] Cliente cliente)
+        public IActionResult Create([Bind("Cuil,Id,DNI,UserName,Password,Nombre,Apellido,Telefono,Direccion,Email")] Cliente cliente)
         {
             if (ModelState.IsValid)
             {
                 _context.Add(cliente);
-                await _context.SaveChangesAsync();
+                _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
             return View(cliente);
         }
 
         // GET: Clientes/Edit/5
-        public async Task<IActionResult> Edit(int? id)
+        public IActionResult Edit(int? id)
         {
             if (id == null || _context.Clientes == null)
             {
                 return NotFound();
             }
 
-            var cliente = await _context.Clientes.FindAsync(id);
+            var cliente =  _context.Clientes.Find(id);
             if (cliente == null)
             {
                 return NotFound();
@@ -86,7 +86,7 @@ namespace Carrito_D.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Cuil,Id,DNI,UserName,Password,Nombre,Apellido,Telefono,Direccion,Email,FechaAlta")] Cliente cliente)
+        public IActionResult Edit(int id, [Bind("Cuil,Id,DNI,UserName,Password,Nombre,Apellido,Telefono,Direccion,Email")] Cliente cliente)
         {
             if (id != cliente.Id)
             {
@@ -97,8 +97,20 @@ namespace Carrito_D.Controllers
             {
                 try
                 {
-                    _context.Update(cliente);
-                    await _context.SaveChangesAsync();
+
+                    var clienteEnDB = _context.Clientes.Find(cliente.Id);
+                    if (clienteEnDB != null)
+                    {
+                        clienteEnDB.Nombre = cliente.Nombre;
+                        clienteEnDB.Apellido = cliente.Apellido;
+                        clienteEnDB.Password = cliente.Password;
+                        clienteEnDB.Telefono = cliente.Telefono;
+                        clienteEnDB.Direccion = cliente.Direccion;
+
+                        _context.Update(clienteEnDB);
+                        _context.SaveChanges();
+                    }
+
                 }
                 catch (DbUpdateConcurrencyException)
                 {
