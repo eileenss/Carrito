@@ -86,12 +86,21 @@ namespace Carrito_D.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Edit(int id, [Bind("Cuil,Id,DNI,UserName,Password,Nombre,Apellido,Telefono,Direccion,Email,FechaAlta")] Cliente cliente)
+        public IActionResult Edit(int id, [Bind("Id,Telefono,Direccion")] Cliente cliente)
         {
             if (id != cliente.Id)
             {
                 return NotFound();
             }
+
+            ModelState.Remove("Cuil");
+            ModelState.Remove("DNI");
+            ModelState.Remove("UserName");
+            ModelState.Remove("Password");
+            ModelState.Remove("Nombre");
+            ModelState.Remove("Apellido");
+            ModelState.Remove("Email");
+              
 
             if (ModelState.IsValid)
             {
@@ -104,7 +113,7 @@ namespace Carrito_D.Controllers
                         clienteEnDB.Telefono = cliente.Telefono;
                         clienteEnDB.Direccion = cliente.Direccion;
 
-                        _context.Update(clienteEnDB);
+                        _context.Clientes.Update(clienteEnDB);
                         _context.SaveChanges();
                     }
 
