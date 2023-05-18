@@ -91,12 +91,14 @@ namespace Carrito_D.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Edit(int id, [Bind("Id,Activo,ClienteId")] Carrito carrito)
+        public IActionResult Edit(int id, [Bind("Id,Activo")] Carrito carrito)
         {
             if (id != carrito.Id)
             {
                 return NotFound();
             }
+
+            ModelState.Remove("ClienteId");
 
             if (ModelState.IsValid)
             {
