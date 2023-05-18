@@ -126,8 +126,9 @@ namespace Carrito_D.Controllers
             return View(categoria);
         }
 
+        // Según funcionalidades del sistema, no se pueden eliminar categorías
         // GET: Categorias/Delete/5
-        public async Task<IActionResult> Delete(int? id)
+      /*  public async Task<IActionResult> Delete(int? id)
         {
             if (id == null || _context.Categorias == null)
             {
@@ -161,7 +162,7 @@ namespace Carrito_D.Controllers
             
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
-        }
+        }*/
 
         private bool CategoriaExists(int id)
         {
