@@ -88,7 +88,7 @@ namespace Carrito_D.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Direccion,Telefono")] Sucursal sucursal)
+        public IActionResult Edit(int id, [Bind("Id,Direccion,Telefono")] Sucursal sucursal)
         {
             if (id != sucursal.Id)
             {
