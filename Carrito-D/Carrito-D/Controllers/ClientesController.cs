@@ -34,6 +34,7 @@ namespace Carrito_D.Controllers
             }
 
             var cliente = _context.Clientes.FirstOrDefault(c => c.Id == id);
+
             if (cliente == null)
             {
                 return NotFound();
@@ -86,12 +87,21 @@ namespace Carrito_D.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Edit(int id, [Bind("Telefono,Direccion")] Cliente cliente)
+        public IActionResult Edit(int id, [Bind("Id,Telefono,Direccion")] Cliente cliente)
         {
             if (id != cliente.Id)
             {
                 return NotFound();
             }
+
+            ModelState.Remove("Cuil");
+            ModelState.Remove("DNI");
+            ModelState.Remove("UserName");
+            ModelState.Remove("Password");
+            ModelState.Remove("Nombre");
+            ModelState.Remove("Apellido");
+            ModelState.Remove("Email");
+              
 
             if (ModelState.IsValid)
             {
@@ -104,7 +114,7 @@ namespace Carrito_D.Controllers
                         clienteEnDB.Telefono = cliente.Telefono;
                         clienteEnDB.Direccion = cliente.Direccion;
 
-                        _context.Update(clienteEnDB);
+                        _context.Clientes.Update(clienteEnDB);
                         _context.SaveChanges();
                     }
 
@@ -133,8 +143,7 @@ namespace Carrito_D.Controllers
                 return NotFound();
             }
 
-            var cliente = await _context.Clientes
-                .FirstOrDefaultAsync(m => m.Id == id);
+            var cliente = await _context.Clientes.FirstOrDefaultAsync(c => c.Id == id);
             if (cliente == null)
             {
                 return NotFound();
@@ -164,7 +173,7 @@ namespace Carrito_D.Controllers
 
         private bool ClienteExists(int id)
         {
-          return _context.Clientes.Any(e => e.Id == id);
+          return _context.Clientes.Any(c => c.Id == id);
         }
     }
 }

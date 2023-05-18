@@ -10,114 +10,118 @@ using Carrito_D.Models;
 
 namespace Carrito_D.Controllers
 {
-    public class SucursalesController : Controller
+    public class CarritosController : Controller
     {
         private readonly CarritoContext _context;
 
-        public SucursalesController(CarritoContext context)
+        public CarritosController(CarritoContext context)
         {
             _context = context;
         }
 
-        // GET: Sucursales
+        // GET: Carritos
         public IActionResult Index()
         {
-              return View(_context.Sucursales.ToList());
+            var carritoContext = _context.Carritos.Include(c => c.Cliente);
+            return View( carritoContext.ToList());
         }
 
-        // GET: Sucursales/Details/5
+        // GET: Carritos/Details/5
         public IActionResult Details(int? id)
         {
-            if (id == null || _context.Sucursales == null)
+            if (id == null || _context.Carritos == null)
             {
                 return NotFound();
             }
 
-            var sucursal = _context.Sucursales.FirstOrDefault(s => s.Id == id);
-
-            if (sucursal == null)
+            var carrito =  _context.Carritos
+                .Include(c => c.Cliente)
+                .FirstOrDefault(m => m.Id == id);
+            if (carrito == null)
             {
                 return NotFound();
             }
 
-            return View(sucursal);
+            return View(carrito);
         }
 
-        // GET: Sucursales/Create
+        // GET: Carritos/Create
         public IActionResult Create()
         {
+            ViewData["ClienteId"] = new SelectList(_context.Clientes, "Id", "Apellido");
             return View();
         }
 
-        // POST: Sucursales/Create
+        // POST: Carritos/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Create([Bind("Id,Nombre,Direccion,Telefono,Email")] Sucursal sucursal)
+        public IActionResult Create([Bind("Id,Activo,ClienteId")] Carrito carrito)
         {
             if (ModelState.IsValid)
             {
-                _context.Sucursales.Add(sucursal);
+                _context.Add(carrito);
                 _context.SaveChanges();
                 return RedirectToAction(nameof(Index));
             }
-            return View(sucursal);
+            ViewData["ClienteId"] = new SelectList(_context.Clientes, "Id", "Apellido", carrito.ClienteId);
+            return View(carrito);
         }
 
-        // GET: Sucursales/Edit/5
+        // GET: Carritos/Edit/5
         public IActionResult Edit(int? id)
         {
-            if (id == null || _context.Sucursales == null)
+            if (id == null || _context.Carritos == null)
             {
                 return NotFound();
             }
 
-            var sucursal = _context.Sucursales.Find(id);
-
-            if (sucursal == null)
+            var carrito =  _context.Carritos.Find(id);
+            if (carrito == null)
             {
                 return NotFound();
             }
-
-            return View(sucursal);
+            ViewData["ClienteId"] = new SelectList(_context.Clientes, "Id", "Apellido", carrito.ClienteId);
+            return View(carrito);
         }
 
-        // POST: Sucursales/Edit/5
+        // POST: Carritos/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Edit(int id, [Bind("Id,Direccion,Telefono")] Sucursal sucursal)
+        public IActionResult Edit(int id, [Bind("Id,Activo")] Carrito carrito)
         {
-            if (id != sucursal.Id)
+            if (id != carrito.Id)
             {
                 return NotFound();
             }
 
-            ModelState.Remove("Nombre");
-            ModelState.Remove("Email");
+            ModelState.Remove("ClienteId");
 
             if (ModelState.IsValid)
             {
                 try
                 {
-                    var sucursalEnDb = _context.Sucursales.Find(sucursal.Id);
+                    var carritoEnDB = _context.Carritos.Find(carrito.Id);
 
-                    if(sucursalEnDb != null)
+                    if (carritoEnDB != null)
                     {
-                        sucursalEnDb.Direccion = sucursal.Direccion;
-                        sucursalEnDb.Telefono = sucursal.Telefono;
+                        carritoEnDB.Activo = carrito.Activo;
                         
 
-                        _context.Update(sucursalEnDb);
+                        _context.Update(carritoEnDB);
                         _context.SaveChanges();
                     }
+
+
+
                     
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!SucursalExists(sucursal.Id))
+                    if (!CarritoExists(carrito.Id))
                     {
                         return NotFound();
                     }
@@ -128,49 +132,51 @@ namespace Carrito_D.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            return View(sucursal);
+            ViewData["ClienteId"] = new SelectList(_context.Clientes, "Id", "Apellido", carrito.ClienteId);
+            return View(carrito);
         }
 
-        // GET: Sucursales/Delete/5
+        // GET: Carritos/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
-            if (id == null || _context.Sucursales == null)
+            if (id == null || _context.Carritos == null)
             {
                 return NotFound();
             }
 
-            var sucursal = await _context.Sucursales.FirstOrDefaultAsync(s => s.Id == id); 
-
-            if (sucursal == null)
+            var carrito = await _context.Carritos
+                .Include(c => c.Cliente)
+                .FirstOrDefaultAsync(m => m.Id == id);
+            if (carrito == null)
             {
                 return NotFound();
             }
 
-            return View(sucursal);
+            return View(carrito);
         }
 
-        // POST: Sucursales/Delete/5
+        // POST: Carritos/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            if (_context.Sucursales == null)
+            if (_context.Carritos == null)
             {
-                return Problem("Entity set 'CarritoContext.Sucursales'  is null.");
+                return Problem("Entity set 'CarritoContext.Carritos'  is null.");
             }
-            var sucursal = await _context.Sucursales.FindAsync(id);
-            if (sucursal != null)
+            var carrito = await _context.Carritos.FindAsync(id);
+            if (carrito != null)
             {
-                _context.Sucursales.Remove(sucursal);
+                _context.Carritos.Remove(carrito);
             }
             
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
-        private bool SucursalExists(int id)
+        private bool CarritoExists(int id)
         {
-          return _context.Sucursales.Any(e => e.Id == id);
+          return _context.Carritos.Any(e => e.Id == id);
         }
     }
 }

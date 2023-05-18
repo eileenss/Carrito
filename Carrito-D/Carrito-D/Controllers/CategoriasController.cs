@@ -86,13 +86,14 @@ namespace Carrito_D.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Edit(int id, [Bind("Nombre,Descripcion")] Categoria categoria)
+        public IActionResult Edit(int id, [Bind("Id,Nombre,Descripcion")] Categoria categoria)
         {
             if (id != categoria.Id)
             {
                 return NotFound();
             }
 
+            
             if (ModelState.IsValid)
             {
                 try

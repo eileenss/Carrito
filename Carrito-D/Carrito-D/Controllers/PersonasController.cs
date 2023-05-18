@@ -10,114 +10,116 @@ using Carrito_D.Models;
 
 namespace Carrito_D.Controllers
 {
-    public class SucursalesController : Controller
+    public class PersonasController : Controller
     {
         private readonly CarritoContext _context;
 
-        public SucursalesController(CarritoContext context)
+        public PersonasController(CarritoContext context)
         {
             _context = context;
         }
 
-        // GET: Sucursales
+        // GET: Personas
         public IActionResult Index()
         {
-              return View(_context.Sucursales.ToList());
+              return View(_context.Personas.ToList());
         }
 
-        // GET: Sucursales/Details/5
+        // GET: Personas/Details/5
         public IActionResult Details(int? id)
         {
-            if (id == null || _context.Sucursales == null)
+            if (id == null || _context.Personas == null)
             {
                 return NotFound();
             }
 
-            var sucursal = _context.Sucursales.FirstOrDefault(s => s.Id == id);
-
-            if (sucursal == null)
+            var persona = _context.Personas.FirstOrDefault(p => p.Id == id);
+            if (persona == null)
             {
                 return NotFound();
             }
 
-            return View(sucursal);
+            return View(persona);
         }
 
-        // GET: Sucursales/Create
+        // GET: Personas/Create
         public IActionResult Create()
         {
             return View();
         }
 
-        // POST: Sucursales/Create
+        // POST: Personas/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Create([Bind("Id,Nombre,Direccion,Telefono,Email")] Sucursal sucursal)
+        public IActionResult Create([Bind("Id,DNI,UserName,Password,Nombre,Apellido,Telefono,Direccion,Email,FechaAlta")] Persona persona)
         {
             if (ModelState.IsValid)
             {
-                _context.Sucursales.Add(sucursal);
+                _context.Personas.Add(persona);
                 _context.SaveChanges();
                 return RedirectToAction(nameof(Index));
             }
-            return View(sucursal);
+            return View(persona);
         }
 
-        // GET: Sucursales/Edit/5
+        // GET: Personas/Edit/5
         public IActionResult Edit(int? id)
         {
-            if (id == null || _context.Sucursales == null)
+            if (id == null || _context.Personas == null)
             {
                 return NotFound();
             }
 
-            var sucursal = _context.Sucursales.Find(id);
+            var persona = _context.Personas.Find(id);
 
-            if (sucursal == null)
+            if (persona == null)
             {
                 return NotFound();
             }
-
-            return View(sucursal);
+            return View(persona);
         }
 
-        // POST: Sucursales/Edit/5
+        // POST: Personas/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Edit(int id, [Bind("Id,Direccion,Telefono")] Sucursal sucursal)
+        public IActionResult Edit(int id, [Bind("Id,Telefono,Direccion")] Persona persona)
         {
-            if (id != sucursal.Id)
+            if (id != persona.Id)
             {
                 return NotFound();
             }
 
+            ModelState.Remove("DNI");
+            ModelState.Remove("UserName");
+            ModelState.Remove("Password");
             ModelState.Remove("Nombre");
+            ModelState.Remove("Apellido");
             ModelState.Remove("Email");
 
             if (ModelState.IsValid)
             {
                 try
                 {
-                    var sucursalEnDb = _context.Sucursales.Find(sucursal.Id);
+                    var personaEnDB = _context.Empleados.Find(persona.Id);
 
-                    if(sucursalEnDb != null)
+                    if (personaEnDB != null)
                     {
-                        sucursalEnDb.Direccion = sucursal.Direccion;
-                        sucursalEnDb.Telefono = sucursal.Telefono;
-                        
+                        personaEnDB.Telefono = persona.Telefono;
+                        personaEnDB.Direccion = persona.Direccion;
 
-                        _context.Update(sucursalEnDb);
+                        _context.Personas.Update(personaEnDB);
                         _context.SaveChanges();
+
                     }
-                    
+                      
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!SucursalExists(sucursal.Id))
+                    if (!PersonaExists(persona.Id))
                     {
                         return NotFound();
                     }
@@ -128,49 +130,48 @@ namespace Carrito_D.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            return View(sucursal);
+            return View(persona);
         }
 
-        // GET: Sucursales/Delete/5
+        // GET: Personas/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
-            if (id == null || _context.Sucursales == null)
+            if (id == null || _context.Personas == null)
             {
                 return NotFound();
             }
 
-            var sucursal = await _context.Sucursales.FirstOrDefaultAsync(s => s.Id == id); 
-
-            if (sucursal == null)
+            var persona = await _context.Personas.FirstOrDefaultAsync(p => p.Id == id);
+            if (persona == null)
             {
                 return NotFound();
             }
 
-            return View(sucursal);
+            return View(persona);
         }
 
-        // POST: Sucursales/Delete/5
+        // POST: Personas/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            if (_context.Sucursales == null)
+            if (_context.Personas == null)
             {
-                return Problem("Entity set 'CarritoContext.Sucursales'  is null.");
+                return Problem("Entity set 'CarritoContext.Personas'  is null.");
             }
-            var sucursal = await _context.Sucursales.FindAsync(id);
-            if (sucursal != null)
+            var persona = await _context.Personas.FindAsync(id);
+            if (persona != null)
             {
-                _context.Sucursales.Remove(sucursal);
+                _context.Personas.Remove(persona);
             }
             
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
-        private bool SucursalExists(int id)
+        private bool PersonaExists(int id)
         {
-          return _context.Sucursales.Any(e => e.Id == id);
+          return _context.Personas.Any(p => p.Id == id);
         }
     }
 }
