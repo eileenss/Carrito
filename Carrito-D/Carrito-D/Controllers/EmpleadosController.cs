@@ -58,7 +58,7 @@ namespace Carrito_D.Controllers
             if (ModelState.IsValid)
             {
                 _context.Empleados.Add(empleado);
-                 _context.SaveChanges();
+                _context.SaveChanges();
                 return RedirectToAction(nameof(Index));
             }
             return View(empleado);
@@ -85,12 +85,19 @@ namespace Carrito_D.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Edit(int id, [Bind("Legajo,Id,DNI,UserName,Password,Nombre,Apellido,Telefono,Direccion,Email")] Empleado empleado)
+        public IActionResult Edit(int id, [Bind("Id,Telefono,Direccion")] Empleado empleado)
         {
             if (id != empleado.Id)
             {
                 return NotFound();
             }
+            
+            ModelState.Remove("DNI");
+            ModelState.Remove("UserName");
+            ModelState.Remove("Password");
+            ModelState.Remove("Nombre");
+            ModelState.Remove("Apellido");
+            ModelState.Remove("Email");
 
             if (ModelState.IsValid)
             {
