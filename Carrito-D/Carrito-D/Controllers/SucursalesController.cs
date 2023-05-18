@@ -88,17 +88,15 @@ namespace Carrito_D.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Nombre,Direccion,Telefono,Email")] Sucursal sucursal)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Direccion,Telefono")] Sucursal sucursal)
         {
             if (id != sucursal.Id)
             {
                 return NotFound();
             }
 
-
-
-
-
+            ModelState.Remove("Nombre");
+            ModelState.Remove("Email");
 
             if (ModelState.IsValid)
             {
@@ -110,7 +108,7 @@ namespace Carrito_D.Controllers
                     {
                         sucursalEnDb.Direccion = sucursal.Direccion;
                         sucursalEnDb.Telefono = sucursal.Telefono;
-                        sucursalEnDb.Email = sucursal.Email;
+                        
 
                         _context.Update(sucursalEnDb);
                         _context.SaveChanges();
