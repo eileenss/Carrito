@@ -34,6 +34,7 @@ namespace Carrito_D.Controllers
             }
 
             var cliente = _context.Clientes.FirstOrDefault(c => c.Id == id);
+
             if (cliente == null)
             {
                 return NotFound();
@@ -142,8 +143,7 @@ namespace Carrito_D.Controllers
                 return NotFound();
             }
 
-            var cliente = await _context.Clientes
-                .FirstOrDefaultAsync(m => m.Id == id);
+            var cliente = await _context.Clientes.FirstOrDefaultAsync(c => c.Id == id);
             if (cliente == null)
             {
                 return NotFound();
@@ -173,7 +173,7 @@ namespace Carrito_D.Controllers
 
         private bool ClienteExists(int id)
         {
-          return _context.Clientes.Any(e => e.Id == id);
+          return _context.Clientes.Any(c => c.Id == id);
         }
     }
 }

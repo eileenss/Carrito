@@ -33,8 +33,7 @@ namespace Carrito_D.Controllers
                 return NotFound();
             }
 
-            var persona = _context.Personas
-                .FirstOrDefault(m => m.Id == id);
+            var persona = _context.Personas.FirstOrDefault(p => p.Id == id);
             if (persona == null)
             {
                 return NotFound();
@@ -58,7 +57,7 @@ namespace Carrito_D.Controllers
         {
             if (ModelState.IsValid)
             {
-                _context.Add(persona);
+                _context.Personas.Add(persona);
                 _context.SaveChanges();
                 return RedirectToAction(nameof(Index));
             }
@@ -74,6 +73,7 @@ namespace Carrito_D.Controllers
             }
 
             var persona = _context.Personas.Find(id);
+
             if (persona == null)
             {
                 return NotFound();
@@ -86,12 +86,19 @@ namespace Carrito_D.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Edit(int id, [Bind("Id,DNI,UserName,Password,Nombre,Apellido,Telefono,Direccion,Email,FechaAlta")] Persona persona)
+        public IActionResult Edit(int id, [Bind("Id,Telefono,Direccion")] Persona persona)
         {
             if (id != persona.Id)
             {
                 return NotFound();
             }
+
+            ModelState.Remove("DNI");
+            ModelState.Remove("UserName");
+            ModelState.Remove("Password");
+            ModelState.Remove("Nombre");
+            ModelState.Remove("Apellido");
+            ModelState.Remove("Email");
 
             if (ModelState.IsValid)
             {
@@ -104,7 +111,7 @@ namespace Carrito_D.Controllers
                         personaEnDB.Telefono = persona.Telefono;
                         personaEnDB.Direccion = persona.Direccion;
 
-                        _context.Update(personaEnDB);
+                        _context.Personas.Update(personaEnDB);
                         _context.SaveChanges();
 
                     }
@@ -134,8 +141,7 @@ namespace Carrito_D.Controllers
                 return NotFound();
             }
 
-            var persona = await _context.Personas
-                .FirstOrDefaultAsync(m => m.Id == id);
+            var persona = await _context.Personas.FirstOrDefaultAsync(p => p.Id == id);
             if (persona == null)
             {
                 return NotFound();
@@ -165,7 +171,7 @@ namespace Carrito_D.Controllers
 
         private bool PersonaExists(int id)
         {
-          return _context.Personas.Any(e => e.Id == id);
+          return _context.Personas.Any(p => p.Id == id);
         }
     }
 }

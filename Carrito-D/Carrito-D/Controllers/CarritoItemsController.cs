@@ -20,24 +20,28 @@ namespace Carrito_D.Controllers
         }
 
         // GET: CarritoItems
-        public async Task<IActionResult> Index()
+        public IActionResult Index()
         {
-            var carritoContext = _context.CarritoItem.Include(c => c.Carrito).Include(c => c.Producto);
-            return View(await carritoContext.ToListAsync());
+            var carritoItemContext = _context.CarritoItem
+                .Include(c => c.Carrito)
+                .Include(c => c.Producto);
+
+            return View(carritoItemContext.ToList());
         }
 
         // GET: CarritoItems/Details/5
-        public async Task<IActionResult> Details(int? id)
+        public IActionResult Details(int? id)
         {
             if (id == null || _context.CarritoItem == null)
             {
                 return NotFound();
             }
 
-            var carritoItem = await _context.CarritoItem
+            var carritoItem = _context.CarritoItem
                 .Include(c => c.Carrito)
                 .Include(c => c.Producto)
-                .FirstOrDefaultAsync(m => m.CarritoId == id);
+                .FirstOrDefault(c => c.CarritoId == id);
+
             if (carritoItem == null)
             {
                 return NotFound();
@@ -49,7 +53,7 @@ namespace Carrito_D.Controllers
         // GET: CarritoItems/Create
         public IActionResult Create()
         {
-            ViewData["CarritoId"] = new SelectList(_context.Carritos, "Id", "Id");
+            ViewData["CarritoId"] = new SelectList(_context.Carritos, "Id", "Id"); //"Id","Activo" ?
             ViewData["ProductoId"] = new SelectList(_context.Productos, "Id", "Nombre");
             return View();
         }
@@ -59,34 +63,39 @@ namespace Carrito_D.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("ProductoId,CarritoId,Cantidad")] CarritoItem carritoItem)
+        public IActionResult Create([Bind("ProductoId,CarritoId,Cantidad")] CarritoItem carritoItem)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(carritoItem);
-                await _context.SaveChangesAsync();
+                _context.CarritoItem.Add(carritoItem);
+                _context.SaveChanges();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["CarritoId"] = new SelectList(_context.Carritos, "Id", "Id", carritoItem.CarritoId);
+
+            ViewData["CarritoId"] = new SelectList(_context.Carritos, "Id", "Id", carritoItem.CarritoId); //"Id","Activo" ?
             ViewData["ProductoId"] = new SelectList(_context.Productos, "Id", "Nombre", carritoItem.ProductoId);
+
             return View(carritoItem);
         }
 
         // GET: CarritoItems/Edit/5
-        public async Task<IActionResult> Edit(int? id)
+        public IActionResult Edit(int? id)
         {
             if (id == null || _context.CarritoItem == null)
             {
                 return NotFound();
             }
 
-            var carritoItem = await _context.CarritoItem.FindAsync(id);
+            var carritoItem = _context.CarritoItem.Find(id);
+
             if (carritoItem == null)
             {
                 return NotFound();
             }
+
             ViewData["CarritoId"] = new SelectList(_context.Carritos, "Id", "Id", carritoItem.CarritoId);
             ViewData["ProductoId"] = new SelectList(_context.Productos, "Id", "Nombre", carritoItem.ProductoId);
+
             return View(carritoItem);
         }
 
@@ -95,7 +104,7 @@ namespace Carrito_D.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("ProductoId,CarritoId,Cantidad")] CarritoItem carritoItem)
+        public IActionResult Edit(int id, [Bind("ProductoId,CarritoId,Cantidad")] CarritoItem carritoItem)
         {
             if (id != carritoItem.CarritoId)
             {
@@ -106,8 +115,8 @@ namespace Carrito_D.Controllers
             {
                 try
                 {
-                    _context.Update(carritoItem);
-                    await _context.SaveChangesAsync();
+                    _context.CarritoItem.Update(carritoItem);
+                    _context.SaveChanges();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -122,8 +131,10 @@ namespace Carrito_D.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
+
             ViewData["CarritoId"] = new SelectList(_context.Carritos, "Id", "Id", carritoItem.CarritoId);
             ViewData["ProductoId"] = new SelectList(_context.Productos, "Id", "Nombre", carritoItem.ProductoId);
+            
             return View(carritoItem);
         }
 
@@ -138,7 +149,8 @@ namespace Carrito_D.Controllers
             var carritoItem = await _context.CarritoItem
                 .Include(c => c.Carrito)
                 .Include(c => c.Producto)
-                .FirstOrDefaultAsync(m => m.CarritoId == id);
+                .FirstOrDefaultAsync(c => c.CarritoId == id);
+
             if (carritoItem == null)
             {
                 return NotFound();
@@ -157,6 +169,7 @@ namespace Carrito_D.Controllers
                 return Problem("Entity set 'CarritoContext.CarritoItem'  is null.");
             }
             var carritoItem = await _context.CarritoItem.FindAsync(id);
+
             if (carritoItem != null)
             {
                 _context.CarritoItem.Remove(carritoItem);
@@ -168,7 +181,7 @@ namespace Carrito_D.Controllers
 
         private bool CarritoItemExists(int id)
         {
-          return _context.CarritoItem.Any(e => e.CarritoId == id);
+          return _context.CarritoItem.Any(c => c.CarritoId == id);
         }
     }
 }
