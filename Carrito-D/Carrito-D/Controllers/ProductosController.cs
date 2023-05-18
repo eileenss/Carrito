@@ -145,8 +145,9 @@ namespace Carrito_D.Controllers
             return View(producto);
         }
 
+        // Según funcionalidades del sistema, no se pueden eliminar productos
         // GET: Productos/Delete/5
-        public async Task<IActionResult> Delete(int? id)
+      /*  public async Task<IActionResult> Delete(int? id)
         {
             if (id == null || _context.Productos == null)
             {
@@ -164,7 +165,7 @@ namespace Carrito_D.Controllers
         }
 
         // POST: Productos/Delete/5
-        [HttpPost, ActionName("Delete")]
+       [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
@@ -180,7 +181,7 @@ namespace Carrito_D.Controllers
             
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
-        }
+        }*/
 
         private bool ProductoExists(int id)
         {
