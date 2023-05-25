@@ -34,6 +34,7 @@ namespace Carrito_D.Controllers
             }
 
             var persona = _context.Personas.FirstOrDefault(p => p.Id == id);
+
             if (persona == null)
             {
                 return NotFound();
@@ -113,7 +114,6 @@ namespace Carrito_D.Controllers
 
                         _context.Personas.Update(personaEnDB);
                         _context.SaveChanges();
-
                     }
                       
                 }

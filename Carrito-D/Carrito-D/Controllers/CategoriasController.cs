@@ -34,7 +34,7 @@ namespace Carrito_D.Controllers
             }
 
             var categoria = _context.Categorias.FirstOrDefault(c => c.Id == id);
-
+          
             if (categoria == null)
             {
                 return NotFound();
@@ -92,7 +92,6 @@ namespace Carrito_D.Controllers
             {
                 return NotFound();
             }
-
             
             if (ModelState.IsValid)
             {
@@ -126,6 +125,7 @@ namespace Carrito_D.Controllers
             return View(categoria);
         }
 
+        /* NO PUEDE ELIMINARSE
         // GET: Categorias/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
@@ -161,11 +161,11 @@ namespace Carrito_D.Controllers
             
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
-        }
+        }*/
 
         private bool CategoriaExists(int id)
         {
-          return _context.Categorias.Any(e => e.Id == id);
+          return _context.Categorias.Any(c => c.Id == id);
         }
     }
 }

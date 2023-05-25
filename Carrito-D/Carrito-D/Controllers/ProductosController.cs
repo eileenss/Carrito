@@ -95,14 +95,14 @@ namespace Carrito_D.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Nombre,Descripcion,PrecioVigente,Imagen,Activo")] Producto producto)
+        public IActionResult Edit(int id, [Bind("Id,Nombre,Descripcion,PrecioVigente,Imagen,Activo")] Producto producto)
         {
             if (id != producto.Id)
             {
                 return NotFound();
             }
 
-            ModelState.Remove("CategoriaId");
+            //ModelState.Remove("CategoriaId");
             
             if (ModelState.IsValid)
             {
@@ -117,9 +117,8 @@ namespace Carrito_D.Controllers
                         productoEnDb.Imagen = producto.Imagen;
                         productoEnDb.PrecioVigente = producto.PrecioVigente;
                         productoEnDb.Activo = producto.Activo;
-                        
-
-                        _context.Update(productoEnDb);
+                    
+                        _context.Productos.Update(productoEnDb);
                         _context.SaveChanges();
                     }
                     else 
@@ -145,6 +144,7 @@ namespace Carrito_D.Controllers
             return View(producto);
         }
 
+        /* NO PUEDE ELIMINARSE
         // GET: Productos/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
@@ -180,11 +180,11 @@ namespace Carrito_D.Controllers
             
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
-        }
+        }*/
 
         private bool ProductoExists(int id)
         {
-          return _context.Productos.Any(e => e.Id == id);
+          return _context.Productos.Any(p => p.Id == id);
         }
     }
 }

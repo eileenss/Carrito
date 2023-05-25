@@ -20,24 +20,28 @@ namespace Carrito_D.Controllers
         }
 
         // GET: StockItems
-        public async Task<IActionResult> Index()
+        public IActionResult Index()
         {
-            var carritoContext = _context.StockItem.Include(s => s.Producto).Include(s => s.Sucursal);
-            return View(await carritoContext.ToListAsync());
+            var carritoContext = _context.StockItems
+                .Include(s => s.Producto)
+                .Include(s => s.Sucursal);
+
+            return View(carritoContext.ToList());
         }
 
         // GET: StockItems/Details/5
-        public async Task<IActionResult> Details(int? id)
+        public IActionResult Details(int? idProd, int? idSuc)
         {
-            if (id == null || _context.StockItem == null)
+            if (idProd == null || idSuc == null)
             {
                 return NotFound();
             }
 
-            var stockItem = await _context.StockItem
+            var stockItem = _context.StockItems
                 .Include(s => s.Producto)
                 .Include(s => s.Sucursal)
-                .FirstOrDefaultAsync(m => m.SucursalId == id);
+                .FirstOrDefault(s => s.ProductoId == idProd && s.SucursalId == idSuc);
+
             if (stockItem == null)
             {
                 return NotFound();
@@ -59,12 +63,12 @@ namespace Carrito_D.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("ProductoId,SucursalId,Cantidad")] StockItem stockItem)
+        public IActionResult Create([Bind("ProductoId,SucursalId,Cantidad")] StockItem stockItem)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(stockItem);
-                await _context.SaveChangesAsync();
+                _context.StockItems.Add(stockItem);
+                _context.SaveChanges();
                 return RedirectToAction(nameof(Index));
             }
             ViewData["ProductoId"] = new SelectList(_context.Productos, "Id", "Nombre", stockItem.ProductoId);
@@ -73,14 +77,15 @@ namespace Carrito_D.Controllers
         }
 
         // GET: StockItems/Edit/5
-        public async Task<IActionResult> Edit(int? id)
+        public IActionResult Edit(int? idProd, int? idSuc)
         {
-            if (id == null || _context.StockItem == null)
+            if (idProd == null || idSuc == null)
             {
                 return NotFound();
             }
 
-            var stockItem = await _context.StockItem.FindAsync(id);
+            var stockItem = _context.StockItems.Find(idProd, idSuc);
+
             if (stockItem == null)
             {
                 return NotFound();
@@ -95,28 +100,31 @@ namespace Carrito_D.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("ProductoId,SucursalId,Cantidad")] StockItem stockItem)
+        public IActionResult Edit([Bind("ProductoId,SucursalId,Cantidad")] StockItem stockItem)
         {
-            if (id != stockItem.SucursalId)
-            {
-                return NotFound();
-            }
-
             if (ModelState.IsValid)
             {
                 try
                 {
-                    _context.Update(stockItem);
-                    await _context.SaveChangesAsync();
+                    var stockItemEnDB = _context.StockItems.Find(stockItem.ProductoId, stockItem.SucursalId);
+
+                    if (stockItemEnDB != null)
+                    {
+                        stockItemEnDB.Cantidad = stockItem.Cantidad;
+
+                        _context.StockItems.Update(stockItem);
+                         _context.SaveChanges();
+                    }
+                    
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!StockItemExists(stockItem.SucursalId))
+                    if (!StockItemExists(stockItem.ProductoId, stockItem.SucursalId))
                     {
                         return NotFound();
                     }
                     else
-                    {
+                    { 
                         throw;
                     }
                 }
@@ -127,18 +135,19 @@ namespace Carrito_D.Controllers
             return View(stockItem);
         }
 
+        /* NO PUEDE ELIMINARSE, SOLO SI SE ELIMINA LA SUCURSAL DE LA QUE DEPENDE
         // GET: StockItems/Delete/5
-        public async Task<IActionResult> Delete(int? id)
+        public async Task<IActionResult> Delete(int? idProd, int? idSuc)
         {
-            if (id == null || _context.StockItem == null)
+            if (idProd == null || idSuc == null)
             {
                 return NotFound();
             }
 
-            var stockItem = await _context.StockItem
+            var stockItem = await _context.StockItems
                 .Include(s => s.Producto)
                 .Include(s => s.Sucursal)
-                .FirstOrDefaultAsync(m => m.SucursalId == id);
+                .FirstOrDefaultAsync(s => s.ProductoId == idProd && s.SucursalId == idSuc);
             if (stockItem == null)
             {
                 return NotFound();
@@ -152,23 +161,23 @@ namespace Carrito_D.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            if (_context.StockItem == null)
+            if (_context.StockItems == null)
             {
-                return Problem("Entity set 'CarritoContext.StockItem'  is null.");
+                return Problem("Entity set 'CarritoContext.StockItems'  is null.");
             }
-            var stockItem = await _context.StockItem.FindAsync(id);
+            var stockItem = await _context.StockItems.FindAsync(id);
             if (stockItem != null)
             {
-                _context.StockItem.Remove(stockItem);
+                _context.StockItems.Remove(stockItem);
             }
             
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
-        }
+        }*/
 
-        private bool StockItemExists(int id)
+        private bool StockItemExists(int idProd, int idSuc)
         {
-          return _context.StockItem.Any(e => e.SucursalId == id);
+          return _context.StockItems.Any(s => s.ProductoId == idProd && s.SucursalId == idSuc);
         }
     }
 }
