@@ -6,11 +6,11 @@ namespace Carrito_D.Models
 {
     public class CarritoItem
     {
-        [ForeignKey("Producto")]
-        public int ProductoId { get; set; }
-
         [ForeignKey("Carrito")]
         public int CarritoId { get; set; }
+
+        [ForeignKey("Producto")]
+        public int ProductoId { get; set; }
 
         public Carrito Carrito { get; set; }
 

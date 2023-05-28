@@ -23,10 +23,10 @@ namespace Carrito_D.Controllers
         public IActionResult Index()
         {
             var carritoContext = _context.Carritos.Include(c => c.Cliente);
-            return View( carritoContext.ToList());
+            return View(carritoContext.ToList());
         }
 
-        // GET: Carritos/Details/5
+        /*// GET: Carritos/Details/5
         public IActionResult Details(int? id)
         {
             if (id == null || _context.Carritos == null)
@@ -36,14 +36,15 @@ namespace Carrito_D.Controllers
 
             var carrito =  _context.Carritos
                 .Include(c => c.Cliente)
-                .FirstOrDefault(m => m.Id == id);
+                .FirstOrDefault(c => c.Id == id);
+
             if (carrito == null)
             {
                 return NotFound();
             }
 
             return View(carrito);
-        }
+        }*/
 
         // GET: Carritos/Create
         public IActionResult Create()
@@ -61,7 +62,7 @@ namespace Carrito_D.Controllers
         {
             if (ModelState.IsValid)
             {
-                _context.Add(carrito);
+                _context.Carritos.Add(carrito);
                 _context.SaveChanges();
                 return RedirectToAction(nameof(Index));
             }
@@ -98,8 +99,6 @@ namespace Carrito_D.Controllers
                 return NotFound();
             }
 
-            ModelState.Remove("ClienteId");
-
             if (ModelState.IsValid)
             {
                 try
@@ -110,13 +109,9 @@ namespace Carrito_D.Controllers
                     {
                         carritoEnDB.Activo = carrito.Activo;
                         
-
-                        _context.Update(carritoEnDB);
+                        _context.Carritos.Update(carritoEnDB);
                         _context.SaveChanges();
                     }
-
-
-
                     
                 }
                 catch (DbUpdateConcurrencyException)
@@ -136,6 +131,7 @@ namespace Carrito_D.Controllers
             return View(carrito);
         }
 
+        /* NO PUEDE ELIMINARSE
         // GET: Carritos/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
@@ -146,7 +142,8 @@ namespace Carrito_D.Controllers
 
             var carrito = await _context.Carritos
                 .Include(c => c.Cliente)
-                .FirstOrDefaultAsync(m => m.Id == id);
+                .FirstOrDefaultAsync(c => c.Id == id);
+
             if (carrito == null)
             {
                 return NotFound();
@@ -165,6 +162,7 @@ namespace Carrito_D.Controllers
                 return Problem("Entity set 'CarritoContext.Carritos'  is null.");
             }
             var carrito = await _context.Carritos.FindAsync(id);
+
             if (carrito != null)
             {
                 _context.Carritos.Remove(carrito);
@@ -172,11 +170,11 @@ namespace Carrito_D.Controllers
             
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
-        }
+        }*/
 
         private bool CarritoExists(int id)
         {
-          return _context.Carritos.Any(e => e.Id == id);
+          return _context.Carritos.Any(c => c.Id == id);
         }
     }
 }

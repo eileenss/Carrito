@@ -56,9 +56,9 @@ namespace Carrito_D.Data
 
         public DbSet<Sucursal> Sucursales { get; set; }
 
-        public DbSet<Carrito_D.Models.CarritoItem> CarritoItem { get; set; }
+        public DbSet<CarritoItem> CarritoItems { get; set; }
 
-        public DbSet<Carrito_D.Models.StockItem> StockItem { get; set; }
+        public DbSet<StockItem> StockItems { get; set; }
 
     }
 }

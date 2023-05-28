@@ -22,7 +22,10 @@ namespace Carrito_D.Controllers
         // GET: Compras
         public IActionResult Index()
         {
-            var carritoContext = _context.Compras.Include(c => c.Carrito).Include(c => c.Cliente).Include(c => c.Sucursal);
+            var carritoContext = _context.Compras
+                .Include(c => c.Carrito)
+                .Include(c => c.Cliente)
+                .Include(c => c.Sucursal);
             return View( carritoContext.ToList());
         }
 
@@ -38,7 +41,8 @@ namespace Carrito_D.Controllers
                 .Include(c => c.Carrito)
                 .Include(c => c.Cliente)
                 .Include(c => c.Sucursal)
-                .FirstOrDefault(m => m.Id == id);
+                .FirstOrDefault(c => c.Id == id);
+
             if (compra == null)
             {
                 return NotFound();
@@ -65,7 +69,7 @@ namespace Carrito_D.Controllers
         {
             if (ModelState.IsValid)
             {
-                _context.Add(compra);
+                _context.Compras.Add(compra);
                 _context.SaveChanges();
                 return RedirectToAction(nameof(Index));
             }
@@ -75,8 +79,9 @@ namespace Carrito_D.Controllers
             return View(compra);
         }
 
+        //UNA COMPRA NO DEBERÍA EDITARSE UNA VEZ CREADA
         // GET: Compras/Edit/5
-        public IActionResult Edit(int? id)
+       /* public IActionResult Edit(int? id)
         {
             if (id == null || _context.Compras == null)
             {
@@ -84,6 +89,7 @@ namespace Carrito_D.Controllers
             }
 
             var compra = _context.Compras.Find(id);
+
             if (compra == null)
             {
                 return NotFound();
@@ -147,7 +153,7 @@ namespace Carrito_D.Controllers
             ViewData["ClienteId"] = new SelectList(_context.Clientes, "Id", "Apellido", compra.ClienteId);
             ViewData["SucursalId"] = new SelectList(_context.Sucursales, "Id", "Direccion", compra.SucursalId);
             return View(compra);
-        }
+        }*/
 
         // GET: Compras/Delete/5
         public async Task<IActionResult> Delete(int? id)
@@ -161,7 +167,8 @@ namespace Carrito_D.Controllers
                 .Include(c => c.Carrito)
                 .Include(c => c.Cliente)
                 .Include(c => c.Sucursal)
-                .FirstOrDefaultAsync(m => m.Id == id);
+                .FirstOrDefaultAsync(c => c.Id == id);
+
             if (compra == null)
             {
                 return NotFound();
@@ -191,7 +198,7 @@ namespace Carrito_D.Controllers
 
         private bool CompraExists(int id)
         {
-          return _context.Compras.Any(e => e.Id == id);
+          return _context.Compras.Any(c => c.Id == id);
         }
     }
 }

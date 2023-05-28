@@ -1,4 +1,4 @@
-﻿@model IEnumerable<Carrito_D.Models.CarritoItem>
+﻿@model IEnumerable<CarritoItem>
 
 @{
     ViewData["Title"] = "Index";
@@ -31,15 +31,15 @@
                 @Html.DisplayFor(modelItem => item.Carrito.Id)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Producto.Nombre)
+                @Html.DisplayFor(modelItem => item.Producto.Id)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Cantidad)
             </td>
             <td>
-                @Html.ActionLink("Edit", "Edit", new { /* id=item.PrimaryKey */ }) |
-                @Html.ActionLink("Details", "Details", new { /* id=item.PrimaryKey */ }) |
-                @Html.ActionLink("Delete", "Delete", new { /* id=item.PrimaryKey */ })
+                @Html.ActionLink("Edit", "Edit", new { idCar = item.CarritoId, idProd = item.ProductoId }) |
+                @Html.ActionLink("Details", "Details", new { idCar = item.CarritoId, idProd = item.ProductoId }) |
+                @Html.ActionLink("Delete", "Delete", new { idCar = item.CarritoId, idProd = item.ProductoId })
             </td>
         </tr>
 }

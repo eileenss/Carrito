@@ -95,8 +95,8 @@ namespace Carrito_D.Controllers
                 return NotFound();
             }
 
-            ModelState.Remove("Nombre");
-            ModelState.Remove("Email");
+           // ModelState.Remove("Nombre");
+           // ModelState.Remove("Email");
 
             if (ModelState.IsValid)
             {
@@ -109,8 +109,7 @@ namespace Carrito_D.Controllers
                         sucursalEnDb.Direccion = sucursal.Direccion;
                         sucursalEnDb.Telefono = sucursal.Telefono;
                         
-
-                        _context.Update(sucursalEnDb);
+                        _context.Sucursales.Update(sucursalEnDb);
                         _context.SaveChanges();
                     }
                     
@@ -170,7 +169,7 @@ namespace Carrito_D.Controllers
 
         private bool SucursalExists(int id)
         {
-          return _context.Sucursales.Any(e => e.Id == id);
+          return _context.Sucursales.Any(s => s.Id == id);
         }
     }
 }

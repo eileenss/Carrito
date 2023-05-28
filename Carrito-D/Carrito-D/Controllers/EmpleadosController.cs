@@ -73,6 +73,7 @@ namespace Carrito_D.Controllers
             }
 
             var empleado = await _context.Empleados.FindAsync(id);
+
             if (empleado == null)
             {
                 return NotFound();
