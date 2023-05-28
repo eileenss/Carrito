@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Carrito_D.Data;
 using Carrito_D.Models;
+using Carrito_D.ViewModels;
 
 namespace Carrito_D.Controllers
 {
@@ -87,22 +88,22 @@ namespace Carrito_D.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Edit(int id, [Bind("Id,Telefono,Direccion")] Cliente cliente)
+        public IActionResult Edit(int id, [Bind("Id,Telefono,Direccion")] EditPersona cliente) //EditPersona es un viewModel
         {
             if (id != cliente.Id)
             {
                 return NotFound();
             }
 
+            /* ya tenemos un viewmodel
             ModelState.Remove("Cuil");
             ModelState.Remove("DNI");
             ModelState.Remove("UserName");
             ModelState.Remove("Password");
             ModelState.Remove("Nombre");
             ModelState.Remove("Apellido");
-            ModelState.Remove("Email");
+            ModelState.Remove("Email");*/
               
-
             if (ModelState.IsValid)
             {
                 try
