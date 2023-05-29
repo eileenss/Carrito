@@ -12,7 +12,9 @@ namespace Carrito_D.Data
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            base.OnModelCreating(modelBuilder); 
+            base.OnModelCreating(modelBuilder);
+
+            modelBuilder.Entity<Producto>().Property(p => p.PrecioVigente).HasPrecision(38,18);
 
             modelBuilder.Entity<CarritoItem>().HasKey(ci => new { ci.CarritoId, ci.ProductoId });
 
