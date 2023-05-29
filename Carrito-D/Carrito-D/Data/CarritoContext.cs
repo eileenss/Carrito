@@ -1,9 +1,11 @@
 ﻿using Carrito_D.Models;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace Carrito_D.Data
 {
-    public class CarritoContext : DbContext
+    public class CarritoContext : IdentityDbContext<IdentityUser<int>,IdentityRole<int>,int>
     {
         public CarritoContext(DbContextOptions options) : base(options)
         {
@@ -40,6 +42,10 @@ namespace Carrito_D.Data
                 .WithMany(p => p.StockItems)
                 .HasForeignKey(sp => sp.ProductoId);
 
+            //Identity Stores para resolver la utilización de ASPNETUSERS en las tablas
+            modelBuilder.Entity<IdentityUser<int>>().ToTable("Personas");
+            modelBuilder.Entity<IdentityRole<int>>().ToTable("Roles");
+            modelBuilder.Entity<IdentityUserRole<int>>().ToTable("PersonasRoles");
         }
 
         public DbSet<Persona> Personas { get; set; }
@@ -61,6 +67,8 @@ namespace Carrito_D.Data
         public DbSet<CarritoItem> CarritoItems { get; set; }
 
         public DbSet<StockItem> StockItems { get; set; }
+
+        public DbSet<IdentityRole<int>> Roles { get; set; }
 
     }
 }

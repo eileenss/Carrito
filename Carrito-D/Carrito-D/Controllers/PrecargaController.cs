@@ -19,7 +19,7 @@ namespace Carrito_D.Controllers
                 Cuil = "20123456780",
                 DNI = "1234567",
                 UserName = "Cliente1",
-                Password = "12345678",
+                Password = "Password1!",
                 Nombre = "Cliente1",
                 Apellido = "Cliente1",
                 Email = "cliente1@ort.edu.ar"
@@ -48,7 +48,7 @@ namespace Carrito_D.Controllers
             {
                 DNI = "1234568",
                 UserName = "Empleado1",
-                Password = "12345678",
+                Password = "Password1!",
                 Nombre = "Empleado1",
                 Apellido = "Empleado1",
                 Email = "empleado1@ort.edu.ar"

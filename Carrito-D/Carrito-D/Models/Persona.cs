@@ -1,26 +1,27 @@
 ﻿using Carrito_D.Helpers;
+using Microsoft.AspNetCore.Identity;
 using System.ComponentModel.DataAnnotations;
 
 namespace Carrito_D.Models
 {
-    public class Persona
+    public class Persona : IdentityUser<int>
     {
-        public int Id { get; set; }
+        //public int Id { get; set; }
 
         [Required(ErrorMessage = ErrorMsg.Requerido)]
         [RegularExpression(@"^\d{1,2}\.?\d{3}\.?\d{3}$", ErrorMessage = ErrorMsg.Invalido)]
         public string DNI { get; set; }
 
-        [Required(ErrorMessage = ErrorMsg.Requerido)]
+        /*[Required(ErrorMessage = ErrorMsg.Requerido)]
         [StringLength(85, MinimumLength = 2, ErrorMessage = ErrorMsg.CantCaracteres)]
         [RegularExpression(@"[a-zA-Z áéíóú 0-9]*", ErrorMessage = ErrorMsg.Alfanumerico)]
         [Display(Name = "Usuario")]
-        public string UserName { get; set; }
+        public string UserName { get; set; }*/
 
         [Required(ErrorMessage = ErrorMsg.Requerido)]
         [StringLength(50, MinimumLength = 8, ErrorMessage = ErrorMsg.CantCaracteres)]
         [DataType(DataType.Password)]
-        [Display (Name = "Contraseña")]
+        [Display(Name = "Contraseña")]
         public string Password { get; set; }
 
         [Required(ErrorMessage = ErrorMsg.Requerido)]
@@ -46,7 +47,11 @@ namespace Carrito_D.Models
         [Required(ErrorMessage = ErrorMsg.Requerido)]
         [EmailAddress(ErrorMessage = ErrorMsg.Invalido)]
         [Display(Name = "Correo electrónico")]
-        public string Email { get; set; }
+        public override string Email
+        {
+            get { return base.Email; }
+            set { base.Email = value; }
+        }
 
         [Display (Name = "Fecha de registro")]
         [DataType(DataType.DateTime)]
