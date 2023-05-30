@@ -430,11 +430,6 @@ namespace Carrito_D.Data.Migrations
                         .HasMaxLength(85)
                         .HasColumnType("nvarchar(85)");
 
-                    b.Property<string>("Password")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
-
                     b.Property<int?>("Telefono")
                         .HasColumnType("int");
 

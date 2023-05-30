@@ -19,10 +19,13 @@ namespace Carrito_D.Models
         public string UserName { get; set; }*/
 
         [Required(ErrorMessage = ErrorMsg.Requerido)]
-        [StringLength(50, MinimumLength = 8, ErrorMessage = ErrorMsg.CantCaracteres)]
+       // [StringLength(50, MinimumLength = 8, ErrorMessage = ErrorMsg.CantCaracteres)]
         [DataType(DataType.Password)]
         [Display(Name = "Contraseña")]
-        public string Password { get; set; }
+        public override string PasswordHash {
+            get { return base.PasswordHash; }
+            set { base.PasswordHash = value; }
+        }
 
         [Required(ErrorMessage = ErrorMsg.Requerido)]
         [StringLength(85, MinimumLength = 1, ErrorMessage = ErrorMsg.CantCaracteres)]

@@ -5,10 +5,14 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Carrito_D.Data.Migrations
 {
-    public partial class AgregadoIdentity : Migration
+    public partial class Identity : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DropColumn(
+                name: "Password",
+                table: "Personas");
+
             migrationBuilder.AlterColumn<string>(
                 name: "UserName",
                 table: "Personas",
@@ -18,16 +22,6 @@ namespace Carrito_D.Data.Migrations
                 oldClrType: typeof(string),
                 oldType: "nvarchar(85)",
                 oldMaxLength: 85);
-
-            migrationBuilder.AlterColumn<string>(
-                name: "Password",
-                table: "Personas",
-                type: "nvarchar(50)",
-                maxLength: 50,
-                nullable: true,
-                oldClrType: typeof(string),
-                oldType: "nvarchar(50)",
-                oldMaxLength: 50);
 
             migrationBuilder.AlterColumn<string>(
                 name: "Nombre",
@@ -395,18 +389,6 @@ namespace Carrito_D.Data.Migrations
                 oldNullable: true);
 
             migrationBuilder.AlterColumn<string>(
-                name: "Password",
-                table: "Personas",
-                type: "nvarchar(50)",
-                maxLength: 50,
-                nullable: false,
-                defaultValue: "",
-                oldClrType: typeof(string),
-                oldType: "nvarchar(50)",
-                oldMaxLength: 50,
-                oldNullable: true);
-
-            migrationBuilder.AlterColumn<string>(
                 name: "Nombre",
                 table: "Personas",
                 type: "nvarchar(85)",
@@ -450,6 +432,14 @@ namespace Carrito_D.Data.Migrations
                 oldType: "nvarchar(85)",
                 oldMaxLength: 85,
                 oldNullable: true);
+
+            migrationBuilder.AddColumn<string>(
+                name: "Password",
+                table: "Personas",
+                type: "nvarchar(50)",
+                maxLength: 50,
+                nullable: false,
+                defaultValue: "");
         }
     }
 }

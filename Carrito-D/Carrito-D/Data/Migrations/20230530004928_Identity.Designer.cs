@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Carrito_D.Data.Migrations
 {
     [DbContext(typeof(CarritoContext))]
-    [Migration("20230529013853_AgregadoIdentity")]
-    partial class AgregadoIdentity
+    [Migration("20230530004928_Identity")]
+    partial class Identity
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -431,11 +431,6 @@ namespace Carrito_D.Data.Migrations
                         .IsRequired()
                         .HasMaxLength(85)
                         .HasColumnType("nvarchar(85)");
-
-                    b.Property<string>("Password")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
 
                     b.Property<int?>("Telefono")
                         .HasColumnType("int");

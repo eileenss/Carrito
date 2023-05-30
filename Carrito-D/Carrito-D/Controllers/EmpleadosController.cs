@@ -54,7 +54,7 @@ namespace Carrito_D.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Create([Bind("Legajo,Id,DNI,UserName,Password,Nombre,Apellido,Telefono,Direccion,Email")] Empleado empleado)
+        public IActionResult Create([Bind("Legajo,Id,DNI,UserName,PasswordHash,Nombre,Apellido,Telefono,Direccion,Email")] Empleado empleado)
         {
             if (ModelState.IsValid)
             {

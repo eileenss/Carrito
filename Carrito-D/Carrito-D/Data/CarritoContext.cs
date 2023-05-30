@@ -68,7 +68,7 @@ namespace Carrito_D.Data
 
         public DbSet<StockItem> StockItems { get; set; }
 
-        public DbSet<IdentityRole<int>> Roles { get; set; }
+        //public DbSet<IdentityRole<int>> Roles { get; set; }
 
     }
 }
