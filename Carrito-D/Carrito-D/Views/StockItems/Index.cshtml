@@ -1,4 +1,4 @@
-﻿@model IEnumerable<Carrito_D.Models.StockItem>
+﻿@model IEnumerable<StockItem>
 
 @{
     ViewData["Title"] = "Index";
@@ -37,9 +37,8 @@
                 @Html.DisplayFor(modelItem => item.Cantidad)
             </td>
             <td>
-                @Html.ActionLink("Edit", "Edit", new { /* id=item.PrimaryKey */ }) |
-                @Html.ActionLink("Details", "Details", new { /* id=item.PrimaryKey */ }) |
-                @Html.ActionLink("Delete", "Delete", new { /* id=item.PrimaryKey */ })
+                @Html.ActionLink("Edit", "Edit", new { idProd = item.ProductoId, idSuc = item.SucursalId }) |
+                @Html.ActionLink("Details", "Details", new { idProd = item.ProductoId, idSuc = item.SucursalId })
             </td>
         </tr>
 }

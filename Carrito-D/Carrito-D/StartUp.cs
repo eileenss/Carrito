@@ -1,4 +1,6 @@
 ﻿using Carrito_D.Data;
+using Carrito_D.Models;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
 namespace Carrito_D
@@ -20,8 +22,18 @@ namespace Carrito_D
         private static void ConfigureServices(WebApplicationBuilder builder)
         {
 
-            builder.Services.AddDbContext<CarritoContext>(options => options.UseInMemoryDatabase("CarritoDb"));
+            //builder.Services.AddDbContext<CarritoContext>(options => options.UseInMemoryDatabase("CarritoDb"));
+            builder.Services.AddDbContext<CarritoContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("CarritoDBCS")));
 
+            //Identity
+            builder.Services.AddIdentity<Persona, IdentityRole<int>>().AddEntityFrameworkStores<CarritoContext>();
+
+            builder.Services.Configure<IdentityOptions>(opciones =>
+            {
+                opciones.Password.RequiredLength = 8;
+            }
+            );
+            
             // Add services to the container.
             builder.Services.AddControllersWithViews();
         }
@@ -41,6 +53,7 @@ namespace Carrito_D
 
             app.UseRouting();
 
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.MapControllerRoute(
