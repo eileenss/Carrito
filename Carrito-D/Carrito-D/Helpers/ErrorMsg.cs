@@ -16,6 +16,8 @@
 
         public const string Invalido = "{0} inválido.";
 
+        public const string NoCoincide = "Las contraseñas no coinciden.";
+
         
 
     }
