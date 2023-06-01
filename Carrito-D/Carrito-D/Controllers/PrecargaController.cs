@@ -18,7 +18,6 @@ namespace Carrito_D.Controllers
             Cliente cliente = new Cliente() {
                 Cuil = "20123456780",
                 DNI = "1234567",
-                UserName = "Cliente1",
                 PasswordHash = "Password1!",
                 Nombre = "Cliente1",
                 Apellido = "Cliente1",

@@ -41,7 +41,7 @@ namespace Carrito_D.Controllers
                 if (resultadoCreate.Succeeded)
                 {
                     await _signinmanager.SignInAsync(cliente, isPersistent: false);
-                    return RedirectToAction("Index", "Home");
+                    return RedirectToAction("Edit","Clientes",new { id = cliente.Id });
                 }
 
                 foreach(var error in resultadoCreate.Errors)
@@ -51,6 +51,35 @@ namespace Carrito_D.Controllers
                 }
             }
             return View(viewmodel);
+        }
+
+        public IActionResult IniciarSesion()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> IniciarSesion(Login viewmodel)
+        {
+            if (ModelState.IsValid)
+            {
+               var resultado = await _signinmanager.PasswordSignInAsync(viewmodel.Email, viewmodel.Password, viewmodel.Recordarme, false);
+
+                if (resultado.Succeeded)
+                {
+                    return RedirectToAction("Index", "Home");
+                }
+
+                ModelState.AddModelError(String.Empty, "Inicio de sesión inválido.");
+            }
+
+            return View(viewmodel);
+        }
+
+        public async Task<IActionResult> CerrarSesion()
+        {
+            await _signinmanager.SignOutAsync();
+            return RedirectToAction("Index", "Homre");
         }
     }
 }
