@@ -7,9 +7,12 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Carrito_D.Data;
 using Carrito_D.Models;
+using Microsoft.AspNetCore.Authorization;
+using System.Data;
 
 namespace Carrito_D.Controllers
 {
+    [Authorize(Roles = "Empleado")]
     public class StockItemsController : Controller
     {
         private readonly CarritoContext _context;
@@ -77,6 +80,7 @@ namespace Carrito_D.Controllers
         }
 
         // GET: StockItems/Edit/5
+        
         public IActionResult Edit(int? idProd, int? idSuc)
         {
             if (idProd == null || idSuc == null)
@@ -100,6 +104,7 @@ namespace Carrito_D.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        
         public IActionResult Edit([Bind("ProductoId,SucursalId,Cantidad")] StockItem stockItem)
         {
             if (ModelState.IsValid)

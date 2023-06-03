@@ -8,9 +8,11 @@ using Microsoft.EntityFrameworkCore;
 using Carrito_D.Data;
 using Carrito_D.Models;
 using Carrito_D.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Carrito_D.Controllers
 {
+    
     public class ClientesController : Controller
     {
         private readonly CarritoContext _context;
@@ -88,7 +90,7 @@ namespace Carrito_D.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Edit(int id, [Bind("Id,Telefono,Direccion")] EditPersona cliente) //EditPersona es un viewModel
+        public IActionResult Edit(int id, [Bind("Id,Cuil,Telefono,Direccion")] EditCliente cliente) //EditCliente es un viewModel
         {
             if (id != cliente.Id)
             {
@@ -112,6 +114,7 @@ namespace Carrito_D.Controllers
 
                     if (clienteEnDB != null)
                     {
+                        clienteEnDB.Cuil = cliente.Cuil;
                         clienteEnDB.Telefono = cliente.Telefono;
                         clienteEnDB.Direccion = cliente.Direccion;
 

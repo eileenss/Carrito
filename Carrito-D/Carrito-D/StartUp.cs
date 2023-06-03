@@ -1,5 +1,6 @@
 ﻿using Carrito_D.Data;
 using Carrito_D.Models;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
@@ -25,6 +26,17 @@ namespace Carrito_D
             //builder.Services.AddDbContext<CarritoContext>(options => options.UseInMemoryDatabase("CarritoDb"));
             builder.Services.AddDbContext<CarritoContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("CarritoDBCS")));
 
+            builder.Services.PostConfigure<CookieAuthenticationOptions>(IdentityConstants.ApplicationScheme, opciones =>
+
+            {
+                opciones.LoginPath = "/Account/IniciarSesion";
+                opciones.AccessDeniedPath = "/Account/AccesoDenegado";
+                opciones.Cookie.Name = "IdentidadCarritoApp";
+            });
+
+
+
+
             //Identity
             builder.Services.AddIdentity<Persona, IdentityRole<int>>().AddEntityFrameworkStores<CarritoContext>();
 
@@ -46,6 +58,13 @@ namespace Carrito_D
                 app.UseExceptionHandler("/Home/Error");
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
+            }
+
+            using (var serviceScope = app.Services.GetService<IServiceScopeFactory>().CreateScope())
+            {
+                var contexto = serviceScope.ServiceProvider.GetRequiredService<CarritoContext>();
+
+                contexto.Database.Migrate();
             }
 
             app.UseHttpsRedirection();

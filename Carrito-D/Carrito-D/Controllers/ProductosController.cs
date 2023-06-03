@@ -7,6 +7,8 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Carrito_D.Data;
 using Carrito_D.Models;
+using Microsoft.AspNetCore.Authorization;
+using System.Data;
 
 namespace Carrito_D.Controllers
 {
@@ -45,6 +47,7 @@ namespace Carrito_D.Controllers
         }
 
         // GET: Productos/Create
+        [Authorize(Roles = "Empleado")]
         public IActionResult Create()
         {
             ViewData["CategoriaId"] = new SelectList(_context.Categorias, "Id", "Nombre");
@@ -56,6 +59,7 @@ namespace Carrito_D.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Empleado")]
         public IActionResult Create([Bind("Id,Nombre,Descripcion,Imagen,PrecioVigente,Activo,CategoriaId")] Producto producto)
         {
             if (ModelState.IsValid)
@@ -71,6 +75,7 @@ namespace Carrito_D.Controllers
         }
 
         // GET: Productos/Edit/5
+        [Authorize(Roles = "Empleado")]
         public IActionResult Edit(int? id)
         {
             if (id == null || _context.Productos == null)
@@ -95,6 +100,7 @@ namespace Carrito_D.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Empleado")]
         public IActionResult Edit(int id, [Bind("Id,Nombre,Descripcion,PrecioVigente,Imagen,Activo")] Producto producto)
         {
             if (id != producto.Id)
