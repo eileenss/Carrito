@@ -8,17 +8,21 @@ using Microsoft.EntityFrameworkCore;
 using Carrito_D.Data;
 using Carrito_D.Models;
 using Carrito_D.ViewModels;
-
+using Microsoft.AspNetCore.Identity;
+using Carrito_D.Helpers;
 
 namespace Carrito_D.Controllers
 {
     public class PersonasController : Controller
     {
         private readonly CarritoContext _context;
+        private readonly UserManager<Persona> _userManager;
+        private object _usermanager;
 
-        public PersonasController(CarritoContext context)
+        public PersonasController(CarritoContext context, UserManager<Persona> userManager)
         {
             _context = context;
+            this._userManager = userManager;
         }
 
         // GET: Personas
@@ -56,15 +60,59 @@ namespace Carrito_D.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Create([Bind("Id,DNI,UserName,PasswordHash,Nombre,Apellido,Telefono,Direccion,Email,FechaAlta")] Persona persona)
+        public async Task<IActionResult> Create(bool EsAdmin,[Bind("Id,DNI,Nombre,Apellido,Telefono,Direccion,Email,FechaAlta")] CrearPersona viewmodel)
         {
             if (ModelState.IsValid)
             {
-                _context.Personas.Add(persona);
-                _context.SaveChanges();
-                return RedirectToAction(nameof(Index));
+                Persona persona = new Persona()
+                {
+                    Email = viewmodel.Email,
+                    UserName = viewmodel.Email,
+                    Nombre = viewmodel.Nombre,
+                    Apellido = viewmodel.Apellido,
+                    DNI = viewmodel.DNI
+                };
+
+                var resultadoNewPersona = await _userManager.CreateAsync(persona, Configs.Password);
+
+
+                if (resultadoNewPersona.Succeeded)
+                {
+                    IdentityResult resultadoAddRole;
+                    string rolDefinido;
+                    if (EsAdmin)
+                    {
+                     rolDefinido = Configs.AdminRolNombre;
+                     
+                        
+                       
+                    }
+                    else
+                    {
+                     rolDefinido = Configs.AdminRolNombre;
+                     
+
+                    }
+                    resultadoAddRole = await _userManager.AddToRoleAsync(persona, rolDefinido);
+
+                    if (resultadoAddRole.Succeeded)
+                    {
+                        return RedirectToAction("Index", "Personas");
+                    }
+                    else
+                    {
+                        return Content($"No se ha podido agregar el rol {rolDefinido}");
+                        //_userManager.DeleteAsync(Persona);
+                    }
+                }
+
+                foreach (var error in resultadoNewPersona.Errors)
+                {
+                    ModelState.AddModelError(String.Empty, error.Description);
+                }
+            
             }
-            return View(persona);
+            return View(viewmodel);
         }
 
         // GET: Personas/Edit/5

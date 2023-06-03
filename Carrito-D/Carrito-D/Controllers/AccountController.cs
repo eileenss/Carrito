@@ -1,4 +1,5 @@
-﻿using Carrito_D.Models;
+﻿using Carrito_D.Helpers;
+using Carrito_D.Models;
 using Carrito_D.ViewModels;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -40,8 +41,19 @@ namespace Carrito_D.Controllers
 
                 if (resultadoCreate.Succeeded)
                 {
-                    await _signinmanager.SignInAsync(cliente, isPersistent: false);
-                    return RedirectToAction("Edit","Clientes",new { id = cliente.Id });
+                    var resultadoAddRole = await _usermanager.AddToRoleAsync(cliente, Configs.ClienteRolNombre);
+                    if (resultadoAddRole.Succeeded)
+                    {
+                        await _signinmanager.SignInAsync(cliente, isPersistent: false);
+                        return RedirectToAction("Edit", "Clientes", new { id = cliente.Id });
+                    }
+                    else
+                    {
+                        ModelState.AddModelError(String.Empty,$"No se puede agregar el rol de {Configs.ClienteRolNombre}");
+                    }
+
+
+                   
                 }
 
                 foreach(var error in resultadoCreate.Errors)
@@ -79,7 +91,7 @@ namespace Carrito_D.Controllers
         public async Task<IActionResult> CerrarSesion()
         {
             await _signinmanager.SignOutAsync();
-            return RedirectToAction("Index", "Homre");
+            return RedirectToAction("Index", "Home");
         }
     }
 }

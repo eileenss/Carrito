@@ -1,47 +1,75 @@
 ﻿using Carrito_D.Data;
+using Carrito_D.Helpers;
 using Carrito_D.Models;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Carrito_D.Controllers
 {
     public class PrecargaController : Controller
     {
-        private readonly CarritoContext _carritoContext;
-
-        public PrecargaController(CarritoContext context)
+        private readonly UserManager<Persona> _userManager;
+        private readonly RoleManager<IdentityRole<int>> _roleManager;
+        private readonly CarritoContext _context;
+        public PrecargaController(UserManager<Persona> userManager,RoleManager<IdentityRole<int>> roleManager, CarritoContext context)
         {
-            this._carritoContext = context;
+            this._userManager = userManager;
+            this._roleManager = roleManager; 
+            this._context = context; 
         }
+        private List<string> roles = new List<string>() { Configs.AdminRolNombre, Configs.ClienteRolNombre, Configs.EmpleadoRolNombre, Configs.UsuarioRolNombre };
+
+
+
+        //public PrecargaController(CarritoContext context)
+        //{
+        //    this._carritoContext = context;
+        //}
 
         public IActionResult Seed() //precarga de datos
         {
-            Cliente cliente = new Cliente() {
+            CrearRoles().Wait();
+            //CrearAdmin().Wait();
+            //CrearEmpleados().Wait();
+            //CrearClientes().Wait();
+
+
+
+
+
+
+
+
+            Cliente cliente = new Cliente()
+            {
                 Cuil = "20123456780",
                 DNI = "1234567",
                 PasswordHash = "Password1!",
                 Nombre = "Cliente1",
                 Apellido = "Cliente1",
-                Email = "cliente1@ort.edu.ar"
+                Email = "cliente1@ort.edu.ar",
+                UserName = "cliente1@ort.edu.ar"
+
             };
 
-            _carritoContext.Clientes.Add(cliente);
-            _carritoContext.SaveChanges();
+            _context.Clientes.Add(cliente);
+            _context.SaveChanges();
 
             Carrito carrito = new Carrito()
             {
                 ClienteId = cliente.Id
             };
 
-            _carritoContext.Carritos.Add(carrito);
-            _carritoContext.SaveChanges();
+            _context.Carritos.Add(carrito);
+            _context.SaveChanges();
 
             Categoria categoria = new Categoria()
             {
                 Nombre = "Categoria1"
             };
 
-            _carritoContext.Categorias.Add(categoria);
-            _carritoContext.SaveChanges();
+            _context.Categorias.Add(categoria);
+            _context.SaveChanges();
 
             Empleado empleado = new Empleado()
             {
@@ -53,8 +81,8 @@ namespace Carrito_D.Controllers
                 Email = "empleado1@ort.edu.ar"
             };
 
-            _carritoContext.Empleados.Add(empleado);
-            _carritoContext.SaveChanges();
+            _context.Empleados.Add(empleado);
+            _context.SaveChanges();
 
             Producto producto = new Producto()
             {
@@ -63,8 +91,8 @@ namespace Carrito_D.Controllers
                 CategoriaId = categoria.Id
             };
 
-            _carritoContext.Productos.Add(producto);
-            _carritoContext.SaveChanges();
+            _context.Productos.Add(producto);
+            _context.SaveChanges();
 
             CarritoItem carritoItem = new CarritoItem()
             {
@@ -73,16 +101,16 @@ namespace Carrito_D.Controllers
                 Cantidad = 1
             };
 
-            _carritoContext.CarritoItems.Add(carritoItem);
-            _carritoContext.SaveChanges();
+            _context.CarritoItems.Add(carritoItem);
+            _context.SaveChanges();
 
             Sucursal sucursal = new Sucursal()
             {
                 Direccion = "Calle 1",
             };
 
-            _carritoContext.Sucursales.Add(sucursal);
-            _carritoContext.SaveChanges();
+            _context.Sucursales.Add(sucursal);
+            _context.SaveChanges();
 
             StockItem stockItem = new StockItem()
             {
@@ -91,8 +119,8 @@ namespace Carrito_D.Controllers
                 Cantidad = 1
             };
 
-            _carritoContext.StockItems.Add(stockItem);
-            _carritoContext.SaveChanges();
+            _context.StockItems.Add(stockItem);
+            _context.SaveChanges();
 
             Compra compra = new Compra()
             {
@@ -101,10 +129,41 @@ namespace Carrito_D.Controllers
                 SucursalId = sucursal.Id
             };
 
-            _carritoContext.Compras.Add(compra);
-            _carritoContext.SaveChanges();
+            _context.Compras.Add(compra);
+            _context.SaveChanges();
 
-            return RedirectToAction("Index","Home");
+            return RedirectToAction("Index","Home", new {mensaje = "Pre-carga Realizada"});
+        }
+
+        //private async Task CrearAdmin()
+        //{
+        //    throw new NotImplementedException();
+        //}
+
+        //private async Task CrearEmpleados()
+        //{
+        //    throw new NotImplementedException();
+        //}
+        //private async Task CrearClientes()
+        //{
+        //    throw new NotImplementedException();
+        //}
+
+
+
+
+        private async Task CrearRoles()
+        {
+            foreach(var roleName in roles) { 
+            if(!await _roleManager.RoleExistsAsync(roleName)) {
+                    await _roleManager.CreateAsync(new IdentityRole<int>(roleName));
+                
+                
+                
+                }
+            
+            }
+
         }
     }
 }
