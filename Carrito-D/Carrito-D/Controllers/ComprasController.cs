@@ -7,9 +7,11 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Carrito_D.Data;
 using Carrito_D.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Carrito_D.Controllers
 {
+    [Authorize]
     public class ComprasController : Controller
     {
         private readonly CarritoContext _context;
@@ -156,45 +158,45 @@ namespace Carrito_D.Controllers
         }*/
 
         // GET: Compras/Delete/5
-        public async Task<IActionResult> Delete(int? id)
-        {
-            if (id == null || _context.Compras == null)
-            {
-                return NotFound();
-            }
+    //    public async Task<IActionResult> Delete(int? id)
+    //    {
+    //        if (id == null || _context.Compras == null)
+    //        {
+    //            return NotFound();
+    //        }
 
-            var compra = await _context.Compras
-                .Include(c => c.Carrito)
-                .Include(c => c.Cliente)
-                .Include(c => c.Sucursal)
-                .FirstOrDefaultAsync(c => c.Id == id);
+    //        var compra = await _context.Compras
+    //            .Include(c => c.Carrito)
+    //            .Include(c => c.Cliente)
+    //            .Include(c => c.Sucursal)
+    //            .FirstOrDefaultAsync(c => c.Id == id);
 
-            if (compra == null)
-            {
-                return NotFound();
-            }
+    //        if (compra == null)
+    //        {
+    //            return NotFound();
+    //        }
 
-            return View(compra);
-        }
+    //        return View(compra);
+    //    }
 
-        // POST: Compras/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
-        {
-            if (_context.Compras == null)
-            {
-                return Problem("Entity set 'CarritoContext.Compras'  is null.");
-            }
-            var compra = await _context.Compras.FindAsync(id);
-            if (compra != null)
-            {
-                _context.Compras.Remove(compra);
-            }
+    //    // POST: Compras/Delete/5
+    //    [HttpPost, ActionName("Delete")]
+    //    [ValidateAntiForgeryToken]
+    //    public async Task<IActionResult> DeleteConfirmed(int id)
+    //    {
+    //        if (_context.Compras == null)
+    //        {
+    //            return Problem("Entity set 'CarritoContext.Compras'  is null.");
+    //        }
+    //        var compra = await _context.Compras.FindAsync(id);
+    //        if (compra != null)
+    //        {
+    //            _context.Compras.Remove(compra);
+    //        }
             
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
-        }
+    //        await _context.SaveChangesAsync();
+    //        return RedirectToAction(nameof(Index));
+    //    }
 
         private bool CompraExists(int id)
         {

@@ -8,9 +8,11 @@ using Microsoft.EntityFrameworkCore;
 using Carrito_D.Data;
 using Carrito_D.Models;
 using Carrito_D.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Carrito_D.Controllers
 {
+    
     public class ClientesController : Controller
     {
         private readonly CarritoContext _context;

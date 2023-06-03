@@ -7,9 +7,12 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Carrito_D.Data;
 using Carrito_D.Models;
+using Microsoft.AspNetCore.Authorization;
+using System.Data;
 
 namespace Carrito_D.Controllers
 {
+    [Authorize(Roles = "Empleado")]
     public class SucursalesController : Controller
     {
         private readonly CarritoContext _context;
@@ -20,12 +23,14 @@ namespace Carrito_D.Controllers
         }
 
         // GET: Sucursales
+        [AllowAnonymous]
         public IActionResult Index()
         {
               return View(_context.Sucursales.ToList());
         }
 
         // GET: Sucursales/Details/5
+        [AllowAnonymous]
         public IActionResult Details(int? id)
         {
             if (id == null || _context.Sucursales == null)

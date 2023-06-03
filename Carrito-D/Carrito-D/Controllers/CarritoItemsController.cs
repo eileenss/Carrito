@@ -7,6 +7,8 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Carrito_D.Data;
 using Carrito_D.Models;
+using Microsoft.AspNetCore.Authorization;
+using System.Data;
 
 namespace Carrito_D.Controllers
 {
@@ -79,6 +81,7 @@ namespace Carrito_D.Controllers
         }
 
         // GET: CarritoItems/Edit/5
+        [Authorize(Roles = "Cliente")]
         public IActionResult Edit(int? idCar, int? idProd)
         {
             //if (id == null || _context.CarritoItems == null) creado por scaff
@@ -105,6 +108,7 @@ namespace Carrito_D.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Cliente")]
         public IActionResult Edit([Bind("CarritoId,ProductoId,Cantidad")] CarritoItem carritoItem)
         {
             if (ModelState.IsValid)

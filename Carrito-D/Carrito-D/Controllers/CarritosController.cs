@@ -7,9 +7,11 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Carrito_D.Data;
 using Carrito_D.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Carrito_D.Controllers
 {
+    [Authorize]
     public class CarritosController : Controller
     {
         private readonly CarritoContext _context;

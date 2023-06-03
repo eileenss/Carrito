@@ -10,15 +10,17 @@ using Carrito_D.Models;
 using Carrito_D.ViewModels;
 using Microsoft.AspNetCore.Identity;
 using Carrito_D.Helpers;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Carrito_D.Controllers
 {
+    [Authorize(Roles = "Admin")]
     public class PersonasController : Controller
     {
         private readonly CarritoContext _context;
         private readonly UserManager<Persona> _userManager;
         private object _usermanager;
-
+        
         public PersonasController(CarritoContext context, UserManager<Persona> userManager)
         {
             _context = context;
@@ -26,6 +28,7 @@ namespace Carrito_D.Controllers
         }
 
         // GET: Personas
+        
         public IActionResult Index()
         {
               return View(_context.Personas.ToList());
