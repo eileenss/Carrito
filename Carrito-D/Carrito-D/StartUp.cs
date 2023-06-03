@@ -60,6 +60,13 @@ namespace Carrito_D
                 app.UseHsts();
             }
 
+            using (var serviceScope = app.Services.GetService<IServiceScopeFactory>().CreateScope())
+            {
+                var contexto = serviceScope.ServiceProvider.GetRequiredService<CarritoContext>();
+
+                contexto.Database.Migrate();
+            }
+
             app.UseHttpsRedirection();
             app.UseStaticFiles();
 

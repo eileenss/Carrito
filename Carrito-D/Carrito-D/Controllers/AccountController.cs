@@ -65,20 +65,33 @@ namespace Carrito_D.Controllers
             return View(viewmodel);
         }
 
-        public IActionResult IniciarSesion()
+        public IActionResult IniciarSesion(string returnUrl)
         {
+            //ViewBag.Url1 = returnUrl;
+            //ViewData["Url2"] = returnUrl;
+            TempData["ReturnUrl"] = returnUrl;
+
             return View();
         }
 
         [HttpPost]
         public async Task<IActionResult> IniciarSesion(Login viewmodel)
         {
+            //var url1 = ViewBag.Url1;
+            //var url2 = ViewData["Url2"];
+            string returnUrl = TempData["ReturnUrl"] as string;
+
             if (ModelState.IsValid)
             {
                var resultado = await _signinmanager.PasswordSignInAsync(viewmodel.Email, viewmodel.Password, viewmodel.Recordarme, false);
 
                 if (resultado.Succeeded)
                 {
+                    if (!string.IsNullOrEmpty(returnUrl))
+                    {
+                        return Redirect(returnUrl);
+                    }
+
                     return RedirectToAction("Index", "Home");
                 }
 
@@ -92,6 +105,12 @@ namespace Carrito_D.Controllers
         {
             await _signinmanager.SignOutAsync();
             return RedirectToAction("Index", "Home");
+        }
+
+        public IActionResult AccesoDenegado(string returnUrl)
+        {
+            ViewBag.ReturnUrl = returnUrl;
+            return View();
         }
     }
 }

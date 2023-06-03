@@ -19,11 +19,10 @@ namespace Carrito_D.Controllers
     {
         private readonly CarritoContext _context;
         private readonly UserManager<Persona> _userManager;
-        private object _usermanager;
         
         public PersonasController(CarritoContext context, UserManager<Persona> userManager)
         {
-            _context = context;
+            this._context = context;
             this._userManager = userManager;
         }
 
