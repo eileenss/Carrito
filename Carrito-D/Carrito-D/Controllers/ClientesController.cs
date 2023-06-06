@@ -12,7 +12,7 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace Carrito_D.Controllers
 {
-    
+    [Authorize(Roles = "Admin,Empleado")]
     public class ClientesController : Controller
     {
         private readonly CarritoContext _context;
