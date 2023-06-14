@@ -9,13 +9,17 @@ using Carrito_D.Data;
 using Carrito_D.Models;
 using Carrito_D.ViewModels;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
+using System.Security.Claims;
+using Microsoft.AspNetCore.Mvc.Razor.Compilation;
 
 namespace Carrito_D.Controllers
 {
-    [Authorize(Roles = "Admin,Empleado")]
+   
     public class ClientesController : Controller
     {
         private readonly CarritoContext _context;
+
 
         public ClientesController(CarritoContext context)
         {
@@ -23,9 +27,10 @@ namespace Carrito_D.Controllers
         }
 
         // GET: Clientes
+        [Authorize(Roles = "Admin,Empleado")]
         public IActionResult Index()
         {
-              return View(_context.Clientes.ToList());
+            return View(_context.Clientes.ToList());
         }
 
         // GET: Clientes/Details/5
@@ -43,30 +48,40 @@ namespace Carrito_D.Controllers
                 return NotFound();
             }
 
+            int clienteId = Int32.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
+
+            if (User.IsInRole("Cliente") && clienteId != id)
+            {
+                return RedirectToAction("AccesoDenegado", "Account");
+            }
+
             return View(cliente);
         }
 
+        //EL CLIENTE SE AUTOREGISTRA
         // GET: Clientes/Create
-        public IActionResult Create()
-        {
-            return View();
-        }
+        //[Authorize("Admin")]
+        //public IActionResult Create()
+        //{
+        //    return View();
+        //}
 
         // POST: Clientes/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public IActionResult Create([Bind("Cuil,Id,DNI,UserName,PasswordHash,Nombre,Apellido,Telefono,Direccion,Email")] Cliente cliente)
-        {
-            if (ModelState.IsValid)
-            {
-                _context.Clientes.Add(cliente);
-                _context.SaveChanges();
-                return RedirectToAction(nameof(Index));
-            }
-            return View(cliente);
-        }
+        //[HttpPost]
+        //[ValidateAntiForgeryToken]
+        //[Authorize("Admin")]
+        //public IActionResult Create([Bind("Cuil,Id,DNI,UserName,PasswordHash,Nombre,Apellido,Telefono,Direccion,Email")] Cliente cliente)
+        //{
+        //    if (ModelState.IsValid)
+        //    {
+        //        _context.Clientes.Add(cliente);
+        //        _context.SaveChanges();
+        //        return RedirectToAction(nameof(Index));
+        //    }
+        //    return View(cliente);
+        //}
 
         // GET: Clientes/Edit/5
         public IActionResult Edit(int? id)
@@ -76,12 +91,20 @@ namespace Carrito_D.Controllers
                 return NotFound();
             }
 
-            var cliente =  _context.Clientes.Find(id);
+            var cliente = _context.Clientes.Find(id);
 
             if (cliente == null)
             {
                 return NotFound();
             }
+
+            int clienteId = Int32.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
+
+            if (User.IsInRole("Cliente") && clienteId != id)
+            {
+                return RedirectToAction("AccesoDenegado", "Account");
+            }
+
             return View(cliente);
         }
 
@@ -90,6 +113,7 @@ namespace Carrito_D.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize("Cliente")]
         public IActionResult Edit(int id, [Bind("Id,Cuil,Telefono,Direccion")] EditCliente cliente) //EditCliente es un viewModel
         {
             if (id != cliente.Id)
@@ -105,7 +129,7 @@ namespace Carrito_D.Controllers
             ModelState.Remove("Nombre");
             ModelState.Remove("Apellido");
             ModelState.Remove("Email");*/
-              
+
             if (ModelState.IsValid)
             {
                 try
@@ -139,45 +163,46 @@ namespace Carrito_D.Controllers
             return View(cliente);
         }
 
+        //NO QUEREMOS ELIMINAR CLIENTES
         // GET: Clientes/Delete/5
-        public async Task<IActionResult> Delete(int? id)
-        {
-            if (id == null || _context.Clientes == null)
-            {
-                return NotFound();
-            }
+        //public async Task<IActionResult> Delete(int? id)
+        //{
+        //    if (id == null || _context.Clientes == null)
+        //    {
+        //        return NotFound();
+        //    }
 
-            var cliente = await _context.Clientes.FirstOrDefaultAsync(c => c.Id == id);
-            if (cliente == null)
-            {
-                return NotFound();
-            }
+        //    var cliente = await _context.Clientes.FirstOrDefaultAsync(c => c.Id == id);
+        //    if (cliente == null)
+        //    {
+        //        return NotFound();
+        //    }
 
-            return View(cliente);
-        }
+        //    return View(cliente);
+        //}
 
-        // POST: Clientes/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
-        {
-            if (_context.Clientes == null)
-            {
-                return Problem("Entity set 'CarritoContext.Clientes'  is null.");
-            }
-            var cliente = await _context.Clientes.FindAsync(id);
-            if (cliente != null)
-            {
-                _context.Clientes.Remove(cliente);
-            }
-            
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
-        }
+        //// POST: Clientes/Delete/5
+        //[HttpPost, ActionName("Delete")]
+        //[ValidateAntiForgeryToken]
+        //public async Task<IActionResult> DeleteConfirmed(int id)
+        //{
+        //    if (_context.Clientes == null)
+        //    {
+        //        return Problem("Entity set 'CarritoContext.Clientes'  is null.");
+        //    }
+        //    var cliente = await _context.Clientes.FindAsync(id);
+        //    if (cliente != null)
+        //    {
+        //        _context.Clientes.Remove(cliente);
+        //    }
+
+        //    await _context.SaveChangesAsync();
+        //    return RedirectToAction(nameof(Index));
+        //}
 
         private bool ClienteExists(int id)
         {
-          return _context.Clientes.Any(c => c.Id == id);
+            return _context.Clientes.Any(c => c.Id == id);
         }
     }
 }

@@ -50,10 +50,7 @@ namespace Carrito_D.Controllers
                     else
                     {
                         ModelState.AddModelError(String.Empty,$"No se puede agregar el rol de {Configs.ClienteRolNombre}");
-                    }
-
-
-                   
+                    }                   
                 }
 
                 foreach(var error in resultadoCreate.Errors)

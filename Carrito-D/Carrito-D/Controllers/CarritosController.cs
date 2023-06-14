@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using Carrito_D.Data;
 using Carrito_D.Models;
 using Microsoft.AspNetCore.Authorization;
+using System.Security.Claims;
 
 namespace Carrito_D.Controllers
 {
@@ -24,8 +25,18 @@ namespace Carrito_D.Controllers
         // GET: Carritos
         public IActionResult Index()
         {
-            var carritoContext = _context.Carritos.Include(c => c.Cliente);
-            return View(carritoContext.ToList());
+            int clienteId = Int32.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
+
+            if (!User.IsInRole("Cliente"))
+            {
+                return RedirectToAction("AccesoDenegado", "Account");
+            }
+
+            //var carritoContext = _context.Carritos.Include(c => c.Cliente);
+            var carrito = _context.Carritos.Where(c => c.ClienteId == clienteId && c.Activo == true);
+            
+
+            return View(carrito);
         }
 
         /*// GET: Carritos/Details/5

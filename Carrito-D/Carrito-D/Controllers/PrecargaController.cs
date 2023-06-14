@@ -186,7 +186,7 @@ namespace Carrito_D.Controllers
                 _context.Categorias.Add(whiskies);
                 await _context.SaveChangesAsync();
 
-                vinosTintos.Productos = new List<Producto>()
+                whiskies.Productos = new List<Producto>()
                 {
                    await CrearProducto(whiskies.Id,"Whisky Chivas Regal 12 años","Whisky Chivas Regal 12 años 1Lt",17000),
                    await CrearProducto(whiskies.Id,"Whisky Johnnie Walker Black","Whisky Johnnie Walker Black 1Lt",18000),

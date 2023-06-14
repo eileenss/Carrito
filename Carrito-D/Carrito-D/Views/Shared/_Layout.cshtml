@@ -42,10 +42,7 @@
                             <li class="nav-item">
                                 <a class="nav-link text-dark" asp-area="" asp-controller="Account" asp-action="CerrarSesion">Cerrar sesion</a>
                             </li>
-                            @*<li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="CarritoItems" asp-action="Index">CarritoItems</a>
-                            </li>*@
-                            @if (User.IsInRole("Admin, Empleado"))
+                            @if (User.IsInRole("Admin") || User.IsInRole("Empleado"))
                             {
                                 <li class="nav-item">
                                     <a class="nav-link text-dark" asp-area="" asp-controller="Clientes" asp-action="Index">Clientes</a>
@@ -59,7 +56,6 @@
                                 <li class="nav-item">
                                     <a class="nav-link text-dark" asp-area="" asp-controller="StockItems" asp-action="Index">StockItems</a>
                                 </li>
-
                             }
                         }
                         else
@@ -70,9 +66,7 @@
                             <li class="nav-item">
                                 <a class="nav-link text-dark" asp-area="" asp-controller="Account" asp-action="Registrar">Registrate</a>
                             </li>
-                            
                         }
-
                    </ul>
                 </div>
             </div>

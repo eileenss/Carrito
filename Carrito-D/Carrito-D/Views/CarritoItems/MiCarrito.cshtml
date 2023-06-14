@@ -1,0 +1,51 @@
+﻿@model IEnumerable<CarritoItem>
+
+@{
+    ViewData["Title"] = "Mi Carrito";
+}
+
+<h1>Mi carrito</h1>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Producto.Imagen)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Producto)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Cantidad)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Subtotal)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Producto.Imagen)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Producto.Id)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Cantidad)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Subtotal)
+                </td>
+                <td>
+                    @Html.ActionLink("Edit", "Edit", new { idCar = item.CarritoId, idProd = item.ProductoId }) |
+                    @Html.ActionLink("Details", "Details", new { idCar = item.CarritoId, idProd = item.ProductoId }) |
+                    @Html.ActionLink("Delete", "Delete", new { idCar = item.CarritoId, idProd = item.ProductoId })
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
