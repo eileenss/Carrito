@@ -56,7 +56,7 @@ namespace Carrito_D.Controllers
             _context.CarritoItems.Update(carritoItem);
             _context.SaveChangesAsync();
 
-            CalcularSubtotal(carritoItem);
+            //CalcularSubtotal(carritoItem);
 
             return RedirectToAction("MiCarrito", "CarritoItems");
         }
@@ -67,15 +67,13 @@ namespace Carrito_D.Controllers
         //        CalcularSubtotal(cantidad)
         //}
 
-        private void CalcularSubtotal(CarritoItem carritoItem)
+        private decimal CalcularSubtotal(decimal valorUnitario , int cantidad)
         {
-            if(carritoItem != null)
-            {
-                carritoItem.Subtotal = carritoItem.ValorUnitario * carritoItem.Cantidad;
-                _context.CarritoItems.Update(carritoItem);
-                _context.SaveChangesAsync();
-            }
+                decimal subtotal = valorUnitario * cantidad;
+                return subtotal;
         }
+        
+        
 
         // GET: CarritoItems/Edit/5
         [Authorize(Roles = "Cliente")]
@@ -188,5 +186,34 @@ namespace Carrito_D.Controllers
         {
             return _context.CarritoItems.Any(c => c.CarritoId == idCar && c.ProductoId == idProd);
         }
+        //METODO AGREGAR CARRITO
+        [Authorize(Roles = "Cliente")]
+        public IActionResult AgregarAlCarrito(int idProducto)
+        {
+            var producto = _context.Productos.Find(idProducto);
+
+            if (producto == null)
+            {
+                return NotFound();
+            }
+            var clienteId = Int32.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
+            var carrito = _context.Carritos.FirstOrDefault(c => c.ClienteId == clienteId && c.Activo == true);
+
+            CarritoItem carritoItem = new CarritoItem() { CarritoId = carrito.Id, ProductoId = idProducto, Producto = producto, Carrito = carrito, ValorUnitario = producto.PrecioVigente, Cantidad = 1, Subtotal = CalcularSubtotal(producto.PrecioVigente , 1) };
+            _context.CarritoItems.Add(carritoItem);
+            _context.SaveChanges();
+            carrito.CarritoItems.Add(carritoItem);
+            _context.Carritos.Update(carrito);
+            _context.SaveChanges();
+
+            return RedirectToAction("Details", "Productos", "idProducto");
+        }
+
+
+
     }
+
+
+
+
 }
