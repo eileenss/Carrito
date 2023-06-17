@@ -28,5 +28,12 @@ namespace Carrito_D.ViewModels
         [Display(Name = "Dirección")]
         public string Direccion { get; set; }
 
+        [Required(ErrorMessage = ErrorMsg.Requerido)]
+        [EmailAddress(ErrorMessage = ErrorMsg.Invalido)]
+        [Display(Name = "Correo electrónico")]
+        public string Email { get; set; }
+
+        public int Legajo { get; set; }
+
     }
 }

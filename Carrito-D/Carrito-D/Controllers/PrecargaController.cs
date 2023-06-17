@@ -148,7 +148,7 @@ namespace Carrito_D.Controllers
         {
             if (cliente != null)
             {
-                Carrito carrito = new Carrito() { ClienteId = cliente.Id };
+                Carrito carrito = new Carrito() { ClienteId = cliente.Id, CarritoItems = new List<CarritoItem>() };
                 _context.Carritos.Add(carrito);
                 await _context.SaveChangesAsync();
                 return carrito;

@@ -44,19 +44,20 @@ namespace Carrito_D.Controllers
 
                 if (resultadoCreate.Succeeded)
                 {
-                    
-                    
                     var resultadoAddRole = await _usermanager.AddToRoleAsync(cliente, Configs.ClienteRolNombre);
+
                     if (resultadoAddRole.Succeeded)
                     {
-                        Carrito carrito = new Carrito() { ClienteId = cliente.Id};
+                        Carrito carrito = new Carrito() { ClienteId = cliente.Id };
                         _context.Carritos.Add(carrito);
                         _context.SaveChanges();
+
                         cliente.Carritos = new List<Carrito> { carrito };
                         _context.Clientes.Update(cliente);
                         _context.SaveChanges();
 
                         await _signinmanager.SignInAsync(cliente, isPersistent: false);
+
                         return RedirectToAction("Edit", "Clientes", new { id = cliente.Id });
                     }
                     else

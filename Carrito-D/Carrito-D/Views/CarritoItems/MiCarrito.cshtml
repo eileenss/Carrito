@@ -32,7 +32,7 @@
                     @Html.DisplayFor(modelItem => item.Producto.Imagen)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.Producto.Id)
+                    @Html.DisplayFor(modelItem => item.Producto.Nombre)
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.Cantidad)
@@ -42,10 +42,21 @@
                 </td>
                 <td>
                     @Html.ActionLink("Edit", "Edit", new { idCar = item.CarritoId, idProd = item.ProductoId }) |
-                    @Html.ActionLink("Details", "Details", new { idCar = item.CarritoId, idProd = item.ProductoId }) |
-                    @Html.ActionLink("Delete", "Delete", new { idCar = item.CarritoId, idProd = item.ProductoId })
+                    @Html.ActionLink("Delete", "Delete", new { idCarrito = item.CarritoId, idProducto = item.ProductoId })
                 </td>
             </tr>
         }
     </tbody>
 </table>
+
+<div>
+    @{
+        decimal total = 0;
+        foreach (var item in Model)
+        {
+            total += item.Subtotal;
+        }
+        }
+        Total: @total
+    </div>
+

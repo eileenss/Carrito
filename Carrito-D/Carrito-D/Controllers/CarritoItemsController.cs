@@ -10,6 +10,7 @@ using Carrito_D.Models;
 using Microsoft.AspNetCore.Authorization;
 using System.Data;
 using System.Security.Claims;
+using Carrito_D.ViewModels;
 
 namespace Carrito_D.Controllers
 {
@@ -23,59 +24,32 @@ namespace Carrito_D.Controllers
         }
 
         // GET: CarritoItems
-        [Authorize(Roles ="Cliente")]
+        [Authorize(Roles = "Cliente")]
         public IActionResult MiCarrito()
         {
-            int clienteId = Int32.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
-
-            var carrito = _context.Carritos.FirstOrDefault(c => c.ClienteId == clienteId && c.Activo == true);
+            var carrito = _context.Carritos.FirstOrDefault(c => c.ClienteId == ClienteLoginId() && c.Activo == true);
 
             var carritoItemContext = _context.CarritoItems
                 .Include(c => c.Carrito)
                 .Include(c => c.Producto)
                 .Where(c => c.CarritoId == carrito.Id);
 
+            foreach(var carritoItem in carritoItemContext.ToList())
+            {
+                carritoItem.Subtotal = Subtotal(carritoItem.Producto.PrecioVigente, carritoItem.Cantidad);
+            }
+
             return View(carritoItemContext.ToList());
         }
 
-        public IActionResult SumarCantidad(int? idCar, int? idProd)
+        private decimal Subtotal(decimal precio, int cantidad)
         {
-            if (idCar == null || idProd == null)
-            {
-                return NotFound();
-            }
+            decimal subtotal = precio * cantidad;
 
-            var carritoItem = _context.CarritoItems.Find(idCar, idProd);
-
-            if (carritoItem == null)
-            {
-                return NotFound();
-            }
-
-            carritoItem.Cantidad = carritoItem.Cantidad++;
-            _context.CarritoItems.Update(carritoItem);
-            _context.SaveChangesAsync();
-
-            //CalcularSubtotal(carritoItem);
-
-            return RedirectToAction("MiCarrito", "CarritoItems");
+            return subtotal;
         }
 
-        //public IActionResult RestarCantidad()
-        //{
-        //    cantidad = cantida - 1
-        //        CalcularSubtotal(cantidad)
-        //}
-
-        private decimal CalcularSubtotal(decimal valorUnitario , int cantidad)
-        {
-                decimal subtotal = valorUnitario * cantidad;
-                return subtotal;
-        }
-        
-        
-
-        // GET: CarritoItems/Edit/5
+        //// GET: CarritoItems/Edit/5
         [Authorize(Roles = "Cliente")]
         public IActionResult Edit(int? idCar, int? idProd)
         {
@@ -91,16 +65,13 @@ namespace Carrito_D.Controllers
             {
                 return NotFound();
             }
-
-            ViewData["CarritoId"] = new SelectList(_context.Carritos, "Id", "Id", carritoItem.CarritoId);
-            ViewData["ProductoId"] = new SelectList(_context.Productos, "Id", "Nombre", carritoItem.ProductoId);
-
+           
             return View(carritoItem);
         }
 
-        // POST: CarritoItems/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        //// POST: CarritoItems/Edit/5
+        //// To protect from overposting attacks, enable the specific properties you want to bind to.
+        //// For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "Cliente")]
@@ -112,14 +83,14 @@ namespace Carrito_D.Controllers
                 {
                     var carritoItemEnDB = _context.CarritoItems.Find(carritoItem.CarritoId, carritoItem.ProductoId);
 
-                    if(carritoItemEnDB != null)
+                    if (carritoItemEnDB != null)
                     {
                         carritoItemEnDB.Cantidad = carritoItem.Cantidad;
 
                         _context.CarritoItems.Update(carritoItemEnDB);
                         _context.SaveChanges();
                     }
-                    
+
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -135,16 +106,13 @@ namespace Carrito_D.Controllers
                 return RedirectToAction(nameof(MiCarrito));
             }
 
-            ViewData["CarritoId"] = new SelectList(_context.Carritos, "Id", "Id", carritoItem.CarritoId);
-            ViewData["ProductoId"] = new SelectList(_context.Productos, "Id", "Nombre", carritoItem.ProductoId);
-            
             return View(carritoItem);
         }
 
         // GET: CarritoItems/Delete/5
-        public async Task<IActionResult> Delete(int? idCar, int? idProd)
+        public async Task<IActionResult> Delete(int? idCarrito, int? idProducto)
         {
-            if (idCar == null || idProd == null)
+            if (idCarrito == null || idProducto == null)
             {
                 return NotFound();
             }
@@ -152,7 +120,7 @@ namespace Carrito_D.Controllers
             var carritoItem = await _context.CarritoItems
                 .Include(c => c.Carrito)
                 .Include(c => c.Producto)
-                .FirstOrDefaultAsync(c => c.CarritoId == idCar && c.ProductoId == idProd);
+                .FirstOrDefaultAsync(c => c.CarritoId == idCarrito && c.ProductoId == idProducto);
 
             if (carritoItem == null)
             {
@@ -165,20 +133,22 @@ namespace Carrito_D.Controllers
         // POST: CarritoItems/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int idCar, int idProd)
+        public async Task<IActionResult> DeleteConfirmed(int idCarrito, int idProducto)
         {
             if (_context.CarritoItems == null)
             {
                 return Problem("Entity set 'CarritoContext.CarritoItems'  is null.");
             }
-            var carritoItem = await _context.CarritoItems.FindAsync(idCar, idProd);
+            var carritoItem = await _context.CarritoItems.FindAsync(idCarrito, idProducto);
 
             if (carritoItem != null)
             {
+                Carrito carrito = _context.Carritos.Find(idCarrito);
+                carrito.CarritoItems.Remove(carritoItem);
                 _context.CarritoItems.Remove(carritoItem);
+                await _context.SaveChangesAsync();
             }
-            
-            await _context.SaveChangesAsync();
+
             return RedirectToAction(nameof(MiCarrito));
         }
 
@@ -186,34 +156,71 @@ namespace Carrito_D.Controllers
         {
             return _context.CarritoItems.Any(c => c.CarritoId == idCar && c.ProductoId == idProd);
         }
-        //METODO AGREGAR CARRITO
+
         [Authorize(Roles = "Cliente")]
-        public IActionResult AgregarAlCarrito(int idProducto)
+        public IActionResult AgregarCarritoItem(int idProducto)
         {
-            var producto = _context.Productos.Find(idProducto);
+            TempData["ProductoId"] = idProducto;
 
-            if (producto == null)
-            {
-                return NotFound();
-            }
-            var clienteId = Int32.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
-            var carrito = _context.Carritos.FirstOrDefault(c => c.ClienteId == clienteId && c.Activo == true);
-
-            CarritoItem carritoItem = new CarritoItem() { CarritoId = carrito.Id, ProductoId = idProducto, Producto = producto, Carrito = carrito, ValorUnitario = producto.PrecioVigente, Cantidad = 1, Subtotal = CalcularSubtotal(producto.PrecioVigente , 1) };
-            _context.CarritoItems.Add(carritoItem);
-            _context.SaveChanges();
-            carrito.CarritoItems.Add(carritoItem);
-            _context.Carritos.Update(carrito);
-            _context.SaveChanges();
-
-            return RedirectToAction("Details", "Productos", "idProducto");
+            return View();
         }
 
+        [HttpPost]
+        [Authorize(Roles = "Cliente")]
+        public IActionResult AgregarCarritoItem([Bind("Cantidad")] CrearCarritoItem viewmodel)
+        {
+            int idProducto = (int)TempData["ProductoId"];
 
+            if (ModelState.IsValid)
+            {
+                var producto = _context.Productos.Find(idProducto);
+                var carrito = _context.Carritos.FirstOrDefault(c => c.ClienteId == ClienteLoginId() && c.Activo == true);
+
+                if (producto == null || carrito == null)
+                {
+                    return NotFound();
+                }
+
+                CarritoItem carritoItemExists = _context.CarritoItems.FirstOrDefault(c => c.CarritoId == carrito.Id && c.ProductoId == idProducto);
+               
+                if (carritoItemExists == null)
+                {
+                    CarritoItem carritoItem = new CarritoItem()
+                    {
+                        Cantidad = viewmodel.Cantidad,
+                        CarritoId = carrito.Id,
+                        ProductoId = idProducto,
+                        Carrito = carrito,
+                        Producto = producto
+                    };
+
+                    _context.CarritoItems.Add(carritoItem);
+                    _context.SaveChanges();
+
+                    carrito.CarritoItems.Add(carritoItem);
+                    _context.Carritos.Update(carrito);
+                    _context.SaveChanges();
+                }
+                else
+                {
+                    carritoItemExists.Cantidad = carritoItemExists.Cantidad + viewmodel.Cantidad;
+
+                    _context.CarritoItems.Update(carritoItemExists);
+                    _context.SaveChanges();
+                }
+
+                return RedirectToAction("Index", "Productos");
+            }
+
+            return View(viewmodel);
+        }
+
+        private int ClienteLoginId()
+        {
+            int clienteId = Int32.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
+
+            return clienteId;
+        }
 
     }
-
-
-
-
 }

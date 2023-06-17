@@ -61,7 +61,7 @@ namespace Carrito_D.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,DNI,Nombre,Apellido,Telefono,Direccion")] CrearEmpleado viewmodel)
+        public async Task<IActionResult> Create([Bind("Id,DNI,Nombre,Apellido,Email,Legajo,Telefono,Direccion")] CrearEmpleado viewmodel)
         {
             if (ModelState.IsValid)
             {
@@ -71,7 +71,11 @@ namespace Carrito_D.Controllers
                     Nombre = viewmodel.Nombre,
                     Apellido = viewmodel.Apellido,
                     Telefono = viewmodel.Telefono,
-                    Direccion = viewmodel.Direccion
+                    Direccion = viewmodel.Direccion,
+                    Email = viewmodel.Email,
+                    UserName = viewmodel.Email,
+                    Legajo = viewmodel.Legajo,
+                    PasswordHash = Configs.Password
                 };
 
                 var resultadoEmpleado = await _userManager.CreateAsync(empleado, Configs.Password);
