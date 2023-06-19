@@ -12,7 +12,7 @@ using System.Data;
 
 namespace Carrito_D.Controllers
 {
-   // [Authorize(Roles = "Empleado")]
+    // [Authorize(Roles = "Empleado")]
     public class StockItemsController : Controller
     {
         private readonly CarritoContext _context;
@@ -199,7 +199,7 @@ namespace Carrito_D.Controllers
         }
 
         [HttpPost]
-        private IActionResult ValidarStock(int idSucursal)
+        public IActionResult ValidarStock(int idSucursal)
         {
             int idCarrito = (int)TempData["CarritoId"];
             var carritoItems = _context.CarritoItems
@@ -210,8 +210,9 @@ namespace Carrito_D.Controllers
 
             var stockItems = _context.StockItems
                 .Include(s => s.Sucursal)
-                .Include(s => s.Cantidad)
-                .Where(s => s.SucursalId == idSucursal);
+                .Include(s => s.Producto)
+                .Where(s => s.SucursalId == idSucursal)
+                .ToList();
 
             int index = 0;
             bool hayStock = true;
@@ -235,7 +236,7 @@ namespace Carrito_D.Controllers
                 return RedirectToAction(nameof(ElegirSucursal));
             }
 
-            return View();
+            return RedirectToAction(nameof(Index));
         }
     }
 }
