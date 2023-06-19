@@ -1,0 +1,33 @@
+﻿@model StockItem
+
+@{
+    ViewData["Title"] = "Elegir Sucursal";
+}
+
+<h1>Elegí la sucursal de retiro</h1>
+
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="ValidarStock">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="SucursalId" class="control-label"></label>
+                <select asp-for="SucursalId" class="form-control" asp-items="ViewBag.SucursalId"></select>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Comprar" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+
+    
+    @{
+        bool mensaje = !string.IsNullOrEmpty(ViewBag.SinStock);
+        if (mensaje)
+        {
+            <div class="alert alert-danger" role="alert">
+                @ViewBag.SinStock
+            </div>
+        }
+    }
+</div>

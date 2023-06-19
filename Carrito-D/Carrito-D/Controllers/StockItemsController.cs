@@ -12,7 +12,7 @@ using System.Data;
 
 namespace Carrito_D.Controllers
 {
-    [Authorize(Roles = "Empleado")]
+   // [Authorize(Roles = "Empleado")]
     public class StockItemsController : Controller
     {
         private readonly CarritoContext _context;
@@ -80,7 +80,7 @@ namespace Carrito_D.Controllers
         }
 
         // GET: StockItems/Edit/5
-        
+
         public IActionResult Edit(int? idProd, int? idSuc)
         {
             if (idProd == null || idSuc == null)
@@ -104,7 +104,7 @@ namespace Carrito_D.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        
+
         public IActionResult Edit([Bind("ProductoId,SucursalId,Cantidad")] StockItem stockItem)
         {
             if (ModelState.IsValid)
@@ -118,9 +118,9 @@ namespace Carrito_D.Controllers
                         stockItemEnDB.Cantidad = stockItem.Cantidad;
 
                         _context.StockItems.Update(stockItem);
-                         _context.SaveChanges();
+                        _context.SaveChanges();
                     }
-                    
+
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -129,7 +129,7 @@ namespace Carrito_D.Controllers
                         return NotFound();
                     }
                     else
-                    { 
+                    {
                         throw;
                     }
                 }
@@ -182,7 +182,60 @@ namespace Carrito_D.Controllers
 
         private bool StockItemExists(int idProd, int idSuc)
         {
-          return _context.StockItems.Any(s => s.ProductoId == idProd && s.SucursalId == idSuc);
+            return _context.StockItems.Any(s => s.ProductoId == idProd && s.SucursalId == idSuc);
+        }
+
+        public IActionResult ElegirSucursal(int idCarrito)
+        {
+            TempData["CarritoId"] = idCarrito;
+            ViewData["SucursalId"] = new SelectList(_context.Sucursales, "Id", "Direccion");
+
+            if (TempData.ContainsKey("SinStock"))
+            {
+                ViewData["SinStock"] = TempData["SinStock"];
+            }
+
+            return View();
+        }
+
+        [HttpPost]
+        private IActionResult ValidarStock(int idSucursal)
+        {
+            int idCarrito = (int)TempData["CarritoId"];
+            var carritoItems = _context.CarritoItems
+                .Include(c => c.Carrito)
+                .Include(c => c.Producto)
+                .Where(c => c.CarritoId == idCarrito)
+                .ToList();
+
+            var stockItems = _context.StockItems
+                .Include(s => s.Sucursal)
+                .Include(s => s.Cantidad)
+                .Where(s => s.SucursalId == idSucursal);
+
+            int index = 0;
+            bool hayStock = true;
+
+            do
+            {
+                var carritoItem = carritoItems.ElementAt(index);
+
+                if (!stockItems.Any(s => s.Cantidad >= carritoItem.Cantidad))
+                {
+                    hayStock = false;
+                }
+
+                index++;
+
+            } while (carritoItems.Count >= index && hayStock);
+
+            if (!hayStock)
+            {
+                TempData["SinStock"] = "No hay suficiente stock";
+                return RedirectToAction(nameof(ElegirSucursal));
+            }
+
+            return View();
         }
     }
 }

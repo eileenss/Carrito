@@ -23,7 +23,6 @@ namespace Carrito_D.Models
         //[Required(ErrorMessage = ErrorMsg.Requerido)] lo agregaremos nosotros con lógica
         //[Range(50, double.MaxValue, ErrorMessage = ErrorMsg.Rango)]
         //[DataType(DataType.Currency)]
-        [NotMapped]
         [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:C2}")]
         public decimal Total { get; set; }
 

@@ -22,7 +22,7 @@
         </dd>
     </dl>
     
-    <form asp-action="Delete">
+    <form asp-action="Delete" asp-route-idCarrito="@Model.CarritoId" asp-route-idProducto="@Model.ProductoId">
         <input type="hidden" asp-for="CarritoId" />
         <input type="hidden" asp-for="ProductoId" />
         <input type="submit" value="Delete" class="btn btn-danger" /> |

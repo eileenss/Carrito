@@ -51,15 +51,19 @@ namespace Carrito_D.Controllers
 
         //// GET: CarritoItems/Edit/5
         [Authorize(Roles = "Cliente")]
-        public IActionResult Edit(int? idCar, int? idProd)
+        public IActionResult Edit(int? idCarrito, int? idProducto)
         {
             //if (id == null || _context.CarritoItems == null) creado por scaff
-            if (idCar == null || idProd == null)
+            if (idCarrito == null || idProducto == null)
             {
                 return NotFound();
             }
 
-            var carritoItem = _context.CarritoItems.Find(idCar, idProd);
+            //var carritoItem = _context.CarritoItems.Find(idCar, idProd);
+            var carritoItem = _context.CarritoItems
+                .Include(c => c.Carrito)
+                .Include(c => c.Producto)
+                .FirstOrDefault(c => c.CarritoId == idCarrito && c.ProductoId == idProducto);
 
             if (carritoItem == null)
             {
@@ -220,6 +224,30 @@ namespace Carrito_D.Controllers
             int clienteId = Int32.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
 
             return clienteId;
+        }
+
+        public IActionResult VaciarCarrito(int idCarrito)
+        {
+            VaciarCarritoConfirmed(idCarrito);
+            return RedirectToAction(nameof(MiCarrito));
+        }
+
+        [HttpPost]
+        private void VaciarCarritoConfirmed(int idCarrito)
+        {
+            var carrito = _context.Carritos.Find(idCarrito);
+
+            var carritoItemContext = _context.CarritoItems
+               .Include(c => c.Carrito)
+               .Include(c => c.Producto)
+               .Where(c => c.CarritoId == idCarrito);
+
+            foreach(var carritoItem in carritoItemContext.ToList())
+            {
+                carrito.CarritoItems.Remove(carritoItem);
+                _context.CarritoItems.Remove(carritoItem);
+                _context.SaveChanges();
+            }
         }
 
     }
