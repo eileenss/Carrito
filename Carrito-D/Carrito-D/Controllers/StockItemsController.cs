@@ -188,11 +188,20 @@ namespace Carrito_D.Controllers
         public IActionResult ElegirSucursal(int idCarrito)
         {
             TempData["CarritoId"] = idCarrito;
-            ViewData["SucursalId"] = new SelectList(_context.Sucursales, "Id", "Direccion");
+            //ViewData["SucursalId"] = new SelectList(_context.Sucursales, "Id", "Direccion");
 
             if (TempData.ContainsKey("SinStock"))
             {
                 ViewData["SinStock"] = TempData["SinStock"];
+                List<Sucursal> sucursalesConStock = (List<Sucursal>)TempData["SucursalesConStock"];
+                if (sucursalesConStock.Count > 0) { 
+                    ViewData["ConStock"] = "Las sucursales con stock son las siguientes: ";
+                    ViewData["SucursalId"] = new SelectList(sucursalesConStock , "Id" , "Direccion");
+                }
+            }
+            else
+            {
+                ViewData["SucursalId"] = new SelectList(_context.Sucursales, "Id", "Direccion");
             }
 
             return View();
@@ -233,10 +242,64 @@ namespace Carrito_D.Controllers
             if (!hayStock)
             {
                 TempData["SinStock"] = "No hay suficiente stock";
+                List<Sucursal> sucursalesConStock = BuscarSucursalConStock(idCarrito);
+                TempData["SucursalesConStock"] = sucursalesConStock;
                 return RedirectToAction(nameof(ElegirSucursal));
             }
 
             return RedirectToAction(nameof(Index));
         }
+        public List<Sucursal> BuscarSucursalConStock(int idCarrito)
+        {
+            List<Sucursal> sucsConStock = new List<Sucursal>(); 
+
+            var carritoItems = _context.CarritoItems
+                .Include(c => c.Carrito)
+                .Include(c => c.Producto)
+                .Where(c => c.CarritoId == idCarrito)
+                .ToList();
+
+            var sucursales = _context.Sucursales.ToList();
+
+            var stockItems = _context.StockItems
+                .Include(s => s.Sucursal)
+                .Include(s => s.Producto)
+                .ToList();
+
+            foreach ( var sucursal in sucursales ) {
+
+                
+
+                var stockSuc = stockItems.FindAll(s => s.SucursalId == sucursal.Id);
+                bool hayStock = true;
+
+                foreach (var carritoItem in carritoItems)
+                {
+
+                    if(!stockSuc.Any(s => s.ProductoId == carritoItem.ProductoId && s.Cantidad >= carritoItem.Cantidad))
+                    {
+                        hayStock = false;
+                        break;
+                    }
+                    
+                }
+
+                if (hayStock)
+                {
+                    sucsConStock.Add(sucursal);
+
+                }
+                
+           
+            }
+
+            return sucsConStock;
+        }
+
+
+
     }
+
+
+
 }
