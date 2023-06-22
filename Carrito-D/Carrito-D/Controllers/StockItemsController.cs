@@ -117,7 +117,7 @@ namespace Carrito_D.Controllers
                     {
                         stockItemEnDB.Cantidad = stockItem.Cantidad;
 
-                        _context.StockItems.Update(stockItem);
+                        _context.StockItems.Update(stockItemEnDB);
                         _context.SaveChanges();
                     }
 
@@ -192,12 +192,16 @@ namespace Carrito_D.Controllers
 
             if (TempData.ContainsKey("SinStock"))
             {
+
                 ViewData["SinStock"] = TempData["SinStock"];
-                List<Sucursal> sucursalesConStock = (List<Sucursal>)TempData["SucursalesConStock"];
-                if (sucursalesConStock.Count > 0) { 
+                if (TempData.ContainsKey("SucursalesConStock"))
+                {
+                    List<Sucursal> sucursalesConStock = (List<Sucursal>)TempData["SucursalesConStock"];
                     ViewData["ConStock"] = "Las sucursales con stock son las siguientes: ";
-                    ViewData["SucursalId"] = new SelectList(sucursalesConStock , "Id" , "Direccion");
+                    ViewData["SucursalesConStock"] = new SelectList(sucursalesConStock, "Id", "Direccion");
                 }
+                    
+                
             }
             else
             {
@@ -230,20 +234,23 @@ namespace Carrito_D.Controllers
             {
                 var carritoItem = carritoItems.ElementAt(index);
 
-                if (!stockItems.Any(s => s.Cantidad >= carritoItem.Cantidad))
+                if (!stockItems.Any(s => s.ProductoId == carritoItem.ProductoId && s.Cantidad >= carritoItem.Cantidad))
                 {
                     hayStock = false;
                 }
 
                 index++;
 
-            } while (carritoItems.Count >= index && hayStock);
+            } while (carritoItems.Count > index && hayStock);
 
             if (!hayStock)
             {
                 TempData["SinStock"] = "No hay suficiente stock";
                 List<Sucursal> sucursalesConStock = BuscarSucursalConStock(idCarrito);
-                TempData["SucursalesConStock"] = sucursalesConStock;
+                if (sucursalesConStock.Count > 0)
+                {
+                    TempData["SucursalesConStock"] = sucursalesConStock;
+                }
                 return RedirectToAction(nameof(ElegirSucursal));
             }
 
