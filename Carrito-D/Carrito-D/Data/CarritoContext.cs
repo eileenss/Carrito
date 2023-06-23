@@ -18,6 +18,8 @@ namespace Carrito_D.Data
 
             modelBuilder.Entity<Producto>().Property(p => p.PrecioVigente).HasPrecision(38, 18);
 
+            modelBuilder.Entity<Compra>().Property(c => c.Total).HasPrecision(38, 18);
+
             modelBuilder.Entity<CarritoItem>().HasKey(ci => new { ci.CarritoId, ci.ProductoId });
 
             modelBuilder.Entity<CarritoItem>()

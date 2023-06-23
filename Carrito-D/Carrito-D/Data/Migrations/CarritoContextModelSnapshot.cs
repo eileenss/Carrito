@@ -103,6 +103,10 @@ namespace Carrito_D.Data.Migrations
                     b.Property<int>("SucursalId")
                         .HasColumnType("int");
 
+                    b.Property<decimal>("Total")
+                        .HasPrecision(38, 18)
+                        .HasColumnType("decimal(38,18)");
+
                     b.HasKey("Id");
 
                     b.HasIndex("CarritoId")

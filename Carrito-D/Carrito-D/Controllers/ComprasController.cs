@@ -10,6 +10,7 @@ using Carrito_D.Models;
 using Microsoft.AspNetCore.Authorization;
 using System.Security.Claims;
 
+
 namespace Carrito_D.Controllers
 {
     [Authorize]
@@ -82,7 +83,86 @@ namespace Carrito_D.Controllers
             return View(compra);
         }
 
-       
+
+        public IActionResult CrearCompra(int idCarrito, int idSucursal)
+        {
+            int clienteId = Int32.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
+            Cliente cliente = _context.Clientes.Find(clienteId);
+            Carrito carrito = _context.Carritos.Find(idCarrito);
+            Sucursal sucursal = _context.Sucursales.Find(idSucursal);
+
+            if (carrito == null)
+            {
+                return NotFound();
+            }
+            Compra compra = new Compra()
+            {
+                ClienteId = clienteId,
+                // Cliente = cliente,
+                CarritoId = idCarrito,
+                //Carrito = carrito,
+                Total = Total(idCarrito),
+                SucursalId = idSucursal,
+                //Sucursal = sucursal
+            };
+
+            _context.Compras.Add(compra);
+            _context.SaveChanges();
+
+            carrito.Activo = false;
+            carrito.Compra = compra;
+            _context.Carritos.Update(carrito);
+            _context.SaveChanges();
+
+            Carrito nuevoCarrito = new Carrito() { ClienteId = clienteId };
+            _context.Carritos.Add(nuevoCarrito);
+            _context.SaveChanges();
+
+            cliente.Carritos.Add(nuevoCarrito);
+            _context.Clientes.Update(cliente);
+            _context.SaveChanges();
+
+
+
+            return View(compra);
+        }
+
+        private decimal Total(int idCarrito)
+        {
+            var carritoItems = _context.CarritoItems
+                .Include(c => c.Carrito)
+                .Include(c => c.Producto)
+                .Where(c => c.CarritoId == idCarrito)
+                .ToList();
+
+            decimal total = 0;
+
+            foreach (var item in carritoItems)
+            {
+                total += item.Cantidad * item.Producto.PrecioVigente;
+            }
+
+            return total;
+        }
+
+        /*private decimal Total(int idCarrito)
+         * {
+         * var carritoItems = _context.CarritoItems
+                .Include(c => c.Carrito)
+                .Include(c => c.Producto)
+                .Where(c => c.CarritoId == idCarrito)
+                .ToList();
+
+            decimal total = 0;
+
+            foreach(var item in carritoItems)
+            {
+                total += item.Subtotal;
+            }
+
+            return total;
+        }
+         *  
 
         //UNA COMPRA NO DEBERÍA EDITARSE UNA VEZ CREADA
         // GET: Compras/Edit/5

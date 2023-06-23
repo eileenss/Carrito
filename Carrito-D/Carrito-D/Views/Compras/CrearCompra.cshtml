@@ -1,0 +1,44 @@
+﻿@model Compra
+
+@{
+    ViewData["Title"] = "Compra";
+}
+
+<h1>¡Muchas gracias por tu compra!</h1>
+
+<h2>Datos de la compra</h2>
+<hr />
+
+<div>
+    <dl class="row">
+        <dt class="col-sm-2">
+            Id de compra:
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Id)
+        </dd>
+</div>
+<div>
+    <h4>Datos de la sucursal de retiro</h4>
+    <dl class="row">
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Sucursal.Direccion)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Sucursal.Direccion)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Sucursal.Telefono)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Sucursal.Telefono)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Sucursal.Email)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Sucursal.Email)
+        </dd>
+</div>
+
+

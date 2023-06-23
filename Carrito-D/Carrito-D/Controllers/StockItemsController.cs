@@ -94,8 +94,10 @@ namespace Carrito_D.Controllers
             {
                 return NotFound();
             }
+
             ViewData["ProductoId"] = new SelectList(_context.Productos, "Id", "Nombre", stockItem.ProductoId);
             ViewData["SucursalId"] = new SelectList(_context.Sucursales, "Id", "Direccion", stockItem.SucursalId);
+
             return View(stockItem);
         }
 
@@ -135,8 +137,10 @@ namespace Carrito_D.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
+
             ViewData["ProductoId"] = new SelectList(_context.Productos, "Id", "Nombre", stockItem.ProductoId);
             ViewData["SucursalId"] = new SelectList(_context.Sucursales, "Id", "Direccion", stockItem.SucursalId);
+
             return View(stockItem);
         }
 
@@ -188,20 +192,17 @@ namespace Carrito_D.Controllers
         public IActionResult ElegirSucursal(int idCarrito)
         {
             TempData["CarritoId"] = idCarrito;
-            //ViewData["SucursalId"] = new SelectList(_context.Sucursales, "Id", "Direccion");
 
             if (TempData.ContainsKey("SinStock"))
             {
-
                 ViewData["SinStock"] = TempData["SinStock"];
-                if (TempData.ContainsKey("SucursalesConStock"))
+                List<Sucursal> sucursalesConStock = BuscarSucursalConStock(idCarrito);
+
+                if (sucursalesConStock.Count > 0)
                 {
-                    List<Sucursal> sucursalesConStock = (List<Sucursal>)TempData["SucursalesConStock"];
                     ViewData["ConStock"] = "Las sucursales con stock son las siguientes: ";
                     ViewData["SucursalesConStock"] = new SelectList(sucursalesConStock, "Id", "Direccion");
                 }
-                    
-                
             }
             else
             {
@@ -215,6 +216,7 @@ namespace Carrito_D.Controllers
         public IActionResult ValidarStock(int idSucursal)
         {
             int idCarrito = (int)TempData["CarritoId"];
+
             var carritoItems = _context.CarritoItems
                 .Include(c => c.Carrito)
                 .Include(c => c.Producto)
@@ -246,16 +248,25 @@ namespace Carrito_D.Controllers
             if (!hayStock)
             {
                 TempData["SinStock"] = "No hay suficiente stock";
-                List<Sucursal> sucursalesConStock = BuscarSucursalConStock(idCarrito);
-                if (sucursalesConStock.Count > 0)
-                {
-                    TempData["SucursalesConStock"] = sucursalesConStock;
-                }
-                return RedirectToAction(nameof(ElegirSucursal));
+                return RedirectToAction(nameof(ElegirSucursal), new { idCarrito });
             }
 
-            return RedirectToAction(nameof(Index));
+            ////descontarstock
+           foreach(var item in carritoItems)
+            {
+                //int cantidadADescontar = item.Cantidad;
+
+                StockItem stockItem = stockItems.FirstOrDefault(s => s.ProductoId == item.ProductoId);
+
+                stockItem.Cantidad -= item.Cantidad;
+
+                _context.StockItems.Update(stockItem);
+                _context.SaveChanges();
+            }
+            //crearCompra(carritoId,sucursalid)
+            return RedirectToAction("CrearCompra", "Compras", new { idCarrito, idSucursal });
         }
+
         public List<Sucursal> BuscarSucursalConStock(int idCarrito)
         {
             List<Sucursal> sucsConStock = new List<Sucursal>(); 
@@ -273,38 +284,30 @@ namespace Carrito_D.Controllers
                 .Include(s => s.Producto)
                 .ToList();
 
-            foreach ( var sucursal in sucursales ) {
-
-                
-
+            foreach ( var sucursal in sucursales ) 
+            {
                 var stockSuc = stockItems.FindAll(s => s.SucursalId == sucursal.Id);
                 bool hayStock = true;
 
                 foreach (var carritoItem in carritoItems)
                 {
-
                     if(!stockSuc.Any(s => s.ProductoId == carritoItem.ProductoId && s.Cantidad >= carritoItem.Cantidad))
                     {
                         hayStock = false;
                         break;
                     }
-                    
                 }
 
                 if (hayStock)
                 {
                     sucsConStock.Add(sucursal);
-
                 }
-                
-           
             }
 
             return sucsConStock;
         }
 
-
-
+       
     }
 
 
