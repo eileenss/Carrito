@@ -26,7 +26,12 @@ namespace Carrito_D.Controllers
         [AllowAnonymous]
         public IActionResult Index()
         {
-              return View(_context.Sucursales.ToList());
+            if (TempData.ContainsKey("NoDelete"))
+            {
+                ViewData["NoDelete"] = TempData["NoDelete"];
+            }
+
+            return View(_context.Sucursales.ToList());
         }
 
         // GET: Sucursales/Details/5
@@ -100,8 +105,8 @@ namespace Carrito_D.Controllers
                 return NotFound();
             }
 
-           // ModelState.Remove("Nombre");
-           // ModelState.Remove("Email");
+            // ModelState.Remove("Nombre");
+            // ModelState.Remove("Email");
 
             if (ModelState.IsValid)
             {
@@ -109,15 +114,15 @@ namespace Carrito_D.Controllers
                 {
                     var sucursalEnDb = _context.Sucursales.Find(sucursal.Id);
 
-                    if(sucursalEnDb != null)
+                    if (sucursalEnDb != null)
                     {
                         sucursalEnDb.Direccion = sucursal.Direccion;
                         sucursalEnDb.Telefono = sucursal.Telefono;
-                        
+
                         _context.Sucursales.Update(sucursalEnDb);
                         _context.SaveChanges();
                     }
-                    
+
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -143,7 +148,7 @@ namespace Carrito_D.Controllers
                 return NotFound();
             }
 
-            var sucursal = await _context.Sucursales.FirstOrDefaultAsync(s => s.Id == id); 
+            var sucursal = await _context.Sucursales.FirstOrDefaultAsync(s => s.Id == id);
 
             if (sucursal == null)
             {
@@ -163,18 +168,57 @@ namespace Carrito_D.Controllers
                 return Problem("Entity set 'CarritoContext.Sucursales'  is null.");
             }
             var sucursal = await _context.Sucursales.FindAsync(id);
-            if (sucursal != null)
+            if (sucursal == null)
             {
-                _context.Sucursales.Remove(sucursal);
+                return NotFound();
             }
-            
-            await _context.SaveChangesAsync();
+
+            if (SinStock(id))
+            {
+                var stockItems = _context.StockItems
+                    .Include(s => s.Producto)
+                    .Include(s => s.Sucursal)
+                    .Where(s => s.SucursalId == id)
+                    .ToList();
+
+                foreach (var stockItem in stockItems)
+                {
+                    _context.StockItems.Remove(stockItem);
+                }
+                _context.Sucursales.Remove(sucursal);
+                await _context.SaveChangesAsync();
+                return RedirectToAction(nameof(Index));
+            }
+
+            TempData["NoDelete"] = "No se pudo eliminar la sucursal porque todavía tiene stock disponible.";
             return RedirectToAction(nameof(Index));
         }
 
         private bool SucursalExists(int id)
         {
-          return _context.Sucursales.Any(s => s.Id == id);
+            return _context.Sucursales.Any(s => s.Id == id);
+        }
+
+        private bool SinStock(int idSucursal)
+        {
+            bool sinStock = true;
+
+            var stockItems = _context.StockItems
+                .Include(s => s.Producto)
+                .Include(s => s.Sucursal)
+                .Where(s => s.SucursalId == idSucursal)
+                .ToList();
+
+            foreach (var stockItem in stockItems)
+            {
+                if (stockItem.Cantidad > 0)
+                {
+                    sinStock = false;
+                    break;
+                }
+            }
+
+            return sinStock;
         }
     }
 }

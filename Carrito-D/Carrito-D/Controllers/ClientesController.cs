@@ -15,7 +15,7 @@ using Microsoft.AspNetCore.Mvc.Razor.Compilation;
 
 namespace Carrito_D.Controllers
 {
-   
+
     public class ClientesController : Controller
     {
         private readonly CarritoContext _context;
@@ -36,54 +36,49 @@ namespace Carrito_D.Controllers
         // GET: Clientes/Details/5
         public IActionResult Details(int? id)
         {
-            if (id == null || _context.Clientes == null)
-            {
-                return NotFound();
-            }
-
-            var cliente = _context.Clientes.FirstOrDefault(c => c.Id == id);
-
-            if (cliente == null)
-            {
-                return NotFound();
-            }
-
             int clienteId = Int32.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
 
-            if (User.IsInRole("Cliente") && clienteId != id)
+            if (_context.Clientes == null)
             {
-                return RedirectToAction("AccesoDenegado", "Account");
+                return NotFound();
             }
 
-            return View(cliente);
+            if (id == null)
+            {
+                if (!User.IsInRole("Cliente"))
+                {
+                    return RedirectToAction("AccesoDenegado", "Account");
+                }
+                var cliente = _context.Clientes.FirstOrDefault(c => c.Id == clienteId);
+
+                if (cliente == null)
+                {
+                    return NotFound();
+                }
+
+                return View(cliente);
+            }
+            else
+            {
+                var cliente = _context.Clientes.FirstOrDefault(c => c.Id == id);
+
+                if (cliente == null)
+                {
+                    return NotFound();
+                }
+
+                if (User.IsInRole("Cliente") && clienteId != id)
+                {
+                    return RedirectToAction("AccesoDenegado", "Account");
+                }
+
+                return View(cliente);
+            }
+
         }
 
-        //EL CLIENTE SE AUTOREGISTRA
-        // GET: Clientes/Create
-        //[Authorize("Admin")]
-        //public IActionResult Create()
-        //{
-        //    return View();
-        //}
-
-        // POST: Clientes/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        //[HttpPost]
-        //[ValidateAntiForgeryToken]
-        //[Authorize("Admin")]
-        //public IActionResult Create([Bind("Cuil,Id,DNI,UserName,PasswordHash,Nombre,Apellido,Telefono,Direccion,Email")] Cliente cliente)
-        //{
-        //    if (ModelState.IsValid)
-        //    {
-        //        _context.Clientes.Add(cliente);
-        //        _context.SaveChanges();
-        //        return RedirectToAction(nameof(Index));
-        //    }
-        //    return View(cliente);
-        //}
-
         // GET: Clientes/Edit/5
+        [Authorize(Roles="CLiente")]
         public IActionResult Edit(int? id)
         {
             if (id == null || _context.Clientes == null)
@@ -97,14 +92,6 @@ namespace Carrito_D.Controllers
             {
                 return NotFound();
             }
-
-            int clienteId = Int32.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
-
-            if (User.IsInRole("Cliente") && clienteId != id)
-            {
-                return RedirectToAction("AccesoDenegado", "Account");
-            }
-
             return View(cliente);
         }
 
@@ -162,43 +149,6 @@ namespace Carrito_D.Controllers
             }
             return View(cliente);
         }
-
-        //NO QUEREMOS ELIMINAR CLIENTES
-        // GET: Clientes/Delete/5
-        //public async Task<IActionResult> Delete(int? id)
-        //{
-        //    if (id == null || _context.Clientes == null)
-        //    {
-        //        return NotFound();
-        //    }
-
-        //    var cliente = await _context.Clientes.FirstOrDefaultAsync(c => c.Id == id);
-        //    if (cliente == null)
-        //    {
-        //        return NotFound();
-        //    }
-
-        //    return View(cliente);
-        //}
-
-        //// POST: Clientes/Delete/5
-        //[HttpPost, ActionName("Delete")]
-        //[ValidateAntiForgeryToken]
-        //public async Task<IActionResult> DeleteConfirmed(int id)
-        //{
-        //    if (_context.Clientes == null)
-        //    {
-        //        return Problem("Entity set 'CarritoContext.Clientes'  is null.");
-        //    }
-        //    var cliente = await _context.Clientes.FindAsync(id);
-        //    if (cliente != null)
-        //    {
-        //        _context.Clientes.Remove(cliente);
-        //    }
-
-        //    await _context.SaveChangesAsync();
-        //    return RedirectToAction(nameof(Index));
-        //}
 
         private bool ClienteExists(int id)
         {

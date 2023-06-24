@@ -6,6 +6,14 @@
 
 <h1>Sucursales</h1>
 
+@if (!string.IsNullOrEmpty(ViewBag.NoDelete))
+{
+    <div class="alert alert-danger" role="alert">
+        @ViewBag.NoDelete
+    </div>
+
+}
+
 @if (User.IsInRole("Admin") || User.IsInRole("Empleado"))
 {
     <p>

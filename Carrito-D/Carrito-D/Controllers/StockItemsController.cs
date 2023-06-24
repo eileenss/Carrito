@@ -80,7 +80,6 @@ namespace Carrito_D.Controllers
         }
 
         // GET: StockItems/Edit/5
-
         public IActionResult Edit(int? idProd, int? idSuc)
         {
             if (idProd == null || idSuc == null)
@@ -88,15 +87,12 @@ namespace Carrito_D.Controllers
                 return NotFound();
             }
 
-            var stockItem = _context.StockItems.Find(idProd, idSuc);
+            var stockItem = _context.StockItems.FirstOrDefault(s => s.ProductoId == idProd && s.SucursalId == idSuc);
 
             if (stockItem == null)
             {
                 return NotFound();
             }
-
-            ViewData["ProductoId"] = new SelectList(_context.Productos, "Id", "Nombre", stockItem.ProductoId);
-            ViewData["SucursalId"] = new SelectList(_context.Sucursales, "Id", "Direccion", stockItem.SucursalId);
 
             return View(stockItem);
         }
@@ -113,7 +109,7 @@ namespace Carrito_D.Controllers
             {
                 try
                 {
-                    var stockItemEnDB = _context.StockItems.Find(stockItem.ProductoId, stockItem.SucursalId);
+                    var stockItemEnDB = _context.StockItems.FirstOrDefault(s => s.ProductoId == stockItem.ProductoId && s.SucursalId == stockItem.SucursalId);
 
                     if (stockItemEnDB != null)
                     {
@@ -137,9 +133,6 @@ namespace Carrito_D.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-
-            ViewData["ProductoId"] = new SelectList(_context.Productos, "Id", "Nombre", stockItem.ProductoId);
-            ViewData["SucursalId"] = new SelectList(_context.Sucursales, "Id", "Direccion", stockItem.SucursalId);
 
             return View(stockItem);
         }

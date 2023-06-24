@@ -48,12 +48,16 @@
                     @Html.DisplayFor(modelItem => item.Activo)
                 </td>
                 <td>
-                    <a asp-action="AgregarCarritoItem" asp-controller="CarritoItems" asp-route-idProducto="@item.Id">Agregar al Carrito</a>
-                    <a asp-action="Details" asp-route-id="@item.Id">Detalles</a>
+
                     @if (User.IsInRole("Admin") || User.IsInRole("Empleado"))
                     {
                         <a asp-action="Edit" asp-route-id="@item.Id">Editar</a>
                     }
+                    else
+                    {
+                        <a asp-action="AgregarCarritoItem" asp-controller="CarritoItems" asp-route-idProducto="@item.Id">Agregar al Carrito</a>
+                    }
+                    <a asp-action="Details" asp-route-id="@item.Id">Detalles</a>
                 </td>
             </tr>
         }

@@ -1,22 +1,33 @@
-﻿@model IEnumerable<Carrito_D.Models.Compra>
+﻿@model IEnumerable<Compra>
 
 @{
     ViewData["Title"] = "Index";
 }
 
-<h1>Index</h1>
+@{
+    if (User.IsInRole("Cliente"))
+    {
+    <h1>Mis compras</h1>
+    }
+    else
+    {
+    <h1>Compras</h1>
+    }
+}
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
 <table class="table">
     <thead>
         <tr>
+            @{
+                if (!User.IsInRole("Cliente"))
+                {
+                        <th>
+                            @Html.DisplayNameFor(model => model.Cliente)
+                        </th>
+                }
+            }
             <th>
-                @Html.DisplayNameFor(model => model.Cliente)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Carrito)
+                @Html.DisplayNameFor(model => model.Id)
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.Fecha)
@@ -24,30 +35,41 @@
             <th>
                 @Html.DisplayNameFor(model => model.Sucursal)
             </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Total)
+            </th>
             <th></th>
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Cliente.Apellido)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Carrito.Id)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Fecha)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Sucursal.Direccion)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-            </td>
-        </tr>
-}
+        @foreach (var item in Model)
+        {
+            <tr>
+                @{
+                if (!User.IsInRole("Cliente"))
+                {
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Cliente.Nombre)
+                        @Html.DisplayFor(modelItem => item.Cliente.Apellido)
+                    </td>
+                }
+                }
+                <td>
+                    @Html.DisplayFor(modelItem => item.Id)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Fecha)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Sucursal.Direccion)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Total)
+                </td>
+                <td>
+                    <a asp-action="Details" asp-route-id="@item.Id">Details</a> 
+                </td>
+            </tr>
+        }
     </tbody>
 </table>
