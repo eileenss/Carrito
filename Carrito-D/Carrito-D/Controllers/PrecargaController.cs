@@ -21,57 +21,22 @@ namespace Carrito_D.Controllers
         }
         private List<string> roles = new List<string>() { Configs.AdminRolNombre, Configs.ClienteRolNombre, Configs.EmpleadoRolNombre, Configs.UsuarioRolNombre };
 
-
-
         //public PrecargaController(CarritoContext context)
         //{
         //    this._carritoContext = context;
         //}
 
-        public IActionResult Seed() //precarga de datos
+        //PRE CARGA DE DATOS
+        public IActionResult Seed()
         {
             CrearRoles().Wait();
             CrearAdmin().Wait();
-            CrearEmpleados().Wait();
+            CrearEmpleado().Wait();
             CrearClientes().Wait();
-         
-            Categoria categoria = new Categoria()
-            {
-                Nombre = "Categoria1"
-            };
+            CrearCategorias().Wait();
+            CrearSucursales().Wait();
 
-            _context.Categorias.Add(categoria);
-            _context.SaveChanges();
-
-            Producto producto = new Producto()
-            {
-                Nombre = "Producto1",
-                PrecioVigente = 120,
-                CategoriaId = categoria.Id
-            };
-
-            _context.Productos.Add(producto);
-            _context.SaveChanges();
-
-            Sucursal sucursal1 = new Sucursal()
-            {
-                Direccion = "Calle 1",
-            };
-
-            _context.Sucursales.Add(sucursal1);
-            _context.SaveChanges();
-
-            StockItem stockItem = new StockItem()
-            {
-                ProductoId = producto.Id,
-                SucursalId = sucursal1.Id,
-                Cantidad = 1
-            };
-
-            _context.StockItems.Add(stockItem);
-            _context.SaveChanges();
-
-            return RedirectToAction("Index", "Home", new { mensaje = "Pre-carga Realizada" });
+            return RedirectToAction("Index", "Home", new { mensaje = "Pre-carga realizada" });
         }
 
         private async Task CrearRoles()
@@ -87,105 +52,270 @@ namespace Carrito_D.Controllers
 
         private async Task CrearAdmin()
         {
-            var adminEncontrado = _context.Personas.Any(p => p.Nombre == "Admin");
-
-            if (!adminEncontrado)
+            var adminExiste = _context.Personas.Any(p => p.Nombre == "Admin");
+            if (!adminExiste)
             {
                 Persona admin = new Persona()
                 {
-                    DNI = "1234568",
+                    DNI = "admin",
                     Nombre = "Admin",
                     Apellido = "Admin",
                     Email = "admin@ort.edu.ar",
                     UserName = "admin@ort.edu.ar"
                 };
 
-                var result = await _userManager.CreateAsync(admin, Configs.Password);
+                var resultNew = await _userManager.CreateAsync(admin, Configs.Password);
 
-                if (result.Succeeded)
+                if (resultNew.Succeeded)
                 {
-                    await _userManager.AddToRoleAsync(admin, Configs.AdminRolNombre);
-
-                    _context.Personas.Add(admin);
-                    _context.SaveChanges();
+                    var resultRol = await _userManager.AddToRoleAsync(admin, Configs.AdminRolNombre);
                 }
             }
         }
 
-        private async Task CrearEmpleados()
+        private async Task CrearEmpleado()
         {
-           // var empleadoEncontrado = _context.Empleados.Any(e => e.DNI == "1234567");
-
-           // if (!empleadoEncontrado)
-           // {
-                Empleado empleado1 = new Empleado()
+            var hayEmpleados = _context.Empleados.Any();
+            if (!hayEmpleados)
+            {
+                Empleado empleado = new Empleado()
                 {
-                    DNI = "1234567",
-                    UserName = "empleado1@ort.edu.ar",
-                    Nombre = "Empleado1",
-                    Apellido = "Empleado1",
-                    Email = "empleado1@ort.edu.ar"
+                    DNI = "empleado",
+                    Nombre = "Jorge",
+                    Apellido = "Perez",
+                    Email = "empleado@ort.edu.ar",
+                    UserName = "empleado@ort.edu.ar"
                 };
-
-                var result = await _userManager.CreateAsync(empleado1, Configs.Password);
-
-                if (result.Succeeded)
+                var resultNew = await _userManager.CreateAsync(empleado, Configs.Password);
+                if (resultNew.Succeeded)
                 {
-                    await _userManager.AddToRoleAsync(empleado1, Configs.EmpleadoRolNombre);
-                    _context.Empleados.Add(empleado1);
-                    _context.SaveChanges();
+                    var resultRol = await _userManager.AddToRoleAsync(empleado, Configs.EmpleadoRolNombre);
                 }
-
-           // }
-
+            }
         }
 
         private async Task CrearClientes()
         {
-           // var clienteEncontrado = _context.Clientes.Any(c => c.DNI == "1234569");
-
-           // if (!clienteEncontrado)
-           // {
+            var clienteExiste = _context.Clientes.Any();
+            if (!clienteExiste)
+            {
                 Cliente cliente1 = new Cliente()
                 {
-                    DNI = "1234569",
-                    UserName = "cliente1@ort.edu.ar",
-                    Nombre = "Cliente1",
-                    Apellido = "Cliente1",
-                    Email = "cliente1@ort.edu.ar"
+                    DNI = "1234567",
+                    Nombre = "Mariana",
+                    Apellido = "Lopez",
+                    Email = "cliente1@ort.edu.ar",
+                    UserName = "cliente1@ort.edu.ar"
                 };
-
-                var result = await _userManager.CreateAsync(cliente1, Configs.Password);
-
-                if (result.Succeeded)
+                var resultNew = await _userManager.CreateAsync(cliente1, Configs.Password);
+                if (resultNew.Succeeded)
                 {
-                    await _userManager.AddToRoleAsync(cliente1, Configs.ClienteRolNombre);
-                    _context.Clientes.Add(cliente1);
-                    _context.SaveChanges();
-                    await CrearCarrito(cliente1.Id);
+                    var resultRol = await _userManager.AddToRoleAsync(cliente1, Configs.ClienteRolNombre);
+                    Carrito carrito = await CrearCarrito(cliente1);
+                    if (resultRol.Succeeded && carrito != null)
+                    {
+                        cliente1.Carritos = new List<Carrito>() { carrito };
+                        _context.Clientes.Update(cliente1);
+                        _context.SaveChanges();
+                    }
                 }
-            //}
+
+                Cliente cliente2 = new Cliente()
+                {
+                    DNI = "1234568",
+                    Nombre = "Oscar",
+                    Apellido = "Cruz",
+                    Email = "cliente2@ort.edu.ar",
+                    UserName = "cliente2@ort.edu.ar"
+                };
+                var resultNew2 = await _userManager.CreateAsync(cliente2, Configs.Password);
+                if (resultNew2.Succeeded)
+                {
+                    var resultRol = await _userManager.AddToRoleAsync(cliente2, Configs.ClienteRolNombre);
+                    Carrito carrito = await CrearCarrito(cliente2);
+                    if (resultRol.Succeeded && carrito != null)
+                    {
+                        cliente2.Carritos = new List<Carrito>() { carrito };
+                        _context.Clientes.Update(cliente2);
+                        _context.SaveChanges();
+                    }
+
+                }
+            }
         }
 
-        private async Task CrearCarrito(int clienteId)
+        private async Task<Carrito> CrearCarrito(Cliente cliente)
         {
-            Carrito carrito1 = new Carrito() { ClienteId = clienteId };
-            _context.Carritos.Add(carrito1);
-            _context.SaveChanges();
-            await CrearCompra(clienteId, carrito1.Id, 1);
-        }
-
-        private async Task CrearCompra(int clienteId, int carritoId, int sucursalId)
-        {
-            Compra compra1 = new Compra()
+            if (cliente != null)
             {
-                ClienteId = clienteId,
-                CarritoId = carritoId,
-                SucursalId = sucursalId,
-            };
-
-            _context.Compras.Add(compra1);
-            _context.SaveChanges();
+                Carrito carrito = new Carrito() { ClienteId = cliente.Id, CarritoItems = new List<CarritoItem>() };
+                _context.Carritos.Add(carrito);
+                await _context.SaveChangesAsync();
+                return carrito;
+            }
+            return null;
         }
+
+        private async Task CrearCategorias()
+        {
+            var hayCategorias = _context.Categorias.Any();
+            if (!hayCategorias)
+            {
+                Categoria vinosTintos = new Categoria()
+                {
+                    Nombre = "Vinos tintos",
+                    Descripcion = "Vinos tintos"
+                };
+                _context.Categorias.Add(vinosTintos);
+                await _context.SaveChangesAsync();
+
+                vinosTintos.Productos = new List<Producto>()
+                {
+                   await CrearProducto(vinosTintos.Id,"Vino Trapiche Malbec","Vino Trapiche Malbec cosecha 2020 750ml",1800),
+                   await CrearProducto(vinosTintos.Id,"Vino Emilia Malbec","Vino Emilia Malbec cosecha 2022 750ml",1300),
+                   await CrearProducto(vinosTintos.Id,"Vino Nicasia Blend","Vino Nicasia Blend de Malbecs cosecha 2021 750ml",2500)
+                };
+                _context.Categorias.Update(vinosTintos);
+                await _context.SaveChangesAsync();
+
+                Categoria whiskies = new Categoria()
+                {
+                    Nombre = "Whiskies",
+                    Descripcion = "Whiskies nacionales e importados"
+                };
+                _context.Categorias.Add(whiskies);
+                await _context.SaveChangesAsync();
+
+                whiskies.Productos = new List<Producto>()
+                {
+                   await CrearProducto(whiskies.Id,"Whisky Chivas Regal 12 años","Whisky Chivas Regal 12 años 1Lt",17000),
+                   await CrearProducto(whiskies.Id,"Whisky Johnnie Walker Black","Whisky Johnnie Walker Black 1Lt",18000),
+                   await CrearProducto(whiskies.Id,"Whisky Johnnie Walker Black","Whisky Johnnie Walker Black 700ml",15000)
+                };
+                _context.Categorias.Update(whiskies);
+                await _context.SaveChangesAsync();
+                //Producto vino1 = new Producto() { Nombre = "Vino Trapiche Malbec ", CategoriaId = vinosTintos.Id, Descripcion = "Vino Trapiche Malbec cosecha 2020 750ml", PrecioVigente = 1800 };
+                //Producto vino2 = new Producto() { Nombre = "Vino Emilia Malbec ", CategoriaId = vinosTintos.Id, Descripcion = "Vino Emilia Malbec cosecha 2022 750ml", PrecioVigente = 1300 };
+                //Producto vino3 = new Producto() { Nombre = "Vino Nicasia Blend ", CategoriaId = vinosTintos.Id, Descripcion = "Vino Nicasia Blend de Malbecs cosecha 2021 750ml", PrecioVigente = 2000 };
+                //_context.Productos.AddRange(vino1,vino2,vino3);
+                //_context.Categorias.Add(vinosTintos);
+            }
+
+        }
+
+        private async Task<Producto> CrearProducto(int categoriaId, string nombre, string descripcion, decimal precioVigente)
+        {
+            Producto producto = new Producto()
+            {
+                CategoriaId = categoriaId,
+                Nombre = nombre,
+                Descripcion = descripcion,
+                PrecioVigente = precioVigente
+            };
+            _context.Productos.Add(producto);
+            await _context.SaveChangesAsync();
+            return producto;
+        }
+
+        //private void CrearCategorias()
+        //{
+        //    var hayCategorias = _context.Categorias.Any();
+        //    if (!hayCategorias)
+        //    {
+        //        Categoria vinosTintos = new Categoria()
+        //        {
+        //            Nombre = "Vinos tintos",
+        //            Descripcion = "Vinos tintos",
+        //        };
+        //        var productos = CrearProductosVinosTintos(vinosTintos);
+        //        vinosTintos.Productos = productos;
+        //        _context.Categorias.Add(vinosTintos);
+        //    }
+        //    _context.SaveChanges();
+        //}
+
+        //private List<Producto> CrearProductosVinosTintos(Categoria categoria)
+        //{
+        //    Producto vino1 = new Producto() { Nombre = "Vino Trapiche Malbec ", CategoriaId = categoria.Id, Descripcion = "Vino Trapiche Malbec cosecha 2020 750ml", PrecioVigente = 1800 };
+        //    _context.Productos.Add(vino1);
+        //    Producto vino2 = new Producto() { Nombre = "Vino Emilia Malbec ", CategoriaId = categoria.Id, Descripcion = "Vino Emilia Malbec cosecha 2022 750ml", PrecioVigente = 1300 };
+        //    _context.Productos.Add(vino2);
+        //    Producto vino3 = new Producto() { Nombre = "Vino Nicasia Blend ", CategoriaId = categoria.Id, Descripcion = "Vino Nicasia Blend de Malbecs cosecha 2021 750ml", PrecioVigente = 2000 };
+        //    _context.Productos.Add(vino3);
+        //    List<Producto> productosVinosTintos = new List<Producto>() { vino1, vino2, vino3 };
+
+        //    return productosVinosTintos;
+        //}
+
+        private async Task CrearSucursales()
+        {
+            var haySucursales = _context.Sucursales.Any();
+            if (!haySucursales)
+            {
+                Sucursal palermo = new Sucursal()
+                {
+                    Nombre = "Palermo",
+                    Direccion = "Av. Santa Fe 1500",
+                    Email = "palermo@ort.edu.ar",
+                    Telefono = 4772 - 0098
+                };
+                _context.Sucursales.Add(palermo);
+                _context.SaveChanges();
+
+                List<StockItem> stockP = await CrearStockItems(palermo);
+                palermo.StockItems = stockP;
+                _context.Sucursales.Update(palermo);
+                _context.SaveChanges();
+
+                Sucursal flores = new Sucursal()
+                {
+                    Nombre = "Flores",
+                    Direccion = "Av. Rivadavia 4000",
+                    Email = "flores@ort.edu.ar",
+                    Telefono = 4992 - 0048
+                };
+                _context.Sucursales.Add(flores);
+                _context.SaveChanges();
+
+                List<StockItem> stockF = await CrearStockItems(flores);
+                flores.StockItems = stockF;
+                _context.Sucursales.Update(flores);
+                _context.SaveChanges();
+
+                Sucursal once = new Sucursal()
+                {
+                    Nombre = "Once",
+                    Direccion = "Bartolomé Mitre 544",
+                    Email = "once@ort.edu.ar",
+                    Telefono = 4882 - 4512
+                };
+                _context.Sucursales.Add(once);
+                _context.SaveChanges();
+
+                List<StockItem> stockO = await CrearStockItems(once);
+                once.StockItems = stockO;
+                _context.Sucursales.Update(once);
+                _context.SaveChanges();
+            }
+        }
+
+        private async Task<List<StockItem>> CrearStockItems(Sucursal sucursal)
+        {
+            var productos = _context.Productos.ToList();
+            List<StockItem> lista = new List<StockItem>();
+            if (_context.Productos != null && sucursal != null)
+            {
+                foreach (var producto in productos)
+                {
+                    StockItem st = new StockItem() { ProductoId = producto.Id, SucursalId = sucursal.Id, Cantidad = 5 };
+                    _context.StockItems.Add(st);
+                    await _context.SaveChangesAsync();
+                    lista.Add(st);
+                }
+            }
+            return lista;
+        }
+
+
     }
 }

@@ -9,6 +9,8 @@ using Carrito_D.Data;
 using Carrito_D.Models;
 using Carrito_D.ViewModels;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
+using Carrito_D.Helpers;
 
 namespace Carrito_D.Controllers
 {
@@ -16,16 +18,18 @@ namespace Carrito_D.Controllers
     public class EmpleadosController : Controller
     {
         private readonly CarritoContext _context;
+        private readonly UserManager<Persona> _userManager;
 
-        public EmpleadosController(CarritoContext context)
+        public EmpleadosController(CarritoContext context, UserManager<Persona> userManager)
         {
             _context = context;
+            _userManager = userManager;
         }
 
         // GET: Empleados
         public IActionResult Index()
         {
-              return View(_context.Empleados.ToList());
+            return View(_context.Empleados.ToList());
         }
 
         // GET: Empleados/Details/5
@@ -37,6 +41,7 @@ namespace Carrito_D.Controllers
             }
 
             var empleado = _context.Empleados.FirstOrDefault(e => e.Id == id);
+
             if (empleado == null)
             {
                 return NotFound();
@@ -56,15 +61,47 @@ namespace Carrito_D.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Create([Bind("Legajo,Id,DNI,UserName,PasswordHash,Nombre,Apellido,Telefono,Direccion,Email")] Empleado empleado)
+        public async Task<IActionResult> Create([Bind("Id,DNI,Nombre,Apellido,Email,Legajo,Telefono,Direccion")] CrearEmpleado viewmodel)
         {
             if (ModelState.IsValid)
             {
-                _context.Empleados.Add(empleado);
-                _context.SaveChanges();
-                return RedirectToAction(nameof(Index));
+                Empleado empleado = new Empleado()
+                {
+                    DNI = viewmodel.DNI,
+                    Nombre = viewmodel.Nombre,
+                    Apellido = viewmodel.Apellido,
+                    Telefono = viewmodel.Telefono,
+                    Direccion = viewmodel.Direccion,
+                    Email = viewmodel.Email,
+                    UserName = viewmodel.Email,
+                    Legajo = viewmodel.Legajo,
+                    PasswordHash = Configs.Password
+                };
+
+                var resultadoEmpleado = await _userManager.CreateAsync(empleado, Configs.Password);
+
+                if (resultadoEmpleado.Succeeded)
+                {
+                    var resultadoAddRole = await _userManager.AddToRoleAsync(empleado, Configs.EmpleadoRolNombre);
+
+                    if (resultadoAddRole.Succeeded)
+                    {
+                        return RedirectToAction("Index", "Empleados");
+                    }
+                    else
+                    {
+                        var delete = await _userManager.DeleteAsync(empleado);
+                        return Content($"No se ha podido agregar el rol {Configs.EmpleadoRolNombre}");
+                    }
+                }
+
+                foreach (var error in resultadoEmpleado.Errors)
+                {
+                    ModelState.AddModelError(String.Empty, error.Description);
+                }
+
             }
-            return View(empleado);
+            return View(viewmodel);
         }
 
         // GET: Empleados/Edit/5
@@ -95,7 +132,7 @@ namespace Carrito_D.Controllers
             {
                 return NotFound();
             }
-            
+
             /*Ya tenemos viewmodel de edit
             ModelState.Remove("DNI");
             ModelState.Remove("UserName");
@@ -110,7 +147,7 @@ namespace Carrito_D.Controllers
                 {
                     var empleadoEnDB = _context.Empleados.Find(empleado.Id);
 
-                    if(empleadoEnDB != null)
+                    if (empleadoEnDB != null)
                     {
                         empleadoEnDB.Telefono = empleado.Telefono;
                         empleadoEnDB.Direccion = empleado.Direccion;
@@ -118,7 +155,7 @@ namespace Carrito_D.Controllers
                         _context.Empleados.Update(empleadoEnDB);
                         _context.SaveChanges();
                     }
-                    
+
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -163,19 +200,21 @@ namespace Carrito_D.Controllers
             {
                 return Problem("Entity set 'CarritoContext.Empleados'  is null.");
             }
+
             var empleado = await _context.Empleados.FindAsync(id);
+
             if (empleado != null)
             {
                 _context.Empleados.Remove(empleado);
             }
-            
+
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
         private bool EmpleadoExists(int id)
         {
-          return _context.Empleados.Any(e => e.Id == id);
+            return _context.Empleados.Any(e => e.Id == id);
         }
     }
 }

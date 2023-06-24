@@ -1,22 +1,13 @@
-﻿@model Carrito_D.Models.CarritoItem
+﻿@model CarritoItem
 
 @{
     ViewData["Title"] = "Delete";
 }
 
-<h1>Delete</h1>
+<h1>Eliminar producto del carrito</h1>
 
-<h3>Are you sure you want to delete this?</h3>
 <div>
-    <h4>CarritoItem</h4>
-    <hr />
     <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Carrito)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Carrito.Id)
-        </dd>
         <dt class = "col-sm-2">
             @Html.DisplayNameFor(model => model.Producto)
         </dt>
@@ -31,10 +22,10 @@
         </dd>
     </dl>
     
-    <form asp-action="Delete">
-        <input type="hidden" asp-for="ProductoId" />
+    <form asp-action="Delete" asp-route-idCarrito="@Model.CarritoId" asp-route-idProducto="@Model.ProductoId">
         <input type="hidden" asp-for="CarritoId" />
+        <input type="hidden" asp-for="ProductoId" />
         <input type="submit" value="Delete" class="btn btn-danger" /> |
-        <a asp-action="Index">Back to List</a>
+        <a asp-action="MiCarrito">Volver</a>
     </form>
 </div>

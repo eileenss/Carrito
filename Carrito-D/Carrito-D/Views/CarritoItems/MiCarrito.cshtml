@@ -1,0 +1,77 @@
+﻿@model IEnumerable<CarritoItem>
+
+@{
+    ViewData["Title"] = "Mi Carrito";
+}
+
+<h1>Mi carrito</h1>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Producto.Imagen)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Producto)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Cantidad)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Subtotal)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Producto.Imagen)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Producto.Nombre)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Cantidad)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Subtotal)
+                </td>
+                <td>
+                    @Html.ActionLink("Edit", "Edit", new { idCarrito = item.CarritoId, idProducto = item.ProductoId }) |
+                    @Html.ActionLink("Delete", "Delete", new { idCarrito = item.CarritoId, idProducto = item.ProductoId })
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@{
+    if (Model.Count() > 0)
+    {
+        var carritoId = Model.FirstOrDefault().CarritoId;
+        <div> 
+        @Html.ActionLink("Vaciar carrito", "VaciarCarrito", new { idCarrito = carritoId } )
+        <a asp-controller="StockItems" asp-action="ElegirSucursal" asp-route-idCarrito="@carritoId">Comprar</a>
+        </div>
+        
+    }
+
+}
+
+<div>
+    @{
+        decimal subtotales = 0;
+        foreach (var item in Model)
+        {
+            subtotales += item.Subtotal;
+        }
+        string total = subtotales.ToString("C2");
+    }
+    Total: @total
+</div>
+
+

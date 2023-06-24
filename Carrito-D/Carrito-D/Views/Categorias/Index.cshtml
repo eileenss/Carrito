@@ -6,9 +6,14 @@
 
 <h1>Categorías</h1>
 
-<p>
-    <a asp-action="Create">Crear nueva categoría</a>
-</p>
+
+@if (User.IsInRole("Admin") || User.IsInRole("Empleado"))
+{
+    <p>
+        <a asp-action="Create">Crear una nueva categoría</a>
+    </p>
+
+}
 <table class="table">
     <thead>
         <tr>
@@ -22,18 +27,22 @@
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Nombre)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Descripcion)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Editar</a> 
-            </td>
-        </tr>
-}
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Nombre)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Descripcion)
+                </td>
+                @if (User.IsInRole("Admin") || User.IsInRole("Empleado"))
+                {
+                    <td>
+                        <a asp-action="Edit" asp-route-id="@item.Id">Editar</a>
+                    </td>
+                }
+            </tr>
+        }
     </tbody>
 </table>

@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Carrito_D.Data
 {
-    public class CarritoContext : IdentityDbContext<IdentityUser<int>,IdentityRole<int>,int>
+    public class CarritoContext : IdentityDbContext<IdentityUser<int>, IdentityRole<int>, int>
     {
         public CarritoContext(DbContextOptions options) : base(options)
         {
@@ -16,7 +16,9 @@ namespace Carrito_D.Data
         {
             base.OnModelCreating(modelBuilder);
 
-            modelBuilder.Entity<Producto>().Property(p => p.PrecioVigente).HasPrecision(38,18);
+            modelBuilder.Entity<Producto>().Property(p => p.PrecioVigente).HasPrecision(38, 18);
+
+            modelBuilder.Entity<Compra>().Property(c => c.Total).HasPrecision(38, 18);
 
             modelBuilder.Entity<CarritoItem>().HasKey(ci => new { ci.CarritoId, ci.ProductoId });
 
@@ -42,10 +44,15 @@ namespace Carrito_D.Data
                 .WithMany(p => p.StockItems)
                 .HasForeignKey(sp => sp.ProductoId);
 
-            //Identity Stores para resolver la utilización de ASPNETUSERS en las tablas
+            #region Identity Stores para resolver la utilización de ASPNETUSERS en las tablas
             modelBuilder.Entity<IdentityUser<int>>().ToTable("Personas");
             modelBuilder.Entity<IdentityRole<int>>().ToTable("Roles");
             modelBuilder.Entity<IdentityUserRole<int>>().ToTable("PersonasRoles");
+            #endregion
+
+            #region Unique
+            //modelBuilder.Entity<Personas>()
+            #endregion
         }
 
         public DbSet<Persona> Personas { get; set; }

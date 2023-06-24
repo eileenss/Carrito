@@ -77,24 +77,20 @@ namespace Carrito_D.Controllers
 
                 var resultadoNewPersona = await _userManager.CreateAsync(persona, Configs.Password);
 
-
                 if (resultadoNewPersona.Succeeded)
                 {
                     IdentityResult resultadoAddRole;
                     string rolDefinido;
+
                     if (EsAdmin)
                     {
                      rolDefinido = Configs.AdminRolNombre;
-                     
-                        
-                       
                     }
                     else
                     {
-                     rolDefinido = Configs.AdminRolNombre;
-                     
-
+                     rolDefinido = Configs.UsuarioRolNombre;
                     }
+
                     resultadoAddRole = await _userManager.AddToRoleAsync(persona, rolDefinido);
 
                     if (resultadoAddRole.Succeeded)

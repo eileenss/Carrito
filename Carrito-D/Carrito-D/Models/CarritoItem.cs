@@ -23,7 +23,7 @@ namespace Carrito_D.Models
         public decimal ValorUnitario { get; set; }
 
         [Required(ErrorMessage = ErrorMsg.Requerido)]
-        [Range(1, int.MaxValue, ErrorMessage = ErrorMsg.Rango)]
+        [Range(1, int.MaxValue, ErrorMessage = ErrorMsg.Minimo)]
         public int Cantidad { get; set; }
 
         //[Required(ErrorMessage = ErrorMsg.Requerido)] lo agregamos nosotros con lógica 

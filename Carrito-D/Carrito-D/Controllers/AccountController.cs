@@ -1,9 +1,10 @@
-﻿using Carrito_D.Helpers;
+﻿using Carrito_D.Data;
+using Carrito_D.Helpers;
 using Carrito_D.Models;
 using Carrito_D.ViewModels;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-
+using SQLitePCL;
 
 namespace Carrito_D.Controllers
 {
@@ -11,11 +12,13 @@ namespace Carrito_D.Controllers
     {
         private readonly UserManager<Persona> _usermanager;
         private readonly SignInManager<Persona> _signinmanager;
+        private readonly CarritoContext _context;
 
-        public AccountController(UserManager<Persona> usermanager, SignInManager<Persona> signinmanager)
+        public AccountController(UserManager<Persona> usermanager, SignInManager<Persona> signinmanager, CarritoContext context)
         {
             this._usermanager = usermanager;
             this._signinmanager = signinmanager;
+            this._context = context;
         }
 
         public IActionResult Registrar()
@@ -42,18 +45,26 @@ namespace Carrito_D.Controllers
                 if (resultadoCreate.Succeeded)
                 {
                     var resultadoAddRole = await _usermanager.AddToRoleAsync(cliente, Configs.ClienteRolNombre);
+
                     if (resultadoAddRole.Succeeded)
                     {
+                        Carrito carrito = new Carrito() { ClienteId = cliente.Id };
+                        _context.Carritos.Add(carrito);
+                        _context.SaveChanges();
+
+                        cliente.Carritos = new List<Carrito> { carrito };
+                        _context.Clientes.Update(cliente);
+                        _context.SaveChanges();
+
                         await _signinmanager.SignInAsync(cliente, isPersistent: false);
+
                         return RedirectToAction("Edit", "Clientes", new { id = cliente.Id });
                     }
                     else
                     {
                         ModelState.AddModelError(String.Empty,$"No se puede agregar el rol de {Configs.ClienteRolNombre}");
-                    }
-
-
-                   
+                    }                
+                    
                 }
 
                 foreach(var error in resultadoCreate.Errors)

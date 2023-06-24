@@ -47,6 +47,10 @@
         </dd>
     </dl>
 </div>
+
+
+<a asp-action="AgregarCarritoItem" asp-controller="CarritoItems" asp-route-idProducto="@Model.Id">Agregar al Carrito</a>
+
 <div>
     <a asp-action="Edit" asp-route-id="@Model?.Id">Editar</a> |
     <a asp-action="Index">Voler a Productos</a>

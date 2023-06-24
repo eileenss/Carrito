@@ -7,6 +7,8 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Carrito_D.Data;
 using Carrito_D.Models;
+using Microsoft.AspNetCore.Authorization.Infrastructure;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Carrito_D.Controllers
 {
@@ -44,6 +46,7 @@ namespace Carrito_D.Controllers
         }
 
         // GET: Categorias/Create
+        [Authorize(Roles = "Admin, Empleado")]
         public IActionResult Create()
         {
             return View();
@@ -54,6 +57,7 @@ namespace Carrito_D.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin, Empleado")]
         public IActionResult Create([Bind("Id,Nombre,Descripcion")] Categoria categoria)
         {
             if (ModelState.IsValid)
@@ -66,6 +70,7 @@ namespace Carrito_D.Controllers
         }
 
         // GET: Categorias/Edit/5
+        [Authorize(Roles = "Admin, Empleado")]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null || _context.Categorias == null)
@@ -86,6 +91,7 @@ namespace Carrito_D.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin, Empleado")]
         public IActionResult Edit(int id, [Bind("Id,Nombre,Descripcion")] Categoria categoria)
         {
             if (id != categoria.Id)

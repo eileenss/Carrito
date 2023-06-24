@@ -1,13 +1,10 @@
 ﻿using Carrito_D.Helpers;
-using Microsoft.AspNetCore.Identity;
 using System.ComponentModel.DataAnnotations;
-using System.Xml.Linq;
 
 namespace Carrito_D.ViewModels
 {
-    public class CrearPersona
+    public class CrearEmpleado
     {
-        
         [Required(ErrorMessage = ErrorMsg.Requerido)]
         [RegularExpression(@"^\d{1,2}\.?\d{3}\.?\d{3}$", ErrorMessage = ErrorMsg.Invalido)]
         public string DNI { get; set; }
@@ -22,7 +19,6 @@ namespace Carrito_D.ViewModels
         [RegularExpression(@"[a-zA-Z áéíóú 0-9]*", ErrorMessage = ErrorMsg.SoloLetras)]
         public string Apellido { get; set; }
 
-        
         [RegularExpression(@"^(549?)?(11\d{8})|([23]\d{9})$", ErrorMessage = ErrorMsg.Invalido)]
         [Display(Name = "Teléfono")]
         public int? Telefono { get; set; }
@@ -36,11 +32,8 @@ namespace Carrito_D.ViewModels
         [EmailAddress(ErrorMessage = ErrorMsg.Invalido)]
         [Display(Name = "Correo electrónico")]
         public string Email { get; set; }
+
+        public int Legajo { get; set; }
+
     }
 }
-
-
-
-
-
-

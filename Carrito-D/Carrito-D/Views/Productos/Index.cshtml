@@ -6,9 +6,13 @@
 
 <h1>Productos</h1>
 
-<p>
-    <a asp-action="Create">Crear nuevo producto</a>
-</p>
+@if (User.IsInRole("Admin") || User.IsInRole("Empleado"))
+{
+    <p>
+        <a asp-action="Create">Crear nuevo producto</a>
+    </p>
+}
+
 <table class="table">
     <thead>
         <tr>
@@ -28,25 +32,34 @@
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Nombre)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Imagen)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.PrecioVigente)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Activo)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Editar</a> |
-                <a asp-action="Details" asp-route-id="@item.Id">Detalles</a> 
-            </td>
-        </tr>
-}
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Nombre)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Imagen)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.PrecioVigente)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Activo)
+                </td>
+                <td>
+
+                    @if (User.IsInRole("Admin") || User.IsInRole("Empleado"))
+                    {
+                        <a asp-action="Edit" asp-route-id="@item.Id">Editar</a>
+                    }
+                    else
+                    {
+                        <a asp-action="AgregarCarritoItem" asp-controller="CarritoItems" asp-route-idProducto="@item.Id">Agregar al Carrito</a>
+                    }
+                    <a asp-action="Details" asp-route-id="@item.Id">Detalles</a>
+                </td>
+            </tr>
+        }
     </tbody>
 </table>
