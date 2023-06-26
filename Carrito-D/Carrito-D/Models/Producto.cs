@@ -22,6 +22,7 @@ namespace Carrito_D.Models
         [Required(ErrorMessage = ErrorMsg.Requerido)]
         [Range(0, double.MaxValue, ErrorMessage = ErrorMsg.Rango)]
         [Display(Name = "Precio")]
+        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:C2}")]
         public decimal PrecioVigente { get; set; }
 
         [Display(Name = "Producto activo")]

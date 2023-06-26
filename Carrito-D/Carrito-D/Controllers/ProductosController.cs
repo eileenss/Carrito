@@ -22,10 +22,25 @@ namespace Carrito_D.Controllers
         }
 
         // GET: Productos
-        public IActionResult Index()
+        public IActionResult Index(int? categoriaId)
         {
-            var carritoContext = _context.Productos.Include(p => p.Categoria); 
-            return View(carritoContext.ToList());
+            if (categoriaId != null)
+            {
+                if (!_context.Categorias.Any(c => c.Id == categoriaId))
+                {
+                    return NotFound();
+                }
+
+                var productosCategoria = _context.Productos
+                       .Include(p => p.Categoria)
+                       .Where(p => p.CategoriaId == categoriaId);
+
+                return View(productosCategoria.ToList());
+            }
+
+            var productos = _context.Productos.Include(p => p.Categoria); 
+
+            return View(productos.ToList());
         }
 
         // GET: Productos/Details/5

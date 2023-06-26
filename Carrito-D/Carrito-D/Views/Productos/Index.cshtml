@@ -13,6 +13,18 @@
     </p>
 }
 
+<div>
+    <h3>Filtrar por categorías</h3>
+    <ul style="list-style-type: none;">
+        <li style="display: inline;">
+            <a asp-action="Index" asp-controller="Productos" asp-route-categoriaId="1">Vinos tintos</a> |
+        </li>
+        <li style="display: inline;">
+            <a asp-action="Index" asp-controller="Productos" asp-route-categoriaId="2">Whiskies</a>
+        </li>
+    </ul>
+</div>
+
 <table class="table">
     <thead>
         <tr>
@@ -25,9 +37,12 @@
             <th>
                 @Html.DisplayNameFor(model => model.PrecioVigente)
             </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Activo)
-            </th>
+            @if (User.IsInRole("Admin") || User.IsInRole("Empleado"))
+            {
+                <th>
+                    @Html.DisplayNameFor(model => model.Activo)
+                </th>
+            }
             <th></th>
         </tr>
     </thead>
@@ -44,19 +59,31 @@
                 <td>
                     @Html.DisplayFor(modelItem => item.PrecioVigente)
                 </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Activo)
-                </td>
-                <td>
-
-                    @if (User.IsInRole("Admin") || User.IsInRole("Empleado"))
-                    {
+                @if (User.IsInRole("Admin") || User.IsInRole("Empleado"))
+                {
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Activo)
+                    </td>
+                    <td>
                         <a asp-action="Edit" asp-route-id="@item.Id">Editar</a>
+                    </td>
+                }
+                else
+                {
+                    if (item.Activo == false)
+                    {
+                        <td class="alert alert-danger" role="alert">
+                            Producto pausado
+                        </td>
                     }
                     else
                     {
-                        <a asp-action="AgregarCarritoItem" asp-controller="CarritoItems" asp-route-idProducto="@item.Id">Agregar al Carrito</a>
+                        <td>
+                            <a asp-action="AgregarCarritoItem" asp-controller="CarritoItems" asp-route-idProducto="@item.Id">Agregar al Carrito</a>
+                        </td>
                     }
+                }
+                <td>
                     <a asp-action="Details" asp-route-id="@item.Id">Detalles</a>
                 </td>
             </tr>

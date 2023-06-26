@@ -34,9 +34,6 @@ namespace Carrito_D
                 opciones.Cookie.Name = "IdentidadCarritoApp";
             });
 
-
-
-
             //Identity
             builder.Services.AddIdentity<Persona, IdentityRole<int>>().AddEntityFrameworkStores<CarritoContext>();
 

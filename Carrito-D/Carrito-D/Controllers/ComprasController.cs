@@ -34,7 +34,8 @@ namespace Carrito_D.Controllers
                     .Include(c => c.Carrito)
                     .Include(c => c.Cliente)
                     .Include(c => c.Sucursal)
-                    .Where(c => c.ClienteId == clienteId);
+                    .Where(c => c.ClienteId == clienteId)
+                    .OrderByDescending(c => c.Fecha);
 
                 return View(carritos.ToList());
             }
