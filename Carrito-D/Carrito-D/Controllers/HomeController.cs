@@ -16,13 +16,6 @@ namespace Carrito_D.Controllers
         public IActionResult Index(String mensaje)
         {
             ViewBag.Mensaje = mensaje;
-
-
-            return View();
-        }
-
-        public IActionResult Privacy()
-        {
             return View();
         }
 

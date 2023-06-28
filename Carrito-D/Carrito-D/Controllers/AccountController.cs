@@ -24,6 +24,10 @@ namespace Carrito_D.Controllers
 
         public IActionResult Registrar()
         {
+            if (User.Identity.IsAuthenticated)
+            {
+                return RedirectToAction("AccesoDenegado", new {mensaje = "Ya estás registrado. Cerrá sesión para registrar un nuevo usuario."});
+            }
             return View();
         }
 
@@ -113,9 +117,9 @@ namespace Carrito_D.Controllers
             return RedirectToAction("Index", "Home");
         }
 
-        public IActionResult AccesoDenegado(string returnUrl)
+        public IActionResult AccesoDenegado(string mensaje)
         {
-            ViewBag.ReturnUrl = returnUrl;
+            ViewBag.ReturnUrl = mensaje;
             return View();
         }
 

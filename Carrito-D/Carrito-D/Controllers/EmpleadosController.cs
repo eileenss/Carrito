@@ -74,7 +74,6 @@ namespace Carrito_D.Controllers
                     Direccion = viewmodel.Direccion,
                     Email = viewmodel.Email,
                     UserName = viewmodel.Email,
-                    Legajo = viewmodel.Legajo,
                     PasswordHash = Configs.Password
                 };
 

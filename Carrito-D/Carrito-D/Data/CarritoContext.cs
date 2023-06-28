@@ -55,13 +55,12 @@ namespace Carrito_D.Data
             modelBuilder.Entity<Producto>().HasIndex(p => p.Nombre).IsUnique();
             modelBuilder.Entity<Categoria>().HasIndex(p => p.Nombre).IsUnique();
             modelBuilder.Entity<Sucursal>().HasIndex(p => p.Direccion).IsUnique();
-
             #endregion
 
-
-
-
-
+            #region Secuencia automática para legajo
+            modelBuilder.HasSequence<int>("Legajo").StartsAt(1000).IncrementsBy(1);
+            modelBuilder.Entity<Empleado>().Property(e => e.Legajo).HasDefaultValueSql("NEXT VALUE FOR Legajo");
+            #endregion
         }
 
         public DbSet<Persona> Personas { get; set; }

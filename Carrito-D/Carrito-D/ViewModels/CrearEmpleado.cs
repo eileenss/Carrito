@@ -35,8 +35,5 @@ namespace Carrito_D.ViewModels
         [Display(Name = "Correo electrónico")]
         [Remote(action: "EmailExistente", controller: "Empleados")]
         public string Email { get; set; }
-
-        public int Legajo { get; set; }
-
     }
 }

@@ -194,11 +194,6 @@ namespace Carrito_D.Controllers
                 };
                 _context.Categorias.Update(whiskies);
                 await _context.SaveChangesAsync();
-                //Producto vino1 = new Producto() { Nombre = "Vino Trapiche Malbec ", CategoriaId = vinosTintos.Id, Descripcion = "Vino Trapiche Malbec cosecha 2020 750ml", PrecioVigente = 1800 };
-                //Producto vino2 = new Producto() { Nombre = "Vino Emilia Malbec ", CategoriaId = vinosTintos.Id, Descripcion = "Vino Emilia Malbec cosecha 2022 750ml", PrecioVigente = 1300 };
-                //Producto vino3 = new Producto() { Nombre = "Vino Nicasia Blend ", CategoriaId = vinosTintos.Id, Descripcion = "Vino Nicasia Blend de Malbecs cosecha 2021 750ml", PrecioVigente = 2000 };
-                //_context.Productos.AddRange(vino1,vino2,vino3);
-                //_context.Categorias.Add(vinosTintos);
             }
 
         }
@@ -216,36 +211,6 @@ namespace Carrito_D.Controllers
             await _context.SaveChangesAsync();
             return producto;
         }
-
-        //private void CrearCategorias()
-        //{
-        //    var hayCategorias = _context.Categorias.Any();
-        //    if (!hayCategorias)
-        //    {
-        //        Categoria vinosTintos = new Categoria()
-        //        {
-        //            Nombre = "Vinos tintos",
-        //            Descripcion = "Vinos tintos",
-        //        };
-        //        var productos = CrearProductosVinosTintos(vinosTintos);
-        //        vinosTintos.Productos = productos;
-        //        _context.Categorias.Add(vinosTintos);
-        //    }
-        //    _context.SaveChanges();
-        //}
-
-        //private List<Producto> CrearProductosVinosTintos(Categoria categoria)
-        //{
-        //    Producto vino1 = new Producto() { Nombre = "Vino Trapiche Malbec ", CategoriaId = categoria.Id, Descripcion = "Vino Trapiche Malbec cosecha 2020 750ml", PrecioVigente = 1800 };
-        //    _context.Productos.Add(vino1);
-        //    Producto vino2 = new Producto() { Nombre = "Vino Emilia Malbec ", CategoriaId = categoria.Id, Descripcion = "Vino Emilia Malbec cosecha 2022 750ml", PrecioVigente = 1300 };
-        //    _context.Productos.Add(vino2);
-        //    Producto vino3 = new Producto() { Nombre = "Vino Nicasia Blend ", CategoriaId = categoria.Id, Descripcion = "Vino Nicasia Blend de Malbecs cosecha 2021 750ml", PrecioVigente = 2000 };
-        //    _context.Productos.Add(vino3);
-        //    List<Producto> productosVinosTintos = new List<Producto>() { vino1, vino2, vino3 };
-
-        //    return productosVinosTintos;
-        //}
 
         private async Task CrearSucursales()
         {
@@ -315,7 +280,5 @@ namespace Carrito_D.Controllers
             }
             return lista;
         }
-
-
     }
 }

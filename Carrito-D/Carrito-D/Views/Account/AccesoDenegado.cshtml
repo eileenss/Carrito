@@ -5,10 +5,10 @@
 
 <div class="text-center text-white" style="background-color:black">
     <h1>
-        Su usuario no tiene los permisos suficientes
+        No podés ingresar.
         @if (hayReturnUrl)
         {
-            <span>para acceder a @ViewBag.ReturnUrl</span>
+            <span>@ViewBag.ReturnUrl</span>
         }
     </h1>
     <a asp-action="CerrarSesion">Cerrar sesión</a>
