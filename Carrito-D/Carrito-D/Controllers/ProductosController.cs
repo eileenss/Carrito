@@ -80,6 +80,7 @@ namespace Carrito_D.Controllers
             if (ModelState.IsValid)
             {
                 _context.Productos.Add(producto);
+
                 _context.SaveChanges();
                 return RedirectToAction(nameof(Index));
             }

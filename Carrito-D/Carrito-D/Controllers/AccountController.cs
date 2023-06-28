@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using SQLitePCL;
 
+
 namespace Carrito_D.Controllers
 {
     public class AccountController : Controller
@@ -29,6 +30,7 @@ namespace Carrito_D.Controllers
         [HttpPost]
         public async Task<IActionResult> Registrar([Bind("Email,Password,ConfirmedPassword,DNI,Nombre,Apellido")] Registro viewmodel)
         {
+            
             if (ModelState.IsValid)
             {
                 Cliente cliente = new Cliente()
@@ -84,6 +86,36 @@ namespace Carrito_D.Controllers
 
             return View();
         }
+        [HttpGet]
+        public async Task<IActionResult> DniExistente(string dni)
+        {
+            if (_context.Clientes.Any(c => c.DNI == dni))
+            {
+                return Json("ya existe una persona registrada con ese numero de dni");
+            }
+            else
+            {
+                return Json(true);
+            }
+        }
+        [HttpGet]
+        public async Task<IActionResult> EmailExistente(string email)
+        {
+
+            var mailCliente = await _usermanager.FindByEmailAsync(email);
+
+            if (mailCliente != null)
+            {
+                return Json("ya existe una persona registrada con ese email");
+            }
+            else
+            {
+                return Json(true);
+            }
+        }
+
+
+
 
         [HttpPost]
         public async Task<IActionResult> IniciarSesion(Login viewmodel)
