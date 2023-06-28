@@ -9,6 +9,7 @@ using Carrito_D.Data;
 using Carrito_D.Models;
 using Microsoft.AspNetCore.Authorization;
 using System.Data;
+using Microsoft.Data.SqlClient;
 
 namespace Carrito_D.Controllers
 {
@@ -69,10 +70,30 @@ namespace Carrito_D.Controllers
             if (ModelState.IsValid)
             {
                 _context.Sucursales.Add(sucursal);
-                _context.SaveChanges();
-                return RedirectToAction(nameof(Index));
+                try
+                {
+                    _context.SaveChanges();
+                    return RedirectToAction(nameof(Index));
+                }
+                catch (DbUpdateException dbex)
+                {
+                    ProcesarDuplicado(dbex);
+                }
             }
             return View(sucursal);
+        }
+
+        private void ProcesarDuplicado(DbUpdateException dbex)
+        {
+            SqlException innerException = dbex.InnerException as SqlException;
+            if (innerException != null && (innerException.Number == 2637 || innerException.Number == 2601))
+            {
+                ModelState.AddModelError("Direccion", "Ya existe una sucursal con esa dirección.");
+            }
+            else
+            {
+                ModelState.AddModelError(string.Empty, dbex.Message);
+            }
         }
 
         // GET: Sucursales/Edit/5
@@ -121,8 +142,8 @@ namespace Carrito_D.Controllers
 
                         _context.Sucursales.Update(sucursalEnDb);
                         _context.SaveChanges();
+                        return RedirectToAction(nameof(Index));
                     }
-
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -135,7 +156,10 @@ namespace Carrito_D.Controllers
                         throw;
                     }
                 }
-                return RedirectToAction(nameof(Index));
+                catch (DbUpdateException dbex)
+                {
+                    ProcesarDuplicado(dbex);
+                }
             }
             return View(sucursal);
         }

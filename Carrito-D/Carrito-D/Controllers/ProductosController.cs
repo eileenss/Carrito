@@ -9,6 +9,8 @@ using Carrito_D.Data;
 using Carrito_D.Models;
 using Microsoft.AspNetCore.Authorization;
 using System.Data;
+using Microsoft.Data.SqlClient;
+using Microsoft.AspNetCore.Mvc.TagHelpers;
 
 namespace Carrito_D.Controllers
 {
@@ -38,7 +40,7 @@ namespace Carrito_D.Controllers
                 return View(productosCategoria.ToList());
             }
 
-            var productos = _context.Productos.Include(p => p.Categoria); 
+            var productos = _context.Productos.Include(p => p.Categoria);
 
             return View(productos.ToList());
         }
@@ -81,13 +83,33 @@ namespace Carrito_D.Controllers
             {
                 _context.Productos.Add(producto);
 
-                _context.SaveChanges();
-                return RedirectToAction(nameof(Index));
+                try
+                {
+                    _context.SaveChanges();
+                    return RedirectToAction(nameof(Index));
+                }
+                catch (DbUpdateException dbex)
+                {
+                    ProcesarDuplicado(dbex);
+                }
             }
 
             ViewData["CategoriaId"] = new SelectList(_context.Categorias, "Id", "Nombre", producto.CategoriaId);
 
             return View(producto);
+        }
+
+        private void ProcesarDuplicado(DbUpdateException dbex)
+        {
+            SqlException innerException = dbex.InnerException as SqlException;
+            if (innerException != null && (innerException.Number == 2637 || innerException.Number == 2601))
+            {
+                ModelState.AddModelError("Nombre", "Ya existe un producto con ese nombre");
+            }
+            else
+            {
+                ModelState.AddModelError(string.Empty, dbex.Message);
+            }
         }
 
         // GET: Productos/Edit/5
@@ -125,7 +147,7 @@ namespace Carrito_D.Controllers
             }
 
             //ModelState.Remove("CategoriaId");
-            
+
             if (ModelState.IsValid)
             {
                 try
@@ -139,15 +161,15 @@ namespace Carrito_D.Controllers
                         productoEnDb.Imagen = producto.Imagen;
                         productoEnDb.PrecioVigente = producto.PrecioVigente;
                         productoEnDb.Activo = producto.Activo;
-                    
+
                         _context.Productos.Update(productoEnDb);
-                        _context.SaveChanges();
+                        _context.SaveChanges();   
+                        return RedirectToAction(nameof(Index));
                     }
-                    else 
+                    else
                     {
                         return NotFound();
                     }
-                    
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -160,7 +182,10 @@ namespace Carrito_D.Controllers
                         throw;
                     }
                 }
-                return RedirectToAction(nameof(Index));
+                catch (DbUpdateException dbex)
+                {
+                    ProcesarDuplicado(dbex);
+                }
             }
             ViewData["CategoriaId"] = new SelectList(_context.Categorias, "Id", "Nombre", producto.CategoriaId);
             return View(producto);
@@ -206,7 +231,7 @@ namespace Carrito_D.Controllers
 
         private bool ProductoExists(int id)
         {
-          return _context.Productos.Any(p => p.Id == id);
+            return _context.Productos.Any(p => p.Id == id);
         }
     }
 }

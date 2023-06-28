@@ -9,6 +9,7 @@ using Carrito_D.Data;
 using Carrito_D.Models;
 using Microsoft.AspNetCore.Authorization.Infrastructure;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.Data.SqlClient;
 
 namespace Carrito_D.Controllers
 {
@@ -24,7 +25,7 @@ namespace Carrito_D.Controllers
         // GET: Categorias
         public IActionResult Index()
         {
-              return View(_context.Categorias.ToList());
+            return View(_context.Categorias.ToList());
         }
 
         // GET: Categorias/Details/5
@@ -36,7 +37,7 @@ namespace Carrito_D.Controllers
             }
 
             var categoria = _context.Categorias.FirstOrDefault(c => c.Id == id);
-          
+
             if (categoria == null)
             {
                 return NotFound();
@@ -63,10 +64,30 @@ namespace Carrito_D.Controllers
             if (ModelState.IsValid)
             {
                 _context.Categorias.Add(categoria);
-                _context.SaveChanges();
-                return RedirectToAction(nameof(Index));
+                try
+                {
+                    _context.SaveChanges();
+                    return RedirectToAction(nameof(Index));
+                }
+                catch(DbUpdateException dbex)
+                {
+                    ProcesarDuplicado(dbex);
+                }
             }
             return View(categoria);
+        }
+
+        private void ProcesarDuplicado(DbUpdateException dbex)
+        {
+            SqlException innerException = dbex.InnerException as SqlException;
+            if (innerException != null && (innerException.Number == 2637 || innerException.Number == 2601))
+            {
+                ModelState.AddModelError("Nombre", "Ya existe una categoría con ese nombre");
+            }
+            else
+            {
+                ModelState.AddModelError(string.Empty, dbex.Message);
+            }
         }
 
         // GET: Categorias/Edit/5
@@ -98,7 +119,7 @@ namespace Carrito_D.Controllers
             {
                 return NotFound();
             }
-            
+
             if (ModelState.IsValid)
             {
                 try
@@ -109,11 +130,11 @@ namespace Carrito_D.Controllers
                     {
                         categoriaEnDB.Nombre = categoria.Nombre;
                         categoriaEnDB.Descripcion = categoria.Descripcion;
-                        
+
                         _context.Categorias.Update(categoriaEnDB);
                         _context.SaveChanges();
+                        return RedirectToAction(nameof(Index));
                     }
-                    
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -126,7 +147,10 @@ namespace Carrito_D.Controllers
                         throw;
                     }
                 }
-                return RedirectToAction(nameof(Index));
+                catch (DbUpdateException dbex)
+                {
+                    ProcesarDuplicado(dbex);
+                }
             }
             return View(categoria);
         }
@@ -171,7 +195,7 @@ namespace Carrito_D.Controllers
 
         private bool CategoriaExists(int id)
         {
-          return _context.Categorias.Any(c => c.Id == id);
+            return _context.Categorias.Any(c => c.Id == id);
         }
     }
 }

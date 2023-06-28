@@ -13,7 +13,6 @@ namespace Carrito_D.Models
 
         [Required(ErrorMessage = ErrorMsg.Requerido)]
         [StringLength(100, MinimumLength = 1, ErrorMessage = ErrorMsg.CantCaracteres)]
-        [RegularExpression(@"[a-zA-Z áéíóú 0-9]*", ErrorMessage = ErrorMsg.Alfanumerico)]
         [Display(Name = "Dirección")]
         public string Direccion { get; set; }
 

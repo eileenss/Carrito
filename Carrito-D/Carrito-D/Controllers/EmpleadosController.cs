@@ -216,5 +216,34 @@ namespace Carrito_D.Controllers
         {
             return _context.Empleados.Any(e => e.Id == id);
         }
+
+        [HttpGet]
+        public async Task<IActionResult> DniExistente(string dni)
+        {
+            if (_context.Empleados.Any(e => e.DNI == dni))
+            {
+                return Json("Ya existe un empleado con ese número de dni.");
+            }
+            else
+            {
+                return Json(true);
+            }
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> EmailExistente(string email)
+        {
+            var emailEmpleado = await _userManager.FindByEmailAsync(email);
+
+            if (emailEmpleado != null)
+            {
+                return Json("Ya existe un empleado con ese email.");
+            }
+            else
+            {
+                return Json(true);
+            }
+        }
     }
 }
+

@@ -30,7 +30,6 @@ namespace Carrito_D.Controllers
         [HttpPost]
         public async Task<IActionResult> Registrar([Bind("Email,Password,ConfirmedPassword,DNI,Nombre,Apellido")] Registro viewmodel)
         {
-            
             if (ModelState.IsValid)
             {
                 Cliente cliente = new Cliente()
@@ -65,8 +64,7 @@ namespace Carrito_D.Controllers
                     else
                     {
                         ModelState.AddModelError(String.Empty,$"No se puede agregar el rol de {Configs.ClienteRolNombre}");
-                    }                
-                    
+                    }          
                 }
 
                 foreach(var error in resultadoCreate.Errors)
@@ -80,48 +78,13 @@ namespace Carrito_D.Controllers
 
         public IActionResult IniciarSesion(string returnUrl)
         {
-            //ViewBag.Url1 = returnUrl;
-            //ViewData["Url2"] = returnUrl;
             TempData["ReturnUrl"] = returnUrl;
-
             return View();
         }
-        [HttpGet]
-        public async Task<IActionResult> DniExistente(string dni)
-        {
-            if (_context.Clientes.Any(c => c.DNI == dni))
-            {
-                return Json("ya existe una persona registrada con ese numero de dni");
-            }
-            else
-            {
-                return Json(true);
-            }
-        }
-        [HttpGet]
-        public async Task<IActionResult> EmailExistente(string email)
-        {
-
-            var mailCliente = await _usermanager.FindByEmailAsync(email);
-
-            if (mailCliente != null)
-            {
-                return Json("ya existe una persona registrada con ese email");
-            }
-            else
-            {
-                return Json(true);
-            }
-        }
-
-
-
 
         [HttpPost]
         public async Task<IActionResult> IniciarSesion(Login viewmodel)
         {
-            //var url1 = ViewBag.Url1;
-            //var url2 = ViewData["Url2"];
             string returnUrl = TempData["ReturnUrl"] as string;
 
             if (ModelState.IsValid)
@@ -154,6 +117,34 @@ namespace Carrito_D.Controllers
         {
             ViewBag.ReturnUrl = returnUrl;
             return View();
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> DniExistente(string dni)
+        {
+            if (_context.Clientes.Any(c => c.DNI == dni))
+            {
+                return Json("Ya existe un usuario registrado con ese número de dni.");
+            }
+            else
+            {
+                return Json(true);
+            }
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> EmailExistente(string email)
+        {
+            var emailCliente = await _usermanager.FindByEmailAsync(email);
+
+            if (emailCliente != null)
+            {
+                return Json("Ya existe un usuario registrado con ese email.");
+            }
+            else
+            {
+                return Json(true);
+            }
         }
     }
 }
