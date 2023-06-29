@@ -53,16 +53,8 @@ namespace Carrito_D.Controllers
 
                     if (resultadoAddRole.Succeeded)
                     {
-                        Carrito carrito = new Carrito() { ClienteId = cliente.Id };
-                        _context.Carritos.Add(carrito);
-                        _context.SaveChanges();
-
-                        cliente.Carritos = new List<Carrito> { carrito };
-                        _context.Clientes.Update(cliente);
-                        _context.SaveChanges();
-
+                        AgregarCarritoAlCliente(cliente);
                         await _signinmanager.SignInAsync(cliente, isPersistent: false);
-
                         return RedirectToAction("Edit", "Clientes", new { id = cliente.Id });
                     }
                     else
@@ -78,6 +70,17 @@ namespace Carrito_D.Controllers
                 }
             }
             return View(viewmodel);
+        }
+
+        private void AgregarCarritoAlCliente(Cliente cliente)
+        {
+            Carrito carrito = new Carrito() { ClienteId = cliente.Id };
+            _context.Carritos.Add(carrito);
+            _context.SaveChanges();
+
+            cliente.Carritos = new List<Carrito> { carrito };
+            _context.Clientes.Update(cliente);
+            _context.SaveChanges();
         }
 
         public IActionResult IniciarSesion(string returnUrl)

@@ -78,7 +78,7 @@ namespace Carrito_D.Controllers
         }
 
         // GET: Clientes/Edit/5
-        [Authorize(Roles="CLiente")]
+        [Authorize(Roles="Cliente")]
         public IActionResult Edit(int? id)
         {
             if (id == null || _context.Clientes == null)

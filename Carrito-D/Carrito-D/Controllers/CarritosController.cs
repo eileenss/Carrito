@@ -31,11 +31,7 @@ namespace Carrito_D.Controllers
             {
                 return RedirectToAction("AccesoDenegado", "Account");
             }
-
-            //var carritoContext = _context.Carritos.Include(c => c.Cliente);
             var carrito = _context.Carritos.Where(c => c.ClienteId == clienteId && c.Activo == true);
-            
-
             return View(carrito);
         }
 
@@ -125,7 +121,6 @@ namespace Carrito_D.Controllers
                         _context.Carritos.Update(carritoEnDB);
                         _context.SaveChanges();
                     }
-                    
                 }
                 catch (DbUpdateConcurrencyException)
                 {
