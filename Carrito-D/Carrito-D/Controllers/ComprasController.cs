@@ -23,33 +23,30 @@ namespace Carrito_D.Controllers
             _context = context;
         }
 
-        // GET: Compras
+        //GET: Compras
         public IActionResult Index()
         {
             if (User.IsInRole("Cliente"))
             {
-                int clienteId = Int32.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
-
-                var carritos = _context.Compras
+                var comprasCliente = _context.Compras
                     .Include(c => c.Carrito)
                     .Include(c => c.Cliente)
                     .Include(c => c.Sucursal)
-                    .Where(c => c.ClienteId == clienteId)
+                    .Where(c => c.ClienteId == ClienteLoginId())
                     .OrderByDescending(c => c.Fecha);
 
-                return View(carritos.ToList());
+                return View(comprasCliente.ToList());
             }
 
             DateTime fechaActual = DateTime.Now;
-
-            var carritoContext = _context.Compras
+            var compras = _context.Compras
                 .Include(c => c.Carrito)
                 .Include(c => c.Cliente)
                 .Include(c => c.Sucursal)
                 .Where(c => c.Fecha.Month == fechaActual.Month)
                 .OrderByDescending(c => c.Total);
 
-            return View(carritoContext.ToList());
+            return View(compras.ToList());
         }
 
         // GET: Compras/Details/5
@@ -66,6 +63,11 @@ namespace Carrito_D.Controllers
                 .Include(c => c.Sucursal)
                 .FirstOrDefault(c => c.Id == id);
 
+            compra.Carrito.CarritoItems = _context.CarritoItems
+               .Include(c => c.Producto)
+               .Where(c => c.CarritoId == compra.CarritoId)
+               .ToList();
+
             if (compra == null)
             {
                 return NotFound();
@@ -76,7 +78,7 @@ namespace Carrito_D.Controllers
 
         public IActionResult CrearCompra(int idCarrito, int idSucursal)
         {
-            int clienteId = Int32.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
+            int clienteId = ClienteLoginId();
             Cliente cliente = _context.Clientes.Find(clienteId);
             Carrito carrito = _context.Carritos.Find(idCarrito);
             Sucursal sucursal = _context.Sucursales.Find(idSucursal);
@@ -85,9 +87,10 @@ namespace Carrito_D.Controllers
             {
                 return NotFound();
             }
+
             Compra compra = new Compra()
             {
-                ClienteId = clienteId,
+                ClienteId = ClienteLoginId(),
                 Cliente = cliente,
                 CarritoId = idCarrito,
                 Carrito = carrito,
@@ -115,42 +118,47 @@ namespace Carrito_D.Controllers
             return View(compra);
         }
 
+        //private decimal Total(int idCarrito)
+        //{
+        //    var carritoItems = _context.CarritoItems
+        //        .Include(c => c.Carrito)
+        //        .Include(c => c.Producto)
+        //        .Where(c => c.CarritoId == idCarrito)
+        //        .ToList();
+
+        //    decimal total = 0;
+
+        //    foreach (var item in carritoItems)
+        //    {
+        //        total += item.Cantidad * item.Producto.PrecioVigente;
+        //    }
+
+        //    return total;
+        //}
+
         private decimal Total(int idCarrito)
         {
             var carritoItems = _context.CarritoItems
-                .Include(c => c.Carrito)
-                .Include(c => c.Producto)
-                .Where(c => c.CarritoId == idCarrito)
-                .ToList();
+                  .Include(c => c.Carrito)
+                  .Include(c => c.Producto)
+                  .Where(c => c.CarritoId == idCarrito)
+                  .ToList();
 
             decimal total = 0;
 
             foreach (var item in carritoItems)
-            {
-                total += item.Cantidad * item.Producto.PrecioVigente;
-            }
-
-            return total;
-        }
-
-        /*private decimal Total(int idCarrito)
-         * {
-         * var carritoItems = _context.CarritoItems
-                .Include(c => c.Carrito)
-                .Include(c => c.Producto)
-                .Where(c => c.CarritoId == idCarrito)
-                .ToList();
-
-            decimal total = 0;
-
-            foreach(var item in carritoItems)
             {
                 total += item.Subtotal;
             }
 
             return total;
         }
-         */
+
+        private int ClienteLoginId()
+        {
+            int clienteId = Int32.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
+            return clienteId;
+        }
 
         private bool CompraExists(int id)
         {

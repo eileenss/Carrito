@@ -28,24 +28,6 @@ namespace Carrito_D.Controllers
             return View(_context.Categorias.ToList());
         }
 
-        // GET: Categorias/Details/5
-        public IActionResult Details(int? id)
-        {
-            if (id == null || _context.Categorias == null)
-            {
-                return NotFound();
-            }
-
-            var categoria = _context.Categorias.FirstOrDefault(c => c.Id == id);
-
-            if (categoria == null)
-            {
-                return NotFound();
-            }
-
-            return View(categoria);
-        }
-
         // GET: Categorias/Create
         [Authorize(Roles = "Admin, Empleado")]
         public IActionResult Create()
@@ -100,6 +82,7 @@ namespace Carrito_D.Controllers
             }
 
             var categoria = await _context.Categorias.FindAsync(id);
+
             if (categoria == null)
             {
                 return NotFound();
@@ -154,44 +137,6 @@ namespace Carrito_D.Controllers
             }
             return View(categoria);
         }
-
-        /* NO PUEDE ELIMINARSE
-        // GET: Categorias/Delete/5
-        public async Task<IActionResult> Delete(int? id)
-        {
-            if (id == null || _context.Categorias == null)
-            {
-                return NotFound();
-            }
-
-            var categoria = await _context.Categorias.FirstOrDefaultAsync(c => c.Id == id);
-
-            if (categoria == null)
-            {
-                return NotFound();
-            }
-
-            return View(categoria);
-        }
-
-        // POST: Categorias/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
-        {
-            if (_context.Categorias == null)
-            {
-                return Problem("Entity set 'CarritoContext.Categorias'  is null.");
-            }
-            var categoria = await _context.Categorias.FindAsync(id);
-            if (categoria != null)
-            {
-                _context.Categorias.Remove(categoria);
-            }
-            
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
-        }*/
 
         private bool CategoriaExists(int id)
         {

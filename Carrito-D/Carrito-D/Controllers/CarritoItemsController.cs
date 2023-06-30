@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Authorization;
 using System.Data;
 using System.Security.Claims;
 using Carrito_D.ViewModels;
+using Carrito_D.Helpers;
 
 namespace Carrito_D.Controllers
 {
@@ -39,14 +40,12 @@ namespace Carrito_D.Controllers
             {
                 carritoItem.Subtotal = Subtotal(carritoItem);
             }
-
             return View(carritoItemContext);
         }
 
         private decimal Subtotal(CarritoItem carritoItem)
         {
             decimal subtotal = carritoItem.Producto.PrecioVigente * carritoItem.Cantidad;
-
             return subtotal;
         }
 
@@ -140,7 +139,6 @@ namespace Carrito_D.Controllers
                 _context.CarritoItems.Remove(carritoItem);
                 await _context.SaveChangesAsync();
             }
-
             return RedirectToAction(nameof(MiCarrito));
         }
 
@@ -207,7 +205,6 @@ namespace Carrito_D.Controllers
         private int ClienteLoginId()
         {
             int clienteId = Int32.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
-
             return clienteId;
         }
 

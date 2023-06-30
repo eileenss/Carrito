@@ -7,8 +7,5 @@
         public const string EmpleadoRolNombre = "Empleado";
         public const string ClienteRolNombre = "Cliente";
         public const string UsuarioRolNombre = "Usuario";
-
-
-
     }
 }
