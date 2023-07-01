@@ -26,6 +26,8 @@ namespace Carrito_D.Controllers
         // GET: Productos
         public IActionResult Index(int? categoriaId)
         {
+            ViewData["Categorias"] = _context.Categorias;
+
             if (categoriaId != null)
             {
                 if (!_context.Categorias.Any(c => c.Id == categoriaId))

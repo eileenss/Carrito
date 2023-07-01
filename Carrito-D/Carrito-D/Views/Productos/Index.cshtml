@@ -14,14 +14,14 @@
 }
 
 <div>
-    <h3>Filtrar por categorías</h3>
+    <h3>Filtrar por categoría</h3>
     <ul style="list-style-type: none;">
-        <li style="display: inline;">
-            <a asp-action="Index" asp-controller="Productos" asp-route-categoriaId="1">Vinos tintos</a> |
-        </li>
-        <li style="display: inline;">
-            <a asp-action="Index" asp-controller="Productos" asp-route-categoriaId="2">Whiskies</a>
-        </li>
+        @foreach (var cat in ViewBag.Categorias)
+        {
+            <li style="display:inline">
+                <a asp-action="Index" asp-controller="Productos" asp-route-sucursalId="@cat.Id">@cat.Nombre</a>
+            </li>
+        }
     </ul>
 </div>
 
