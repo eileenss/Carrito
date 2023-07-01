@@ -41,26 +41,13 @@
                     @Html.DisplayFor(modelItem => item.Subtotal)
                 </td>
                 <td>
-                    @Html.ActionLink("Edit", "Edit", new { idCarrito = item.CarritoId, idProducto = item.ProductoId }) |
-                    @Html.ActionLink("Delete", "Delete", new { idCarrito = item.CarritoId, idProducto = item.ProductoId })
+                    @Html.ActionLink("Modificar cantidad", "Edit", new { idCarrito = item.CarritoId, idProducto = item.ProductoId }) |
+                    @Html.ActionLink("Eliminar producto", "Delete", new { idCarrito = item.CarritoId, idProducto = item.ProductoId })
                 </td>
             </tr>
         }
     </tbody>
 </table>
-
-@{
-    if (Model.Count() > 0)
-    {
-        var carritoId = Model.FirstOrDefault().CarritoId;
-        <div> 
-        @Html.ActionLink("Vaciar carrito", "VaciarCarrito", new { idCarrito = carritoId } )
-        <a asp-controller="StockItems" asp-action="ElegirSucursal" asp-route-idCarrito="@carritoId">Comprar</a>
-        </div>
-        
-    }
-
-}
 
 <div>
     @{
@@ -73,5 +60,24 @@
     }
     Total: @total
 </div>
+
+
+
+
+@{
+    if (Model.Count() > 0)
+    {
+        var carritoId = Model.FirstOrDefault().CarritoId;
+        <div>
+            <a asp-controller="StockItems" asp-action="ElegirSucursal" asp-route-idCarrito="@carritoId">Comprar</a><br>
+        @Html.ActionLink("Vaciar carrito", "VaciarCarrito", new { idCarrito = carritoId } ) 
+        
+        </div>
+        
+    }
+
+}
+
+
 
 
