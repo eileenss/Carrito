@@ -12,7 +12,7 @@ using System.Data;
 
 namespace Carrito_D.Controllers
 {
-    // [Authorize(Roles = "Empleado")]
+    [Authorize(Roles = "Empleado")]
     public class StockItemsController : Controller
     {
         private readonly CarritoContext _context;
@@ -23,8 +23,26 @@ namespace Carrito_D.Controllers
         }
 
         // GET: StockItems
-        public IActionResult Index()
+        public IActionResult Index(int? sucursalId)
         {
+            ViewData["Sucursales"] = _context.Sucursales;
+
+            if (sucursalId != null)
+            {
+                if (!_context.Sucursales.Any(s => s.Id == sucursalId))
+                {
+                    return NotFound();
+                }
+
+                var filtroSucursal = _context.StockItems
+                    .Include(s => s.Producto)
+                    .Include(s => s.Sucursal)
+                    .Where(s => s.SucursalId == sucursalId);
+
+                return View(filtroSucursal.ToList());
+                    
+            }
+
             var carritoContext = _context.StockItems
                 .Include(s => s.Producto)
                 .Include(s => s.Sucursal);
@@ -33,25 +51,25 @@ namespace Carrito_D.Controllers
         }
 
         // GET: StockItems/Details/5
-        public IActionResult Details(int? idProd, int? idSuc)
-        {
-            if (idProd == null || idSuc == null)
-            {
-                return NotFound();
-            }
+        //public IActionResult Details(int? idProd, int? idSuc)
+        //{
+        //    if (idProd == null || idSuc == null)
+        //    {
+        //        return NotFound();
+        //    }
 
-            var stockItem = _context.StockItems
-                .Include(s => s.Producto)
-                .Include(s => s.Sucursal)
-                .FirstOrDefault(s => s.ProductoId == idProd && s.SucursalId == idSuc);
+        //    var stockItem = _context.StockItems
+        //        .Include(s => s.Producto)
+        //        .Include(s => s.Sucursal)
+        //        .FirstOrDefault(s => s.ProductoId == idProd && s.SucursalId == idSuc);
 
-            if (stockItem == null)
-            {
-                return NotFound();
-            }
+        //    if (stockItem == null)
+        //    {
+        //        return NotFound();
+        //    }
 
-            return View(stockItem);
-        }
+        //    return View(stockItem);
+        //}
 
         // GET: StockItems/Create
         public IActionResult Create()
@@ -68,15 +86,20 @@ namespace Carrito_D.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult Create([Bind("ProductoId,SucursalId,Cantidad")] StockItem stockItem)
         {
-            if (ModelState.IsValid)
+            if (!StockItemExists(stockItem.ProductoId, stockItem.SucursalId))
             {
-                _context.StockItems.Add(stockItem);
-                _context.SaveChanges();
-                return RedirectToAction(nameof(Index));
+                if (ModelState.IsValid)
+                {
+                    _context.StockItems.Add(stockItem);
+                    _context.SaveChanges();
+                    return RedirectToAction(nameof(Index));
+                }
             }
+            ViewData["YaExiste"] = "La sucursal ya tiene stock de ese producto, podés modificarlo desde editar: ";
             ViewData["ProductoId"] = new SelectList(_context.Productos, "Id", "Nombre", stockItem.ProductoId);
             ViewData["SucursalId"] = new SelectList(_context.Sucursales, "Id", "Direccion", stockItem.SucursalId);
             return View(stockItem);
+
         }
 
         // GET: StockItems/Edit/5
@@ -87,13 +110,15 @@ namespace Carrito_D.Controllers
                 return NotFound();
             }
 
-            var stockItem = _context.StockItems.FirstOrDefault(s => s.ProductoId == idProd && s.SucursalId == idSuc);
+            var stockItem = _context.StockItems
+                .Include(s => s.Producto)
+                .Include(s => s.Sucursal)
+                .FirstOrDefault(s => s.ProductoId == idProd && s.SucursalId == idSuc);
 
             if (stockItem == null)
             {
                 return NotFound();
             }
-
             return View(stockItem);
         }
 
@@ -109,7 +134,8 @@ namespace Carrito_D.Controllers
             {
                 try
                 {
-                    var stockItemEnDB = _context.StockItems.FirstOrDefault(s => s.ProductoId == stockItem.ProductoId && s.SucursalId == stockItem.SucursalId);
+                    var stockItemEnDB = _context.StockItems
+                        .FirstOrDefault(s => s.ProductoId == stockItem.ProductoId && s.SucursalId == stockItem.SucursalId);
 
                     if (stockItemEnDB != null)
                     {
@@ -136,46 +162,6 @@ namespace Carrito_D.Controllers
 
             return View(stockItem);
         }
-
-        /* NO PUEDE ELIMINARSE, SOLO SI SE ELIMINA LA SUCURSAL DE LA QUE DEPENDE
-        // GET: StockItems/Delete/5
-        public async Task<IActionResult> Delete(int? idProd, int? idSuc)
-        {
-            if (idProd == null || idSuc == null)
-            {
-                return NotFound();
-            }
-
-            var stockItem = await _context.StockItems
-                .Include(s => s.Producto)
-                .Include(s => s.Sucursal)
-                .FirstOrDefaultAsync(s => s.ProductoId == idProd && s.SucursalId == idSuc);
-            if (stockItem == null)
-            {
-                return NotFound();
-            }
-
-            return View(stockItem);
-        }
-
-        // POST: StockItems/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
-        {
-            if (_context.StockItems == null)
-            {
-                return Problem("Entity set 'CarritoContext.StockItems'  is null.");
-            }
-            var stockItem = await _context.StockItems.FindAsync(id);
-            if (stockItem != null)
-            {
-                _context.StockItems.Remove(stockItem);
-            }
-            
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
-        }*/
 
         private bool StockItemExists(int idProd, int idSuc)
         {
@@ -245,7 +231,7 @@ namespace Carrito_D.Controllers
             }
 
             ////descontarstock
-           foreach(var item in carritoItems)
+            foreach (var item in carritoItems)
             {
                 //int cantidadADescontar = item.Cantidad;
 
@@ -262,7 +248,7 @@ namespace Carrito_D.Controllers
 
         public List<Sucursal> BuscarSucursalConStock(int idCarrito)
         {
-            List<Sucursal> sucsConStock = new List<Sucursal>(); 
+            List<Sucursal> sucsConStock = new List<Sucursal>();
 
             var carritoItems = _context.CarritoItems
                 .Include(c => c.Carrito)
@@ -277,14 +263,14 @@ namespace Carrito_D.Controllers
                 .Include(s => s.Producto)
                 .ToList();
 
-            foreach ( var sucursal in sucursales ) 
+            foreach (var sucursal in sucursales)
             {
                 var stockSuc = stockItems.FindAll(s => s.SucursalId == sucursal.Id);
                 bool hayStock = true;
 
                 foreach (var carritoItem in carritoItems)
                 {
-                    if(!stockSuc.Any(s => s.ProductoId == carritoItem.ProductoId && s.Cantidad >= carritoItem.Cantidad))
+                    if (!stockSuc.Any(s => s.ProductoId == carritoItem.ProductoId && s.Cantidad >= carritoItem.Cantidad))
                     {
                         hayStock = false;
                         break;
@@ -300,7 +286,7 @@ namespace Carrito_D.Controllers
             return sucsConStock;
         }
 
-       
+
     }
 
 

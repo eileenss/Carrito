@@ -52,12 +52,16 @@
 {
     <a asp-action="Edit" asp-route-id="@Model?.Id">Editar</a>
     <a asp-action="Index">Volver a Productos</a>
-} 
+}
 else
 {
-    <div>
-        <a asp-action="AgregarCarritoItem" asp-controller="CarritoItems" asp-route-idProducto="@Model.Id">Agregar al Carrito</a> |
-        <a asp-action="Index">Volver a Productos</a>
-    </div>
+    if (Model.Activo)
+    {
+        <a asp-action="AgregarCarritoItem" asp-controller="CarritoItems" asp-route-idProducto="@Model.Id">Agregar al Carrito</a>
+        <br />
+    }
 }
+
+<a asp-action="Index">Volver a Productos</a>
+
 
