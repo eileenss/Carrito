@@ -69,7 +69,7 @@
     {
         var carritoId = Model.FirstOrDefault().CarritoId;
         <div>
-            <a asp-controller="StockItems" asp-action="ElegirSucursal" asp-route-idCarrito="@carritoId">Comprar</a><br>
+            <a asp-controller="Compras" asp-action="ElegirSucursal" asp-route-idCarrito="@carritoId">Comprar</a><br>
         @Html.ActionLink("Vaciar carrito", "VaciarCarrito", new { idCarrito = carritoId } ) 
         
         </div>

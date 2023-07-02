@@ -35,25 +35,6 @@ namespace Carrito_D.Controllers
             return View(_context.Sucursales.ToList());
         }
 
-        // GET: Sucursales/Details/5
-        [AllowAnonymous]
-        public IActionResult Details(int? id)
-        {
-            if (id == null || _context.Sucursales == null)
-            {
-                return NotFound();
-            }
-
-            var sucursal = _context.Sucursales.FirstOrDefault(s => s.Id == id);
-
-            if (sucursal == null)
-            {
-                return NotFound();
-            }
-
-            return View(sucursal);
-        }
-
         // GET: Sucursales/Create
         public IActionResult Create()
         {
@@ -70,6 +51,7 @@ namespace Carrito_D.Controllers
             if (ModelState.IsValid)
             {
                 _context.Sucursales.Add(sucursal);
+
                 try
                 {
                     _context.SaveChanges();
@@ -86,6 +68,7 @@ namespace Carrito_D.Controllers
         private void ProcesarDuplicado(DbUpdateException dbex)
         {
             SqlException innerException = dbex.InnerException as SqlException;
+
             if (innerException != null && (innerException.Number == 2637 || innerException.Number == 2601))
             {
                 ModelState.AddModelError("Direccion", "Ya existe una sucursal con esa dirección.");
@@ -125,9 +108,6 @@ namespace Carrito_D.Controllers
             {
                 return NotFound();
             }
-
-            // ModelState.Remove("Nombre");
-            // ModelState.Remove("Email");
 
             if (ModelState.IsValid)
             {
@@ -191,30 +171,23 @@ namespace Carrito_D.Controllers
             {
                 return Problem("Entity set 'CarritoContext.Sucursales'  is null.");
             }
+
             var sucursal = await _context.Sucursales.FindAsync(id);
+
             if (sucursal == null)
             {
                 return NotFound();
             }
 
-            if (SinStock(id))
+            if (VerificarStock(id))
             {
-                var stockItems = _context.StockItems
-                    .Include(s => s.Producto)
-                    .Include(s => s.Sucursal)
-                    .Where(s => s.SucursalId == id)
-                    .ToList();
-
-                foreach (var stockItem in stockItems)
-                {
-                    _context.StockItems.Remove(stockItem);
-                }
+                EliminarStockItems(sucursal);
                 _context.Sucursales.Remove(sucursal);
-                await _context.SaveChangesAsync();
+                _context.SaveChanges();
                 return RedirectToAction(nameof(Index));
             }
 
-            TempData["NoDelete"] = "No se pudo eliminar la sucursal porque todavía tiene stock disponible.";
+            TempData["NoDelete"] = $"No se pudo eliminar la sucursal {sucursal.Nombre} porque todavía tiene stock disponible.";
             return RedirectToAction(nameof(Index));
         }
 
@@ -223,12 +196,10 @@ namespace Carrito_D.Controllers
             return _context.Sucursales.Any(s => s.Id == id);
         }
 
-        private bool SinStock(int idSucursal)
+        private bool VerificarStock(int idSucursal)
         {
             bool sinStock = true;
-
             var stockItems = _context.StockItems
-                .Include(s => s.Producto)
                 .Include(s => s.Sucursal)
                 .Where(s => s.SucursalId == idSucursal)
                 .ToList();
@@ -243,6 +214,20 @@ namespace Carrito_D.Controllers
             }
 
             return sinStock;
+        }
+
+        private void EliminarStockItems(Sucursal sucursal)
+        {
+            var stockItems = _context.StockItems
+                    .Include(s => s.Sucursal)
+                    .Where(s => s.SucursalId == sucursal.Id)
+                    .ToList();
+
+            foreach (var stockItem in stockItems)
+            {
+                _context.StockItems.Remove(stockItem);
+            }
+            _context.SaveChanges();
         }
     }
 }

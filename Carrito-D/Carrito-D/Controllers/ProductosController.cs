@@ -28,6 +28,11 @@ namespace Carrito_D.Controllers
         {
             ViewData["Categorias"] = _context.Categorias;
 
+            if (TempData.ContainsKey("Pausado"))
+            {
+                ViewData["Pausado"] = TempData["Pausado"];
+            }
+
             if (categoriaId != null)
             {
                 if (!_context.Categorias.Any(c => c.Id == categoriaId))
@@ -165,7 +170,7 @@ namespace Carrito_D.Controllers
                         productoEnDb.Activo = producto.Activo;
 
                         _context.Productos.Update(productoEnDb);
-                        _context.SaveChanges();   
+                        _context.SaveChanges();
                         return RedirectToAction(nameof(Index));
                     }
                     else

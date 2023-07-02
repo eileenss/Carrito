@@ -25,6 +25,11 @@
     </ul>
 </div>
 
+@if (!string.IsNullOrEmpty(ViewBag.Pausado))
+{
+    <div class="alert alert-danger" role="alert">@ViewBag.Pausado</div>
+}
+
 <table class="table">
     <thead>
         <tr>

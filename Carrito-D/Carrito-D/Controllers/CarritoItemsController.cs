@@ -147,8 +147,20 @@ namespace Carrito_D.Controllers
             return _context.CarritoItems.Any(c => c.CarritoId == idCar && c.ProductoId == idProd);
         }
 
-        public IActionResult AgregarCarritoItem(int idProducto)
+        public IActionResult AgregarCarritoItem(int? idProducto)
         {
+            if (idProducto == null || _context.Productos == null)
+            {
+                return NotFound();
+            }
+
+            var producto = _context.Productos.Find(idProducto);
+            if (!producto.Activo)
+            {
+                TempData["Pausado"] = $"No se puede agregar al carrito, el producto {producto.Nombre} está pausado.";
+                return RedirectToAction("Index", "Productos");
+            }
+
             TempData["ProductoId"] = idProducto;
 
             return View();
