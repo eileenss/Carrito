@@ -11,6 +11,7 @@ using Carrito_D.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Carrito_D.Helpers;
+using System.Net;
 
 namespace Carrito_D.Controllers
 {
@@ -65,22 +66,32 @@ namespace Carrito_D.Controllers
         {
             if (ModelState.IsValid)
             {
-                Empleado empleado = new Empleado()
-                {
-                    DNI = viewmodel.DNI,
-                    Nombre = viewmodel.Nombre,
-                    Apellido = viewmodel.Apellido,
-                    Telefono = viewmodel.Telefono,
-                    Direccion = viewmodel.Direccion,
-                    Email = viewmodel.Email,
-                    UserName = viewmodel.Email,
-                    PasswordHash = Configs.Password
-                };
+                //Empleado empleado = new Empleado()
+                //{
+                //    DNI = viewmodel.DNI,
+                //    Nombre = viewmodel.Nombre,
+                //    Apellido = viewmodel.Apellido,
+                //    Telefono = viewmodel.Telefono,
+                //    Direccion = viewmodel.Direccion,
+                //    Email = viewmodel.Email,
+                //    UserName = viewmodel.Email,
+                //    PasswordHash = Configs.Password
+                //};
 
+                Empleado empleado = new Empleado();
+                empleado.DNI = viewmodel.DNI;
+                empleado.Nombre = viewmodel.Nombre;
+                empleado.Apellido = viewmodel.Apellido;
+                empleado.Telefono = viewmodel.Telefono;
+                empleado.Direccion = viewmodel.Direccion;
+                empleado.UserName = viewmodel.DNI;
                 var resultadoEmpleado = await _userManager.CreateAsync(empleado, Configs.Password);
 
                 if (resultadoEmpleado.Succeeded)
                 {
+                    string email = empleado.Legajo + Configs.Email;
+                    empleado.Email = email;
+                    empleado.UserName = email;
                     var resultadoAddRole = await _userManager.AddToRoleAsync(empleado, Configs.EmpleadoRolNombre);
 
                     if (resultadoAddRole.Succeeded)

@@ -30,10 +30,10 @@ namespace Carrito_D.ViewModels
         [Display(Name = "Dirección")]
         public string Direccion { get; set; }
 
-        [Required(ErrorMessage = ErrorMsg.Requerido)]
-        [EmailAddress(ErrorMessage = ErrorMsg.Invalido)]
-        [Display(Name = "Correo electrónico")]
-        [Remote(action: "EmailExistente", controller: "Empleados")]
-        public string Email { get; set; }
+        //[Required(ErrorMessage = ErrorMsg.Requerido)]
+        //[EmailAddress(ErrorMessage = ErrorMsg.Invalido)]
+        //[Display(Name = "Correo electrónico")]
+        //[Remote(action: "EmailExistente", controller: "Empleados")]
+        //public string Email { get; set; }
     }
 }
