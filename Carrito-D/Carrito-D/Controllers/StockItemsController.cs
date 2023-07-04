@@ -42,11 +42,11 @@ namespace Carrito_D.Controllers
                 return View(filtroSucursal.ToList());
             }
 
-            var carritoContext = _context.StockItems
+            var stockItems = _context.StockItems
                 .Include(s => s.Producto)
                 .Include(s => s.Sucursal);
 
-            return View(carritoContext.ToList());
+            return View(stockItems.ToList());
         }
 
         // GET: StockItems/Create
@@ -147,12 +147,5 @@ namespace Carrito_D.Controllers
         {
             return _context.StockItems.Any(s => s.ProductoId == idProd && s.SucursalId == idSuc);
         }
-
-       
-
-
     }
-
-
-
 }

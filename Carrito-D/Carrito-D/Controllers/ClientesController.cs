@@ -72,12 +72,17 @@ namespace Carrito_D.Controllers
         }
 
         // GET: Clientes/Edit/5
-        [Authorize(Roles="Cliente")]
+        [Authorize(Roles = "Cliente")]
         public IActionResult Edit(int? id)
         {
             if (id == null || _context.Clientes == null)
             {
                 return NotFound();
+            }
+
+            if (User.IsInRole("Cliente") && ClienteLoginId() != id)
+            {
+                return RedirectToAction("AccesoDenegado", "Account");
             }
 
             var cliente = _context.Clientes.Find(id);
@@ -86,6 +91,7 @@ namespace Carrito_D.Controllers
             {
                 return NotFound();
             }
+
             return View(cliente);
         }
 
@@ -95,20 +101,12 @@ namespace Carrito_D.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize("Cliente")]
-        public IActionResult Edit(int id, [Bind("Id,Cuil,Telefono,Direccion")] EditCliente cliente) //EditCliente es un viewModel
+        public IActionResult Edit(int id, [Bind("Id,Cuil,Telefono,Direccion")] EditCliente cliente) 
         {
             if (id != cliente.Id)
             {
                 return NotFound();
             }
-            /* ya tenemos un viewmodel
-            ModelState.Remove("Cuil");
-            ModelState.Remove("DNI");
-            ModelState.Remove("UserName");
-            ModelState.Remove("Password");
-            ModelState.Remove("Nombre");
-            ModelState.Remove("Apellido");
-            ModelState.Remove("Email");*/
 
             if (ModelState.IsValid)
             {
@@ -125,7 +123,6 @@ namespace Carrito_D.Controllers
                         _context.Clientes.Update(clienteEnDB);
                         _context.SaveChanges();
                     }
-
                 }
                 catch (DbUpdateConcurrencyException)
                 {

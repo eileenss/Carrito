@@ -63,15 +63,15 @@ namespace Carrito_D.Controllers
                 .Include(c => c.Sucursal)
                 .FirstOrDefault(c => c.Id == id);
 
-            compra.Carrito.CarritoItems = _context.CarritoItems
-               .Include(c => c.Producto)
-               .Where(c => c.CarritoId == compra.CarritoId)
-               .ToList();
-
             if (compra == null)
             {
                 return NotFound();
             }
+
+            compra.Carrito.CarritoItems = _context.CarritoItems
+               .Include(c => c.Producto)
+               .Where(c => c.CarritoId == compra.CarritoId)
+               .ToList();
 
             return View(compra);
         }

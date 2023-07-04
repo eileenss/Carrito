@@ -1,7 +1,7 @@
 ﻿@model IEnumerable<StockItem>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Stock";
 }
 
 <h1>Stock</h1>
@@ -58,7 +58,6 @@
                 </td>
                 <td>
                     @Html.ActionLink("Editar", "Edit", new { idProd = item.ProductoId, idSuc = item.SucursalId })
-                    @* @Html.ActionLink("Detalles", "Details", new { idProd = item.ProductoId, idSuc = item.SucursalId })*@
                 </td>
             </tr>
         }

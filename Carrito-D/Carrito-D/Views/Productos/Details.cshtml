@@ -1,7 +1,7 @@
 ﻿@model Producto
 
 @{
-    ViewData["Title"] = "Details";
+    ViewData["Title"] = "Detalles de producto";
 }
 
 <h1>Detalles de producto</h1>
@@ -51,7 +51,9 @@
 @if (User.IsInRole("Empleado") || User.IsInRole("Admin"))
 {
     <a asp-action="Edit" asp-route-id="@Model?.Id">Editar</a>
+    <br />
     <a asp-action="Index">Volver a Productos</a>
+
 }
 else
 {
@@ -59,8 +61,9 @@ else
     {
         <a asp-action="AgregarCarritoItem" asp-controller="CarritoItems" asp-route-idProducto="@Model.Id">Agregar al Carrito</a>
         <br />
+        <a asp-action="Index">Volver a Productos</a>
     }
 }
-<a asp-action="Index">Volver a Productos</a>
+
 
 

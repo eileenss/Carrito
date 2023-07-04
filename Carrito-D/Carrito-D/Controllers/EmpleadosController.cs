@@ -98,7 +98,6 @@ namespace Carrito_D.Controllers
                 {
                     ModelState.AddModelError(String.Empty, error.Description);
                 }
-
             }
             return View(viewmodel);
         }
@@ -131,14 +130,6 @@ namespace Carrito_D.Controllers
             {
                 return NotFound();
             }
-
-            /*Ya tenemos viewmodel de edit
-            ModelState.Remove("DNI");
-            ModelState.Remove("UserName");
-            ModelState.Remove("Password");
-            ModelState.Remove("Nombre");
-            ModelState.Remove("Apellido");
-            ModelState.Remove("Email");*/
 
             if (ModelState.IsValid)
             {
@@ -217,7 +208,7 @@ namespace Carrito_D.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> DniExistente(string dni)
+        public IActionResult DniExistente(string dni)
         {
             if (_context.Empleados.Any(e => e.DNI == dni))
             {

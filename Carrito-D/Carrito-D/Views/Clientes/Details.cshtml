@@ -1,18 +1,15 @@
 ﻿@model Cliente
 
 @{
-    ViewData["Title"] = "Details";
-}
-
-@{
     if (User.IsInRole("Cliente"))
     {
-        <h1>Mis datos</h1>
+        ViewData["Title"] = "Mi perfil";
+        <h1>Mi perfil</h1>
     }
     else
     {
+        ViewData["Title"] = "Detalles del cliente";
         <h1>Detalles de cliente</h1>
-
     }
 }
 

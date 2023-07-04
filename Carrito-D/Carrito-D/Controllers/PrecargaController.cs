@@ -80,7 +80,7 @@ namespace Carrito_D.Controllers
             {
                 Empleado empleado = new Empleado()
                 {
-                    DNI = "empleado",
+                    DNI = "35353535",
                     Nombre = "Jorge",
                     Apellido = "Perez",
                     Email = "empleado@ort.edu.ar",
@@ -139,7 +139,6 @@ namespace Carrito_D.Controllers
                         _context.Clientes.Update(cliente2);
                         _context.SaveChanges();
                     }
-
                 }
             }
         }
@@ -222,7 +221,7 @@ namespace Carrito_D.Controllers
                     Nombre = "Palermo",
                     Direccion = "Av. Santa Fe 1500",
                     Email = "palermo@ort.edu.ar",
-                    Telefono = 4772 - 0098
+                    Telefono = 1147720098
                 };
                 _context.Sucursales.Add(palermo);
                 _context.SaveChanges();
@@ -237,7 +236,7 @@ namespace Carrito_D.Controllers
                     Nombre = "Flores",
                     Direccion = "Av. Rivadavia 4000",
                     Email = "flores@ort.edu.ar",
-                    Telefono = 4992 - 0048
+                    Telefono = 1149920048
                 };
                 _context.Sucursales.Add(flores);
                 _context.SaveChanges();
@@ -252,7 +251,7 @@ namespace Carrito_D.Controllers
                     Nombre = "Once",
                     Direccion = "Bartolomé Mitre 544",
                     Email = "once@ort.edu.ar",
-                    Telefono = 4882 - 4512
+                    Telefono = 1148824512
                 };
                 _context.Sucursales.Add(once);
                 _context.SaveChanges();

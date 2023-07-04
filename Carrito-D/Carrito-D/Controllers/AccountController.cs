@@ -120,14 +120,14 @@ namespace Carrito_D.Controllers
             return RedirectToAction("Index", "Home");
         }
 
-        public IActionResult AccesoDenegado(string mensaje)
+        public IActionResult AccesoDenegado(string? mensaje)
         {
             ViewBag.ReturnUrl = mensaje;
             return View();
         }
 
         [HttpGet]
-        public async Task<IActionResult> DniExistente(string dni)
+        public IActionResult DniExistente(string dni)
         {
             if (_context.Clientes.Any(c => c.DNI == dni))
             {

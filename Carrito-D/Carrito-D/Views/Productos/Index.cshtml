@@ -1,7 +1,7 @@
 ﻿@model IEnumerable<Producto>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Productos";
 }
 
 <h1>Productos</h1>
@@ -44,9 +44,7 @@
             </th>
             @if (User.IsInRole("Admin") || User.IsInRole("Empleado"))
             {
-                <th>
-                    @Html.DisplayNameFor(model => model.Activo)
-                </th>
+                <th>Estado del producto</th>
             }
             <th></th>
         </tr>
@@ -66,9 +64,18 @@
                 </td>
                 @if (User.IsInRole("Admin") || User.IsInRole("Empleado"))
                 {
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Activo)
-                    </td>
+                    if (item.Activo)
+                    {
+                        <td class="alert alert-success" role="alert" >
+                            Activo
+                        </td>
+                    }
+                    else
+                    {
+                        <td class="alert alert-danger" role="alert">
+                            Pausado
+                        </td>
+                    }
                     <td>
                         <a asp-action="Edit" asp-route-id="@item.Id">Editar</a>
                     </td>
