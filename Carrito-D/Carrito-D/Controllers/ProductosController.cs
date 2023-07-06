@@ -11,16 +11,23 @@ using Microsoft.AspNetCore.Authorization;
 using System.Data;
 using Microsoft.Data.SqlClient;
 using Microsoft.AspNetCore.Mvc.TagHelpers;
+using Carrito_D.ViewModels;
+using System.Runtime.CompilerServices;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Hosting.Internal;
+using Microsoft.EntityFrameworkCore.Infrastructure;
 
 namespace Carrito_D.Controllers
 {
     public class ProductosController : Controller
     {
         private readonly CarritoContext _context;
+        private readonly IWebHostEnvironment _hostingEnvironment;
 
-        public ProductosController(CarritoContext context)
+        public ProductosController(CarritoContext context, IWebHostEnvironment hostingEnvironment)
         {
             _context = context;
+            _hostingEnvironment = hostingEnvironment;
         }
 
         // GET: Productos
@@ -84,15 +91,29 @@ namespace Carrito_D.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "Empleado")]
-        public IActionResult Create([Bind("Id,Nombre,Descripcion,Imagen,PrecioVigente,Activo,CategoriaId")] Producto producto)
+        public IActionResult Create([Bind("Id,Nombre,Descripcion,Imagen,PrecioVigente,Activo,CategoriaId")] CrearProducto modelo)
         {
             if (ModelState.IsValid)
             {
+                //var foto = AgregarFoto()
+                Producto producto = new Producto()
+                {
+                    Nombre = modelo.Nombre,
+                    Descripcion = modelo.Descripcion,
+                    PrecioVigente = modelo.PrecioVigente,
+                    Activo = modelo.Activo,
+                    CategoriaId = modelo.CategoriaId
+                };
                 _context.Productos.Add(producto);
 
                 try
                 {
                     _context.SaveChanges();
+                    if(!AgregarFoto(producto, modelo.Imagen))
+                    {
+                        ModelState.AddModelError(string.Empty, "No se pudo cargar la imagen.");
+                        return RedirectToAction("Edit", new { id = producto.Id });
+                    }
                     return RedirectToAction(nameof(Index));
                 }
                 catch (DbUpdateException dbex)
@@ -101,9 +122,9 @@ namespace Carrito_D.Controllers
                 }
             }
 
-            ViewData["CategoriaId"] = new SelectList(_context.Categorias, "Id", "Nombre", producto.CategoriaId);
+            ViewData["CategoriaId"] = new SelectList(_context.Categorias, "Id", "Nombre", modelo.CategoriaId);
 
-            return View(producto);
+            return View(modelo);
         }
 
         private void ProcesarDuplicado(DbUpdateException dbex)
@@ -202,5 +223,91 @@ namespace Carrito_D.Controllers
         {
             return _context.Productos.Any(p => p.Id == id);
         }
+
+        private bool AgregarFoto(Producto producto, IFormFile imagen)
+        {
+            bool cargaOk = false;
+            string rootPath = _hostingEnvironment.WebRootPath;
+            string fotoPath = "img\\fotos";
+            string nombreProducto = producto.Nombre;
+
+
+            if (imagen != null && producto != null)
+            {
+                string nombreFoto = null;
+
+                if (!string.IsNullOrEmpty(rootPath) && !string.IsNullOrEmpty(fotoPath) && imagen != null)
+                {
+                    try
+                    {
+                        string carpetaDestino = Path.Combine(rootPath, fotoPath);
+                        nombreFoto = Guid.NewGuid().ToString() + "_" + imagen.FileName;
+                        string ruta = Path.Combine(carpetaDestino, nombreFoto);
+                        imagen.CopyTo(new FileStream(ruta, FileMode.Create));
+                        producto.Imagen = nombreFoto;
+
+                        if (!string.IsNullOrEmpty(producto.Imagen))
+                        {
+                            _context.Productos.Update(producto);
+                            _context.SaveChanges();
+                            cargaOk = true;
+                        }
+                    }
+                    catch
+                    {
+                        ModelState.AddModelError(string.Empty, "Error en la carga.");
+                    }
+                }
+                ModelState.AddModelError(string.Empty, "Error: datos insuficientes.");
+            }
+            return cargaOk;
+        }
+
+
+        //public IActionResult SubirFoto()
+        //{
+        //    return View(new FotoForm());
+        //}
+
+        ////[HttpPost]
+        //public IActionResult SubirFoto(Producto producto)
+        //{
+        //    string rootPath = _hostingEnvironment.WebRootPath;
+        //    string fotoPath = "img\\fotos";
+        //    string nombreProducto = producto.Nombre;
+
+        //    if (ModelState.IsValid)
+        //    {
+        //        if (producto.Imagen != null && producto != null)
+        //        {
+        //            string nombreFoto = null;
+
+        //            if(!string.IsNullOrEmpty(rootPath) && !string.IsNullOrEmpty(fotoPath) && producto.Imagen != null)
+        //            {
+        //                try
+        //                {
+        //                    string carpetaDestino = Path.Combine(rootPath, fotoPath);
+        //                    nombreFoto = Guid.NewGuid().ToString() + "_" + producto.Imagen.FileName;
+        //                    string ruta = Path.Combine(carpetaDestino, nombreFoto);
+        //                    producto.Imagen.CopyTo(new FileStream(ruta, FileMode.Create));
+        //                    producto.Imagen = nombreFoto;
+
+        //                    if (!string.IsNullOrEmpty(producto.Imagen))
+        //                    {
+        //                        _context.Productos.Update(producto);
+        //                        _context.SaveChanges();
+        //                        return RedirectToAction(nameof(Index));
+        //                    }
+        //                }
+        //                catch
+        //                {
+        //                    ModelState.AddModelError(string.Empty, "Error en la carga.");
+        //                }
+        //            }
+        //            ModelState.AddModelError(string.Empty, "Error: datos insuficientes.");
+        //        }
+        //    }
+        //    return View(producto);
+        //}
     }
 }
