@@ -8,5 +8,6 @@
         public const string ClienteRolNombre = "Cliente";
         public const string UsuarioRolNombre = "Usuario";
         public const string Email = "@ort.edu.ar";
+        public const string RutaFotos = "img\\fotos\\";
     }
 }

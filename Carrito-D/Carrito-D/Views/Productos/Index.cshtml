@@ -1,4 +1,5 @@
-﻿@model IEnumerable<Producto>
+﻿@using Carrito_D.Helpers
+@model IEnumerable<Producto>
 
 @{
     ViewData["Title"] = "Productos";
@@ -34,10 +35,10 @@
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.Nombre)
+                @Html.DisplayNameFor(model => model.Imagen)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Imagen)
+                @Html.DisplayNameFor(model => model.Nombre)
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.PrecioVigente)
@@ -54,13 +55,13 @@
         {
             <tr>
                 <td>
-                    @Html.DisplayFor(modelItem => item.Nombre)
+                    @{
+                        string imagen = Configs.RutaFotos + @item.Imagen;
+                    }
+                    <img src="@imagen"  />
                 </td>
                 <td>
-                    @{
-                        string imagen = @item.Imagen;
-                    }
-                    <img src=@imagen width="50" height="50" />
+                    @Html.DisplayFor(modelItem => item.Nombre)
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.PrecioVigente)
@@ -69,7 +70,7 @@
                 {
                     if (item.Activo)
                     {
-                        <td class="alert alert-success" role="alert" >
+                        <td class="alert alert-success" role="alert">
                             Activo
                         </td>
                     }

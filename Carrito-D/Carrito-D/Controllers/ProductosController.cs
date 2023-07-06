@@ -258,56 +258,11 @@ namespace Carrito_D.Controllers
                         ModelState.AddModelError(string.Empty, "Error en la carga.");
                     }
                 }
-                ModelState.AddModelError(string.Empty, "Error: datos insuficientes.");
             }
             return cargaOk;
         }
 
 
-        //public IActionResult SubirFoto()
-        //{
-        //    return View(new FotoForm());
-        //}
-
-        ////[HttpPost]
-        //public IActionResult SubirFoto(Producto producto)
-        //{
-        //    string rootPath = _hostingEnvironment.WebRootPath;
-        //    string fotoPath = "img\\fotos";
-        //    string nombreProducto = producto.Nombre;
-
-        //    if (ModelState.IsValid)
-        //    {
-        //        if (producto.Imagen != null && producto != null)
-        //        {
-        //            string nombreFoto = null;
-
-        //            if(!string.IsNullOrEmpty(rootPath) && !string.IsNullOrEmpty(fotoPath) && producto.Imagen != null)
-        //            {
-        //                try
-        //                {
-        //                    string carpetaDestino = Path.Combine(rootPath, fotoPath);
-        //                    nombreFoto = Guid.NewGuid().ToString() + "_" + producto.Imagen.FileName;
-        //                    string ruta = Path.Combine(carpetaDestino, nombreFoto);
-        //                    producto.Imagen.CopyTo(new FileStream(ruta, FileMode.Create));
-        //                    producto.Imagen = nombreFoto;
-
-        //                    if (!string.IsNullOrEmpty(producto.Imagen))
-        //                    {
-        //                        _context.Productos.Update(producto);
-        //                        _context.SaveChanges();
-        //                        return RedirectToAction(nameof(Index));
-        //                    }
-        //                }
-        //                catch
-        //                {
-        //                    ModelState.AddModelError(string.Empty, "Error en la carga.");
-        //                }
-        //            }
-        //            ModelState.AddModelError(string.Empty, "Error: datos insuficientes.");
-        //        }
-        //    }
-        //    return View(producto);
-        //}
+       
     }
 }
