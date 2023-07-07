@@ -16,6 +16,8 @@ using System.Runtime.CompilerServices;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting.Internal;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Carrito_D.Helpers;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace Carrito_D.Controllers
 {
@@ -109,7 +111,7 @@ namespace Carrito_D.Controllers
                 try
                 {
                     _context.SaveChanges();
-                    if(!AgregarFoto(producto, modelo.Imagen))
+                    if (!AgregarFoto(producto, modelo.Imagen))
                     {
                         ModelState.AddModelError(string.Empty, "No se pudo cargar la imagen.");
                         return RedirectToAction("Edit", new { id = producto.Id });
@@ -167,7 +169,7 @@ namespace Carrito_D.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "Empleado")]
-        public IActionResult Edit(int id, [Bind("Id,Nombre,Descripcion,PrecioVigente,Imagen,Activo")] Producto producto)
+        public IActionResult Edit(int id, [Bind("Id,Nombre,Descripcion,PrecioVigente,Activo")] Producto producto)
         {
             if (id != producto.Id)
             {
@@ -186,7 +188,6 @@ namespace Carrito_D.Controllers
                     {
                         productoEnDb.Nombre = producto.Nombre;
                         productoEnDb.Descripcion = producto.Descripcion;
-                        productoEnDb.Imagen = producto.Imagen;
                         productoEnDb.PrecioVigente = producto.PrecioVigente;
                         productoEnDb.Activo = producto.Activo;
 
@@ -262,6 +263,42 @@ namespace Carrito_D.Controllers
             return cargaOk;
         }
 
+        
+        
+        public IActionResult EliminarFoto(int? idProducto)
+        {
+            if (idProducto == null || idProducto == 0)
+            {
+                return NotFound();
+            }
+
+            EliminarFotoConfirmed(idProducto);
+
+            return RedirectToAction("Edit", new { id = idProducto });
+        }
+
+        
+
+
+        [HttpPost]
+        private void EliminarFotoConfirmed(int? idProducto) {
+
+           
+
+            var producto = _context.Productos.Find(idProducto);
+            if (producto != null)
+            {
+                if (producto.Imagen != null)
+                {
+                    producto.Imagen = Configs.FotoDefault;
+                    _context.Productos.Update(producto);
+                    _context.SaveChanges();
+
+                }
+
+            }
+           
+        }
 
        
     }
