@@ -1,7 +1,7 @@
 ﻿@model Empleado
 
 @{
-    ViewData["Title"] = "Delete";
+    ViewData["Title"] = "Eliminar empleado";
 }
 
 <h1>Eliminar empleado</h1>
@@ -27,12 +27,7 @@
         <dd class = "col-sm-10">
             @Html.DisplayFor(model => model.UserName)
         </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.PasswordHash)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.PasswordHash)
-        </dd>
+       
         <dt class = "col-sm-2">
             @Html.DisplayNameFor(model => model.Nombre)
         </dt>

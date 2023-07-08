@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using SQLitePCL;
 
+
 namespace Carrito_D.Controllers
 {
     public class AccountController : Controller
@@ -23,6 +24,10 @@ namespace Carrito_D.Controllers
 
         public IActionResult Registrar()
         {
+            if (User.Identity.IsAuthenticated)
+            {
+                return RedirectToAction("AccesoDenegado", new {mensaje = "Ya estás registrado. Cerrá sesión para registrar un nuevo usuario."});
+            }
             return View();
         }
 
@@ -48,23 +53,14 @@ namespace Carrito_D.Controllers
 
                     if (resultadoAddRole.Succeeded)
                     {
-                        Carrito carrito = new Carrito() { ClienteId = cliente.Id };
-                        _context.Carritos.Add(carrito);
-                        _context.SaveChanges();
-
-                        cliente.Carritos = new List<Carrito> { carrito };
-                        _context.Clientes.Update(cliente);
-                        _context.SaveChanges();
-
+                        AgregarCarritoAlCliente(cliente);
                         await _signinmanager.SignInAsync(cliente, isPersistent: false);
-
                         return RedirectToAction("Edit", "Clientes", new { id = cliente.Id });
                     }
                     else
                     {
                         ModelState.AddModelError(String.Empty,$"No se puede agregar el rol de {Configs.ClienteRolNombre}");
-                    }                
-                    
+                    }          
                 }
 
                 foreach(var error in resultadoCreate.Errors)
@@ -76,20 +72,26 @@ namespace Carrito_D.Controllers
             return View(viewmodel);
         }
 
+        private void AgregarCarritoAlCliente(Cliente cliente)
+        {
+            Carrito carrito = new Carrito() { ClienteId = cliente.Id };
+            _context.Carritos.Add(carrito);
+            _context.SaveChanges();
+
+            cliente.Carritos = new List<Carrito> { carrito };
+            _context.Clientes.Update(cliente);
+            _context.SaveChanges();
+        }
+
         public IActionResult IniciarSesion(string returnUrl)
         {
-            //ViewBag.Url1 = returnUrl;
-            //ViewData["Url2"] = returnUrl;
             TempData["ReturnUrl"] = returnUrl;
-
             return View();
         }
 
         [HttpPost]
         public async Task<IActionResult> IniciarSesion(Login viewmodel)
         {
-            //var url1 = ViewBag.Url1;
-            //var url2 = ViewData["Url2"];
             string returnUrl = TempData["ReturnUrl"] as string;
 
             if (ModelState.IsValid)
@@ -118,10 +120,38 @@ namespace Carrito_D.Controllers
             return RedirectToAction("Index", "Home");
         }
 
-        public IActionResult AccesoDenegado(string returnUrl)
+        public IActionResult AccesoDenegado(string? mensaje)
         {
-            ViewBag.ReturnUrl = returnUrl;
+            ViewBag.ReturnUrl = mensaje;
             return View();
+        }
+
+        [HttpGet]
+        public IActionResult DniExistente(string dni)
+        {
+            if (_context.Clientes.Any(c => c.DNI == dni))
+            {
+                return Json("Ya existe un usuario registrado con ese número de dni.");
+            }
+            else
+            {
+                return Json(true);
+            }
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> EmailExistente(string email)
+        {
+            var emailCliente = await _usermanager.FindByEmailAsync(email);
+
+            if (emailCliente != null)
+            {
+                return Json("Ya existe un usuario registrado con ese email.");
+            }
+            else
+            {
+                return Json(true);
+            }
         }
     }
 }

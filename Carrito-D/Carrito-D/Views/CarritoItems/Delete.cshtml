@@ -1,7 +1,7 @@
 ﻿@model CarritoItem
 
 @{
-    ViewData["Title"] = "Delete";
+    ViewData["Title"] = "Eliminar producto";
 }
 
 <h1>Eliminar producto del carrito</h1>
@@ -25,7 +25,7 @@
     <form asp-action="Delete" asp-route-idCarrito="@Model.CarritoId" asp-route-idProducto="@Model.ProductoId">
         <input type="hidden" asp-for="CarritoId" />
         <input type="hidden" asp-for="ProductoId" />
-        <input type="submit" value="Delete" class="btn btn-danger" /> |
+        <input type="submit" value="Eliminar" class="btn btn-danger" /> |
         <a asp-action="MiCarrito">Volver</a>
     </form>
 </div>

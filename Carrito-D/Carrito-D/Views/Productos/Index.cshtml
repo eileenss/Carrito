@@ -1,7 +1,9 @@
-﻿@model IEnumerable<Producto>
+﻿@using Carrito_D.Helpers
+
+@model IEnumerable<Producto>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Productos";
 }
 
 <h1>Productos</h1>
@@ -13,21 +15,39 @@
     </p>
 }
 
+<div>
+    <h3>Filtrar por categoría</h3>
+    <ul style="list-style-type: none;">
+        @foreach (var cat in ViewBag.Categorias)
+        {
+            <li style="display:inline">
+                <a asp-action="Index" asp-controller="Productos" asp-route-categoriaId="@cat.Id">@cat.Nombre</a>
+            </li>
+        }
+    </ul>
+</div>
+
+@if (!string.IsNullOrEmpty(ViewBag.Pausado))
+{
+    <div class="alert alert-danger" role="alert">@ViewBag.Pausado</div>
+}
+
 <table class="table">
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.Nombre)
+                @Html.DisplayNameFor(model => model.Imagen)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Imagen)
+                @Html.DisplayNameFor(model => model.Nombre)
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.PrecioVigente)
             </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Activo)
-            </th>
+            @if (User.IsInRole("Admin") || User.IsInRole("Empleado"))
+            {
+                <th>Estado del producto</th>
+            }
             <th></th>
         </tr>
     </thead>
@@ -36,27 +56,53 @@
         {
             <tr>
                 <td>
-                    @Html.DisplayFor(modelItem => item.Nombre)
+                    @{
+                        string fotoPath = Metodos.UrlPathFoto(Configs.FotoURL, item.Imagen, Configs.FotoDefault);
+                    }
+                    <figure class="figure">
+                        <img src="@fotoPath" class="fotoIndex" alt="Foto producto" asp-append-version="true">
+                    </figure>
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.Imagen)
+                    @Html.DisplayFor(modelItem => item.Nombre)
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.PrecioVigente)
                 </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Activo)
-                </td>
-                <td>
-
-                    @if (User.IsInRole("Admin") || User.IsInRole("Empleado"))
+                @if (User.IsInRole("Admin") || User.IsInRole("Empleado"))
+                {
+                    if (item.Activo)
                     {
-                        <a asp-action="Edit" asp-route-id="@item.Id">Editar</a>
+                        <td class="alert alert-success" role="alert">
+                            Activo
+                        </td>
                     }
                     else
                     {
-                        <a asp-action="AgregarCarritoItem" asp-controller="CarritoItems" asp-route-idProducto="@item.Id">Agregar al Carrito</a>
+                        <td class="alert alert-danger" role="alert">
+                            Pausado
+                        </td>
                     }
+                    <td>
+                        <a asp-action="Edit" asp-route-id="@item.Id">Editar</a>
+                    </td>
+                }
+                else
+                {
+                    if (item.Activo == false)
+                    {
+                        <td class="alert alert-danger" role="alert">
+                            Producto pausado
+                        </td>
+                    }
+                    else
+                    {
+                        <td>
+                            <a asp-action="AgregarCarritoItem" asp-controller="CarritoItems" asp-route-idProducto="@item.Id">Agregar al Carrito</a>
+                        </td>
+                    }
+                }
+                <td>
                     <a asp-action="Details" asp-route-id="@item.Id">Detalles</a>
                 </td>
             </tr>

@@ -21,11 +21,6 @@ namespace Carrito_D.Controllers
         }
         private List<string> roles = new List<string>() { Configs.AdminRolNombre, Configs.ClienteRolNombre, Configs.EmpleadoRolNombre, Configs.UsuarioRolNombre };
 
-        //public PrecargaController(CarritoContext context)
-        //{
-        //    this._carritoContext = context;
-        //}
-
         //PRE CARGA DE DATOS
         public IActionResult Seed()
         {
@@ -80,7 +75,7 @@ namespace Carrito_D.Controllers
             {
                 Empleado empleado = new Empleado()
                 {
-                    DNI = "empleado",
+                    DNI = "35353535",
                     Nombre = "Jorge",
                     Apellido = "Perez",
                     Email = "empleado@ort.edu.ar",
@@ -139,7 +134,6 @@ namespace Carrito_D.Controllers
                         _context.Clientes.Update(cliente2);
                         _context.SaveChanges();
                     }
-
                 }
             }
         }
@@ -171,9 +165,9 @@ namespace Carrito_D.Controllers
 
                 vinosTintos.Productos = new List<Producto>()
                 {
-                   await CrearProducto(vinosTintos.Id,"Vino Trapiche Malbec","Vino Trapiche Malbec cosecha 2020 750ml",1800),
-                   await CrearProducto(vinosTintos.Id,"Vino Emilia Malbec","Vino Emilia Malbec cosecha 2022 750ml",1300),
-                   await CrearProducto(vinosTintos.Id,"Vino Nicasia Blend","Vino Nicasia Blend de Malbecs cosecha 2021 750ml",2500)
+                   await CrearProducto(vinosTintos.Id,"Vino Trapiche Malbec","Vino Trapiche Malbec cosecha 2020 750ml",1800, "trapiche-malbec.jpeg"),
+                   await CrearProducto(vinosTintos.Id,"Vino Emilia Malbec","Vino Emilia Malbec cosecha 2022 750ml",1300,"emilia-malbec.jpeg"),
+                   await CrearProducto(vinosTintos.Id,"Vino Nicasia Blend","Vino Nicasia Blend de Malbecs cosecha 2021 750ml",2500,"nicasia.jpg")
                 };
                 _context.Categorias.Update(vinosTintos);
                 await _context.SaveChangesAsync();
@@ -188,64 +182,30 @@ namespace Carrito_D.Controllers
 
                 whiskies.Productos = new List<Producto>()
                 {
-                   await CrearProducto(whiskies.Id,"Whisky Chivas Regal 12 años","Whisky Chivas Regal 12 años 1Lt",17000),
-                   await CrearProducto(whiskies.Id,"Whisky Johnnie Walker Black","Whisky Johnnie Walker Black 1Lt",18000),
-                   await CrearProducto(whiskies.Id,"Whisky Johnnie Walker Black","Whisky Johnnie Walker Black 700ml",15000)
+                   await CrearProducto(whiskies.Id,"Whisky Chivas Regal 12 años","Whisky Chivas Regal 12 años 1Lt",17000,"chivas.jpeg"),
+                   await CrearProducto(whiskies.Id,"Whisky Johnnie Walker Black","Whisky Johnnie Walker Black 1Lt",18000,"jw-black.jpg"),
+                   await CrearProducto(whiskies.Id,"Whisky Johnnie Walker Blue","Whisky Johnnie Walker Blue 700ml",15000,"jw-blue.jpg")
                 };
                 _context.Categorias.Update(whiskies);
                 await _context.SaveChangesAsync();
-                //Producto vino1 = new Producto() { Nombre = "Vino Trapiche Malbec ", CategoriaId = vinosTintos.Id, Descripcion = "Vino Trapiche Malbec cosecha 2020 750ml", PrecioVigente = 1800 };
-                //Producto vino2 = new Producto() { Nombre = "Vino Emilia Malbec ", CategoriaId = vinosTintos.Id, Descripcion = "Vino Emilia Malbec cosecha 2022 750ml", PrecioVigente = 1300 };
-                //Producto vino3 = new Producto() { Nombre = "Vino Nicasia Blend ", CategoriaId = vinosTintos.Id, Descripcion = "Vino Nicasia Blend de Malbecs cosecha 2021 750ml", PrecioVigente = 2000 };
-                //_context.Productos.AddRange(vino1,vino2,vino3);
-                //_context.Categorias.Add(vinosTintos);
             }
 
         }
 
-        private async Task<Producto> CrearProducto(int categoriaId, string nombre, string descripcion, decimal precioVigente)
+        private async Task<Producto> CrearProducto(int categoriaId, string nombre, string descripcion, decimal precioVigente, string foto)
         {
             Producto producto = new Producto()
             {
                 CategoriaId = categoriaId,
                 Nombre = nombre,
                 Descripcion = descripcion,
-                PrecioVigente = precioVigente
+                PrecioVigente = precioVigente,
+                Imagen = foto
             };
             _context.Productos.Add(producto);
             await _context.SaveChangesAsync();
             return producto;
         }
-
-        //private void CrearCategorias()
-        //{
-        //    var hayCategorias = _context.Categorias.Any();
-        //    if (!hayCategorias)
-        //    {
-        //        Categoria vinosTintos = new Categoria()
-        //        {
-        //            Nombre = "Vinos tintos",
-        //            Descripcion = "Vinos tintos",
-        //        };
-        //        var productos = CrearProductosVinosTintos(vinosTintos);
-        //        vinosTintos.Productos = productos;
-        //        _context.Categorias.Add(vinosTintos);
-        //    }
-        //    _context.SaveChanges();
-        //}
-
-        //private List<Producto> CrearProductosVinosTintos(Categoria categoria)
-        //{
-        //    Producto vino1 = new Producto() { Nombre = "Vino Trapiche Malbec ", CategoriaId = categoria.Id, Descripcion = "Vino Trapiche Malbec cosecha 2020 750ml", PrecioVigente = 1800 };
-        //    _context.Productos.Add(vino1);
-        //    Producto vino2 = new Producto() { Nombre = "Vino Emilia Malbec ", CategoriaId = categoria.Id, Descripcion = "Vino Emilia Malbec cosecha 2022 750ml", PrecioVigente = 1300 };
-        //    _context.Productos.Add(vino2);
-        //    Producto vino3 = new Producto() { Nombre = "Vino Nicasia Blend ", CategoriaId = categoria.Id, Descripcion = "Vino Nicasia Blend de Malbecs cosecha 2021 750ml", PrecioVigente = 2000 };
-        //    _context.Productos.Add(vino3);
-        //    List<Producto> productosVinosTintos = new List<Producto>() { vino1, vino2, vino3 };
-
-        //    return productosVinosTintos;
-        //}
 
         private async Task CrearSucursales()
         {
@@ -257,7 +217,7 @@ namespace Carrito_D.Controllers
                     Nombre = "Palermo",
                     Direccion = "Av. Santa Fe 1500",
                     Email = "palermo@ort.edu.ar",
-                    Telefono = 4772 - 0098
+                    Telefono = 1147720098
                 };
                 _context.Sucursales.Add(palermo);
                 _context.SaveChanges();
@@ -272,7 +232,7 @@ namespace Carrito_D.Controllers
                     Nombre = "Flores",
                     Direccion = "Av. Rivadavia 4000",
                     Email = "flores@ort.edu.ar",
-                    Telefono = 4992 - 0048
+                    Telefono = 1149920048
                 };
                 _context.Sucursales.Add(flores);
                 _context.SaveChanges();
@@ -287,7 +247,7 @@ namespace Carrito_D.Controllers
                     Nombre = "Once",
                     Direccion = "Bartolomé Mitre 544",
                     Email = "once@ort.edu.ar",
-                    Telefono = 4882 - 4512
+                    Telefono = 1148824512
                 };
                 _context.Sucursales.Add(once);
                 _context.SaveChanges();
@@ -315,7 +275,5 @@ namespace Carrito_D.Controllers
             }
             return lista;
         }
-
-
     }
 }

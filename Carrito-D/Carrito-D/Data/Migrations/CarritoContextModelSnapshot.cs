@@ -22,6 +22,9 @@ namespace Carrito_D.Data.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
 
+            modelBuilder.HasSequence<int>("Legajo")
+                .StartsAt(1000L);
+
             modelBuilder.Entity("Carrito_D.Models.Carrito", b =>
                 {
                     b.Property<int>("Id")
@@ -79,6 +82,9 @@ namespace Carrito_D.Data.Migrations
                         .HasColumnType("nvarchar(50)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("Nombre")
+                        .IsUnique();
 
                     b.ToTable("Categorias");
                 });
@@ -153,6 +159,9 @@ namespace Carrito_D.Data.Migrations
 
                     b.HasIndex("CategoriaId");
 
+                    b.HasIndex("Nombre")
+                        .IsUnique();
+
                     b.ToTable("Productos");
                 });
 
@@ -198,6 +207,9 @@ namespace Carrito_D.Data.Migrations
                         .HasColumnType("int");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("Direccion")
+                        .IsUnique();
 
                     b.ToTable("Sucursales");
                 });
@@ -420,7 +432,7 @@ namespace Carrito_D.Data.Migrations
 
                     b.Property<string>("DNI")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("Direccion")
                         .HasMaxLength(100)
@@ -436,6 +448,10 @@ namespace Carrito_D.Data.Migrations
 
                     b.Property<int?>("Telefono")
                         .HasColumnType("int");
+
+                    b.HasIndex("DNI")
+                        .IsUnique()
+                        .HasFilter("[DNI] IS NOT NULL");
 
                     b.HasDiscriminator().HasValue("Persona");
                 });
@@ -455,7 +471,9 @@ namespace Carrito_D.Data.Migrations
                     b.HasBaseType("Carrito_D.Models.Persona");
 
                     b.Property<int>("Legajo")
-                        .HasColumnType("int");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasDefaultValueSql("NEXT VALUE FOR Legajo");
 
                     b.HasDiscriminator().HasValue("Empleado");
                 });

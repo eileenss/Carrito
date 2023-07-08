@@ -11,6 +11,7 @@ using Carrito_D.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Carrito_D.Helpers;
+using System.Net;
 
 namespace Carrito_D.Controllers
 {
@@ -65,23 +66,32 @@ namespace Carrito_D.Controllers
         {
             if (ModelState.IsValid)
             {
-                Empleado empleado = new Empleado()
-                {
-                    DNI = viewmodel.DNI,
-                    Nombre = viewmodel.Nombre,
-                    Apellido = viewmodel.Apellido,
-                    Telefono = viewmodel.Telefono,
-                    Direccion = viewmodel.Direccion,
-                    Email = viewmodel.Email,
-                    UserName = viewmodel.Email,
-                    Legajo = viewmodel.Legajo,
-                    PasswordHash = Configs.Password
-                };
+                //Empleado empleado = new Empleado()
+                //{
+                //    DNI = viewmodel.DNI,
+                //    Nombre = viewmodel.Nombre,
+                //    Apellido = viewmodel.Apellido,
+                //    Telefono = viewmodel.Telefono,
+                //    Direccion = viewmodel.Direccion,
+                //    Email = viewmodel.Email,
+                //    UserName = viewmodel.Email,
+                //    PasswordHash = Configs.Password
+                //};
 
+                Empleado empleado = new Empleado();
+                empleado.DNI = viewmodel.DNI;
+                empleado.Nombre = viewmodel.Nombre;
+                empleado.Apellido = viewmodel.Apellido;
+                empleado.Telefono = viewmodel.Telefono;
+                empleado.Direccion = viewmodel.Direccion;
+                empleado.UserName = viewmodel.DNI;
                 var resultadoEmpleado = await _userManager.CreateAsync(empleado, Configs.Password);
 
                 if (resultadoEmpleado.Succeeded)
                 {
+                    string email = empleado.Legajo + Configs.Email;
+                    empleado.Email = email;
+                    empleado.UserName = email;
                     var resultadoAddRole = await _userManager.AddToRoleAsync(empleado, Configs.EmpleadoRolNombre);
 
                     if (resultadoAddRole.Succeeded)
@@ -99,7 +109,6 @@ namespace Carrito_D.Controllers
                 {
                     ModelState.AddModelError(String.Empty, error.Description);
                 }
-
             }
             return View(viewmodel);
         }
@@ -132,14 +141,6 @@ namespace Carrito_D.Controllers
             {
                 return NotFound();
             }
-
-            /*Ya tenemos viewmodel de edit
-            ModelState.Remove("DNI");
-            ModelState.Remove("UserName");
-            ModelState.Remove("Password");
-            ModelState.Remove("Nombre");
-            ModelState.Remove("Apellido");
-            ModelState.Remove("Email");*/
 
             if (ModelState.IsValid)
             {
@@ -216,5 +217,34 @@ namespace Carrito_D.Controllers
         {
             return _context.Empleados.Any(e => e.Id == id);
         }
+
+        [HttpGet]
+        public IActionResult DniExistente(string dni)
+        {
+            if (_context.Empleados.Any(e => e.DNI == dni))
+            {
+                return Json("Ya existe un empleado con ese número de dni.");
+            }
+            else
+            {
+                return Json(true);
+            }
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> EmailExistente(string email)
+        {
+            var emailEmpleado = await _userManager.FindByEmailAsync(email);
+
+            if (emailEmpleado != null)
+            {
+                return Json("Ya existe un empleado con ese email.");
+            }
+            else
+            {
+                return Json(true);
+            }
+        }
     }
 }
+

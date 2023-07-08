@@ -19,8 +19,5 @@
         public const string NoCoincide = "Las contraseñas no coinciden.";
 
         public const string Minimo = "El mínimo es {1}";
-
-        
-
     }
 }

@@ -34,9 +34,6 @@ namespace Carrito_D
                 opciones.Cookie.Name = "IdentidadCarritoApp";
             });
 
-
-
-
             //Identity
             builder.Services.AddIdentity<Persona, IdentityRole<int>>().AddEntityFrameworkStores<CarritoContext>();
 
@@ -52,6 +49,18 @@ namespace Carrito_D
 
         private static void Configure(WebApplication app)
         {
+
+            var supportedCultures = new[] { "en-US", "es-MX" };
+            var defaultCulture = "es-MX";
+
+            var requestLocalizationOptions = new RequestLocalizationOptions()
+                .SetDefaultCulture(defaultCulture)
+                .AddSupportedCultures(supportedCultures)
+                .AddSupportedUICultures(supportedCultures);
+
+            app.UseRequestLocalization(requestLocalizationOptions);
+
+
             // Configure the HTTP request pipeline.
             if (!app.Environment.IsDevelopment())
             {

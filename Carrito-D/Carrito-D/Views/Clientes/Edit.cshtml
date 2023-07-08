@@ -1,10 +1,10 @@
-﻿@model Carrito_D.Models.Cliente
+﻿@model Cliente
 
 @{
-    ViewData["Title"] = "Edit";
+    ViewData["Title"] = "Editar mis datos";
 }
 
-<h1>Editar cliente</h1>
+<h1>Editar mis datos</h1>
 
 <hr />
 <div class="row">
@@ -27,11 +27,6 @@
                 <input asp-for="UserName" class="form-control" readonly/>
                 <span asp-validation-for="UserName" class="text-danger"></span>
             </div>
-            <!--<div class="form-group">
-                <label asp-for="Password" class="control-label"></label>
-                <input asp-for="Password" class="form-control" readonly />
-                <span asp-validation-for="Password" class="text-danger"></span>
-            </div>-->
             <div class="form-group">
                 <label asp-for="Nombre" class="control-label"></label>
                 <input asp-for="Nombre" class="form-control" readonly />
@@ -70,7 +65,7 @@
 </div>
 
 <div>
-    <a asp-action="Index">Volver a Clientes</a>
+    <a asp-action="Index" asp-controller="Home">Volver al inicio</a>
 </div>
 
 @section Scripts {

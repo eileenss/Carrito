@@ -1,23 +1,30 @@
-﻿@model Carrito_D.Models.StockItem
+﻿@model StockItem
 
 @{
-    ViewData["Title"] = "Create";
+    ViewData["Title"] = "Agregar stock";
 }
 
-<h1>Create</h1>
+<h1>Agregar nuevo stock</h1>
 
-<h4>StockItem</h4>
+@if (!string.IsNullOrEmpty(ViewBag.YaExiste))
+{
+    <div class="alert alert-danger" role="alert">
+        @ViewBag.YaExiste  
+        @Html.ActionLink("Editar", "Edit", new { idProd = Model.ProductoId, idSuc = Model.SucursalId })
+    </div>
+}
+
 <hr />
 <div class="row">
     <div class="col-md-4">
         <form asp-action="Create">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
-                <label asp-for="ProductoId" class="control-label"></label>
+                <label asp-for="ProductoId" class="control-label">Producto</label>
                 <select asp-for="ProductoId" class ="form-control" asp-items="ViewBag.ProductoId"></select>
             </div>
             <div class="form-group">
-                <label asp-for="SucursalId" class="control-label"></label>
+                <label asp-for="SucursalId" class="control-label">Sucursal</label>
                 <select asp-for="SucursalId" class ="form-control" asp-items="ViewBag.SucursalId"></select>
             </div>
             <div class="form-group">
@@ -26,14 +33,14 @@
                 <span asp-validation-for="Cantidad" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
+                <input type="submit" value="Agregar" class="btn btn-primary" />
             </div>
         </form>
     </div>
 </div>
 
 <div>
-    <a asp-action="Index">Back to List</a>
+    <a asp-action="Index">Volver al stock</a>
 </div>
 
 @section Scripts {

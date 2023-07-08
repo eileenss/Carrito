@@ -51,7 +51,17 @@ namespace Carrito_D.Data
             #endregion
 
             #region Unique
-            //modelBuilder.Entity<Personas>()
+            modelBuilder.Entity<Persona>().HasIndex(p => p.DNI).IsUnique();
+            modelBuilder.Entity<Empleado>().HasIndex(e => e.Legajo).IsUnique();
+            modelBuilder.Entity<Producto>().HasIndex(p => p.Nombre).IsUnique();
+            modelBuilder.Entity<Categoria>().HasIndex(c => c.Nombre).IsUnique();
+            modelBuilder.Entity<Sucursal>().HasIndex(s => s.Direccion).IsUnique();
+            modelBuilder.Entity<Sucursal>().HasIndex(s => s.Nombre).IsUnique();
+            #endregion
+
+            #region Secuencia automática para legajo
+            modelBuilder.HasSequence<int>("Legajo").StartsAt(1000).IncrementsBy(1);
+            modelBuilder.Entity<Empleado>().Property(e => e.Legajo).HasDefaultValueSql("NEXT VALUE FOR Legajo");
             #endregion
         }
 

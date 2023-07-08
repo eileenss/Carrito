@@ -23,32 +23,30 @@ namespace Carrito_D.Controllers
             _context = context;
         }
 
-        // GET: Compras
+        //GET: Compras
         public IActionResult Index()
         {
             if (User.IsInRole("Cliente"))
             {
-                int clienteId = Int32.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
-
-                var carritos = _context.Compras
+                var comprasCliente = _context.Compras
                     .Include(c => c.Carrito)
                     .Include(c => c.Cliente)
                     .Include(c => c.Sucursal)
-                    .Where(c => c.ClienteId == clienteId);
+                    .Where(c => c.ClienteId == ClienteLoginId())
+                    .OrderByDescending(c => c.Fecha);
 
-                return View(carritos.ToList());
+                return View(comprasCliente.ToList());
             }
 
             DateTime fechaActual = DateTime.Now;
-
-            var carritoContext = _context.Compras
+            var compras = _context.Compras
                 .Include(c => c.Carrito)
                 .Include(c => c.Cliente)
                 .Include(c => c.Sucursal)
                 .Where(c => c.Fecha.Month == fechaActual.Month)
                 .OrderByDescending(c => c.Total);
 
-            return View(carritoContext.ToList());
+            return View(compras.ToList());
         }
 
         // GET: Compras/Details/5
@@ -70,20 +68,27 @@ namespace Carrito_D.Controllers
                 return NotFound();
             }
 
+            compra.Carrito.CarritoItems = _context.CarritoItems
+               .Include(c => c.Producto)
+               .Where(c => c.CarritoId == compra.CarritoId)
+               .ToList();
+
             return View(compra);
         }
 
+        [Authorize(Roles = "Cliente")]
         public IActionResult CrearCompra(int idCarrito, int idSucursal)
         {
-            int clienteId = Int32.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
+            int clienteId = ClienteLoginId();
             Cliente cliente = _context.Clientes.Find(clienteId);
             Carrito carrito = _context.Carritos.Find(idCarrito);
             Sucursal sucursal = _context.Sucursales.Find(idSucursal);
 
-            if (carrito == null)
+            if (carrito == null || sucursal == null)
             {
                 return NotFound();
             }
+
             Compra compra = new Compra()
             {
                 ClienteId = clienteId,
@@ -98,20 +103,25 @@ namespace Carrito_D.Controllers
             _context.Compras.Add(compra);
             _context.SaveChanges();
 
+            ModificarEstadoCarrito(carrito, cliente, compra);
+
+            return View(compra);
+        }
+
+        private void ModificarEstadoCarrito(Carrito carrito, Cliente cliente, Compra compra)
+        {
             carrito.Activo = false;
             carrito.Compra = compra;
             _context.Carritos.Update(carrito);
             _context.SaveChanges();
 
-            Carrito nuevoCarrito = new Carrito() { ClienteId = clienteId };
+            Carrito nuevoCarrito = new Carrito() { ClienteId = ClienteLoginId() };
             _context.Carritos.Add(nuevoCarrito);
             _context.SaveChanges();
 
             cliente.Carritos.Add(nuevoCarrito);
             _context.Clientes.Update(cliente);
             _context.SaveChanges();
-
-            return View(compra);
         }
 
         private decimal Total(int idCarrito)
@@ -132,28 +142,131 @@ namespace Carrito_D.Controllers
             return total;
         }
 
-        /*private decimal Total(int idCarrito)
-         * {
-         * var carritoItems = _context.CarritoItems
+        private int ClienteLoginId()
+        {
+            int clienteId = Int32.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
+            return clienteId;
+        }
+
+        private bool CompraExists(int id)
+        {
+            return _context.Compras.Any(c => c.Id == id);
+        }
+
+        [Authorize(Roles = "Cliente")]
+        public IActionResult ElegirSucursal(int idCarrito)
+        {
+            TempData["CarritoId"] = idCarrito;
+
+            if (TempData.ContainsKey("SinStock"))
+            {
+                ViewData["SinStock"] = TempData["SinStock"];
+                List<Sucursal> sucursalesConStock = BuscarSucursalConStock(idCarrito);
+
+                if (sucursalesConStock.Count > 0)
+                {
+                    ViewData["ConStock"] = "Las sucursales con stock son las siguientes: ";
+                    ViewData["SucursalesConStock"] = new SelectList(sucursalesConStock, "Id", "Direccion");
+                }
+            }
+            else
+            {
+                ViewData["SucursalId"] = new SelectList(_context.Sucursales, "Id", "Direccion");
+            }
+
+            return View();
+        }
+
+        [HttpPost]
+        [Authorize(Roles = "Cliente")]
+        public IActionResult ValidarStock(int idSucursal)
+        {
+            int idCarrito = (int)TempData["CarritoId"];
+
+            var carritoItems = _context.CarritoItems
                 .Include(c => c.Carrito)
                 .Include(c => c.Producto)
                 .Where(c => c.CarritoId == idCarrito)
                 .ToList();
 
-            decimal total = 0;
+            var stockItems = _context.StockItems
+                .Include(s => s.Sucursal)
+                .Include(s => s.Producto)
+                .Where(s => s.SucursalId == idSucursal)
+                .ToList();
 
-            foreach(var item in carritoItems)
+            int index = 0;
+            bool hayStock = true;
+
+            do
             {
-                total += item.Subtotal;
+                var carritoItem = carritoItems.ElementAt(index);
+                if (!stockItems.Any(s => s.ProductoId == carritoItem.ProductoId && s.Cantidad >= carritoItem.Cantidad))
+                {
+                    hayStock = false;
+                }
+                index++;
+            } while (carritoItems.Count > index && hayStock);
+
+            if (!hayStock)
+            {
+                TempData["SinStock"] = "No hay suficiente stock";
+                return RedirectToAction(nameof(ElegirSucursal), new { idCarrito });
             }
 
-            return total;
+            DescontarStock(carritoItems, stockItems);
+            return RedirectToAction("CrearCompra", new { idCarrito, idSucursal });
         }
-         */
 
-        private bool CompraExists(int id)
+        private void DescontarStock(List<CarritoItem> carritoItems, List<StockItem> stockItems)
         {
-            return _context.Compras.Any(c => c.Id == id);
+            foreach (var item in carritoItems)
+            {
+                StockItem stockItem = stockItems.FirstOrDefault(s => s.ProductoId == item.ProductoId);
+                stockItem.Cantidad -= item.Cantidad;
+
+                _context.StockItems.Update(stockItem);
+                _context.SaveChanges();
+            }
+        }
+
+        private List<Sucursal> BuscarSucursalConStock(int idCarrito)
+        {
+            List<Sucursal> sucsConStock = new List<Sucursal>();
+
+            var carritoItems = _context.CarritoItems
+                .Include(c => c.Carrito)
+                .Include(c => c.Producto)
+                .Where(c => c.CarritoId == idCarrito)
+                .ToList();
+
+            var sucursales = _context.Sucursales.ToList();
+
+            var stockItems = _context.StockItems
+                .Include(s => s.Sucursal)
+                .Include(s => s.Producto)
+                .ToList();
+
+            foreach (var sucursal in sucursales)
+            {
+                var stockSuc = stockItems.FindAll(s => s.SucursalId == sucursal.Id);
+                bool hayStock = true;
+
+                foreach (var carritoItem in carritoItems)
+                {
+                    if (!stockSuc.Any(s => s.ProductoId == carritoItem.ProductoId && s.Cantidad >= carritoItem.Cantidad))
+                    {
+                        hayStock = false;
+                        break;
+                    }
+                }
+
+                if (hayStock)
+                {
+                    sucsConStock.Add(sucursal);
+                }
+            }
+            return sucsConStock;
         }
     }
 }

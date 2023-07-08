@@ -1,19 +1,35 @@
 ﻿@model IEnumerable<StockItem>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Stock";
 }
 
-<h1>Index</h1>
+<h1>Stock</h1>
 
 <p>
-    <a asp-action="Create">Create New</a>
+    <a asp-action="Create">Agregar stock</a>
 </p>
+
+<div>
+    <h3>Filtrar por sucusal</h3>
+    <ul style="list-style-type: none">
+        @foreach (var suc in ViewBag.Sucursales)
+        {
+            <li style="display:inline">
+                <a asp-action="Index" asp-controller="StockItems" asp-route-sucursalId="@suc.Id">@suc.Nombre</a>
+            </li>
+        }
+    </ul>
+</div>
+
 <table class="table">
     <thead>
         <tr>
             <th>
                 @Html.DisplayNameFor(model => model.Sucursal)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Sucursal.Direccion)
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.Producto)
@@ -25,22 +41,25 @@
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Sucursal.Direccion)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Producto.Nombre)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Cantidad)
-            </td>
-            <td>
-                @Html.ActionLink("Edit", "Edit", new { idProd = item.ProductoId, idSuc = item.SucursalId }) |
-                @Html.ActionLink("Details", "Details", new { idProd = item.ProductoId, idSuc = item.SucursalId })
-            </td>
-        </tr>
-}
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Sucursal.Nombre)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Sucursal.Direccion)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Producto.Nombre)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Cantidad)
+                </td>
+                <td>
+                    @Html.ActionLink("Editar", "Edit", new { idProd = item.ProductoId, idSuc = item.SucursalId })
+                </td>
+            </tr>
+        }
     </tbody>
 </table>

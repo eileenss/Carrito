@@ -1,4 +1,5 @@
 ﻿using Carrito_D.Helpers;
+using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel.DataAnnotations;
 
 namespace Carrito_D.ViewModels
@@ -7,6 +8,7 @@ namespace Carrito_D.ViewModels
     {
         [Required(ErrorMessage = ErrorMsg.Requerido)]
         [RegularExpression(@"^\d{1,2}\.?\d{3}\.?\d{3}$", ErrorMessage = ErrorMsg.Invalido)]
+        [Remote(action: "DniExistente", controller: "Empleados")]
         public string DNI { get; set; }
 
         [Required(ErrorMessage = ErrorMsg.Requerido)]
@@ -28,12 +30,10 @@ namespace Carrito_D.ViewModels
         [Display(Name = "Dirección")]
         public string Direccion { get; set; }
 
-        [Required(ErrorMessage = ErrorMsg.Requerido)]
-        [EmailAddress(ErrorMessage = ErrorMsg.Invalido)]
-        [Display(Name = "Correo electrónico")]
-        public string Email { get; set; }
-
-        public int Legajo { get; set; }
-
+        //[Required(ErrorMessage = ErrorMsg.Requerido)]
+        //[EmailAddress(ErrorMessage = ErrorMsg.Invalido)]
+        //[Display(Name = "Correo electrónico")]
+        //[Remote(action: "EmailExistente", controller: "Empleados")]
+        //public string Email { get; set; }
     }
 }
