@@ -51,9 +51,7 @@ namespace Carrito_D.Data
             #endregion
 
             #region Unique
-            //modelBuilder.Entity<Persona>().HasIndex(p => p.DNI).IsUnique();
-            modelBuilder.Entity<Cliente>().HasIndex(c => c.DNI).IsUnique();
-            modelBuilder.Entity<Empleado>().HasIndex(e => e.DNI).IsUnique();
+            modelBuilder.Entity<Persona>().HasIndex(p => p.DNI).IsUnique();
             modelBuilder.Entity<Empleado>().HasIndex(e => e.Legajo).IsUnique();
             modelBuilder.Entity<Producto>().HasIndex(p => p.Nombre).IsUnique();
             modelBuilder.Entity<Categoria>().HasIndex(c => c.Nombre).IsUnique();

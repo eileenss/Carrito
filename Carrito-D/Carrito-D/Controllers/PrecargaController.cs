@@ -21,11 +21,6 @@ namespace Carrito_D.Controllers
         }
         private List<string> roles = new List<string>() { Configs.AdminRolNombre, Configs.ClienteRolNombre, Configs.EmpleadoRolNombre, Configs.UsuarioRolNombre };
 
-        //public PrecargaController(CarritoContext context)
-        //{
-        //    this._carritoContext = context;
-        //}
-
         //PRE CARGA DE DATOS
         public IActionResult Seed()
         {
@@ -170,9 +165,9 @@ namespace Carrito_D.Controllers
 
                 vinosTintos.Productos = new List<Producto>()
                 {
-                   await CrearProducto(vinosTintos.Id,"Vino Trapiche Malbec","Vino Trapiche Malbec cosecha 2020 750ml",1800),
-                   await CrearProducto(vinosTintos.Id,"Vino Emilia Malbec","Vino Emilia Malbec cosecha 2022 750ml",1300),
-                   await CrearProducto(vinosTintos.Id,"Vino Nicasia Blend","Vino Nicasia Blend de Malbecs cosecha 2021 750ml",2500)
+                   await CrearProducto(vinosTintos.Id,"Vino Trapiche Malbec","Vino Trapiche Malbec cosecha 2020 750ml",1800, "trapiche-malbec.jpeg"),
+                   await CrearProducto(vinosTintos.Id,"Vino Emilia Malbec","Vino Emilia Malbec cosecha 2022 750ml",1300,"emilia-malbec.jpeg"),
+                   await CrearProducto(vinosTintos.Id,"Vino Nicasia Blend","Vino Nicasia Blend de Malbecs cosecha 2021 750ml",2500,"nicasia.jpg")
                 };
                 _context.Categorias.Update(vinosTintos);
                 await _context.SaveChangesAsync();
@@ -187,9 +182,9 @@ namespace Carrito_D.Controllers
 
                 whiskies.Productos = new List<Producto>()
                 {
-                   await CrearProducto(whiskies.Id,"Whisky Chivas Regal 12 años","Whisky Chivas Regal 12 años 1Lt",17000),
-                   await CrearProducto(whiskies.Id,"Whisky Johnnie Walker Black","Whisky Johnnie Walker Black 1Lt",18000),
-                   await CrearProducto(whiskies.Id,"Whisky Johnnie Walker Black","Whisky Johnnie Walker Black 700ml",15000)
+                   await CrearProducto(whiskies.Id,"Whisky Chivas Regal 12 años","Whisky Chivas Regal 12 años 1Lt",17000,"chivas.jpeg"),
+                   await CrearProducto(whiskies.Id,"Whisky Johnnie Walker Black","Whisky Johnnie Walker Black 1Lt",18000,"jw-black.jpg"),
+                   await CrearProducto(whiskies.Id,"Whisky Johnnie Walker Blue","Whisky Johnnie Walker Blue 700ml",15000,"jw-blue.jpg")
                 };
                 _context.Categorias.Update(whiskies);
                 await _context.SaveChangesAsync();
@@ -197,14 +192,15 @@ namespace Carrito_D.Controllers
 
         }
 
-        private async Task<Producto> CrearProducto(int categoriaId, string nombre, string descripcion, decimal precioVigente)
+        private async Task<Producto> CrearProducto(int categoriaId, string nombre, string descripcion, decimal precioVigente, string foto)
         {
             Producto producto = new Producto()
             {
                 CategoriaId = categoriaId,
                 Nombre = nombre,
                 Descripcion = descripcion,
-                PrecioVigente = precioVigente
+                PrecioVigente = precioVigente,
+                Imagen = foto
             };
             _context.Productos.Add(producto);
             await _context.SaveChangesAsync();
