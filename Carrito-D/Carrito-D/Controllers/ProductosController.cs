@@ -97,7 +97,6 @@ namespace Carrito_D.Controllers
         {
             if (ModelState.IsValid)
             {
-                //var foto = AgregarFoto()
                 Producto producto = new Producto()
                 {
                     Nombre = modelo.Nombre,
@@ -106,16 +105,22 @@ namespace Carrito_D.Controllers
                     Activo = modelo.Activo,
                     CategoriaId = modelo.CategoriaId
                 };
+
                 _context.Productos.Add(producto);
 
                 try
                 {
                     _context.SaveChanges();
-                    if (!AgregarFoto(producto, modelo.Imagen))
+
+                    if (modelo.Imagen != null)
                     {
-                        ModelState.AddModelError(string.Empty, "No se pudo cargar la imagen.");
-                        return RedirectToAction("Edit", new { id = producto.Id });
+                        AgregarFoto(producto, modelo.Imagen);
                     }
+                    //if (!AgregarFoto(producto, modelo.Imagen))
+                    //{
+                    //    ModelState.AddModelError(string.Empty, "No se pudo cargar la imagen.");
+                    //    return RedirectToAction("Edit", new { id = producto.Id });
+                    //}
                     return RedirectToAction(nameof(Index));
                 }
                 catch (DbUpdateException dbex)
@@ -176,8 +181,6 @@ namespace Carrito_D.Controllers
                 return NotFound();
             }
 
-            //ModelState.Remove("CategoriaId");
-
             if (ModelState.IsValid)
             {
                 try
@@ -232,7 +235,6 @@ namespace Carrito_D.Controllers
             string fotoPath = "img\\fotos";
             string nombreProducto = producto.Nombre;
 
-
             if (imagen != null && producto != null)
             {
                 string nombreFoto = null;
@@ -263,8 +265,26 @@ namespace Carrito_D.Controllers
             return cargaOk;
         }
 
-        
-        
+        [HttpPost]
+        public IActionResult SubirFoto(int? idProducto, IFormFile foto)
+        {
+            if(idProducto == null && foto == null)
+            {
+                return NotFound();
+            }
+
+            var producto = _context.Productos.Find(idProducto);
+
+            if(producto == null)
+            {
+                return NotFound();
+            }
+
+            AgregarFoto(producto, foto);
+            return RedirectToAction("Edit", new { id = idProducto });
+        }
+
+        [HttpPost]
         public IActionResult EliminarFoto(int? idProducto)
         {
             if (idProducto == null || idProducto == 0)
@@ -272,20 +292,8 @@ namespace Carrito_D.Controllers
                 return NotFound();
             }
 
-            EliminarFotoConfirmed(idProducto);
-
-            return RedirectToAction("Edit", new { id = idProducto });
-        }
-
-        
-
-
-        [HttpPost]
-        private void EliminarFotoConfirmed(int? idProducto) {
-
-           
-
             var producto = _context.Productos.Find(idProducto);
+
             if (producto != null)
             {
                 if (producto.Imagen != null)
@@ -293,13 +301,9 @@ namespace Carrito_D.Controllers
                     producto.Imagen = Configs.FotoDefault;
                     _context.Productos.Update(producto);
                     _context.SaveChanges();
-
                 }
-
             }
-           
+            return RedirectToAction("Edit", new { id = idProducto });
         }
-
-       
     }
 }

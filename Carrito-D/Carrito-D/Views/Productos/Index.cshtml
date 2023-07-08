@@ -1,4 +1,5 @@
 ﻿@using Carrito_D.Helpers
+
 @model IEnumerable<Producto>
 
 @{
@@ -56,9 +57,11 @@
             <tr>
                 <td>
                     @{
-                        string imagen = Configs.RutaFotos + @item.Imagen;
+                        string fotoPath = Metodos.UrlPathFoto(Configs.FotoURL, item.Imagen, Configs.FotoDefault);
                     }
-                    <img src="@imagen"  />
+                    <figure class="figure">
+                        <img src="@fotoPath" class="fotoIndex" alt="Foto producto" asp-append-version="true">
+                    </figure>
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.Nombre)

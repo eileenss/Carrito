@@ -1,13 +1,20 @@
-﻿@model Producto
+﻿@using Carrito_D.Helpers
+@model Producto
 
 @{
     ViewData["Title"] = "Detalles de producto";
+    string fotoPath = Metodos.UrlPathFoto(Configs.FotoURL, Model.Imagen, Configs.FotoDefault);
 }
 
 <h1>Detalles de producto</h1>
 
 <div>
     <hr />
+    <div class="col-sm">
+        <figure class="figure">
+            <img src="@fotoPath" class="fotoDetalles" alt="Foto producto" asp-append-version="true">
+        </figure>
+        </div>
     <dl class="row">
         <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.Nombre)
@@ -20,12 +27,6 @@
         </dt>
         <dd class="col-sm-10">
             @Html.DisplayFor(model => model.Descripcion)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Imagen)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Imagen)
         </dd>
         <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.PrecioVigente)
