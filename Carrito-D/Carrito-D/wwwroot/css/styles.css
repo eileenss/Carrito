@@ -1,4 +1,9 @@
 ﻿
+.body{
+    background-color:darkblue;
+}
+
+
 .fotoDetalles {
     width: 200px;
     height: 350px;
@@ -7,4 +12,9 @@
 .fotoIndex {
     width: 100px;
     height: 200px;
+}
+.carousel-inner img {
+    max-width: 25%;
+    max-height: 350px;
+    margin-left: 35%
 }
