@@ -116,11 +116,7 @@ namespace Carrito_D.Controllers
                     {
                         AgregarFoto(producto, modelo.Imagen);
                     }
-                    //if (!AgregarFoto(producto, modelo.Imagen))
-                    //{
-                    //    ModelState.AddModelError(string.Empty, "No se pudo cargar la imagen.");
-                    //    return RedirectToAction("Edit", new { id = producto.Id });
-                    //}
+
                     return RedirectToAction(nameof(Index));
                 }
                 catch (DbUpdateException dbex)

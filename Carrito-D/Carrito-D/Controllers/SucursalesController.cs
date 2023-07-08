@@ -71,7 +71,7 @@ namespace Carrito_D.Controllers
 
             if (innerException != null && (innerException.Number == 2637 || innerException.Number == 2601))
             {
-                ModelState.AddModelError("Direccion", "Ya existe una sucursal con esa dirección.");
+                ModelState.AddModelError(string.Empty, "Ya existe una sucursal con ese nombre o dirección.");
             }
             else
             {

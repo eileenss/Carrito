@@ -21,7 +21,7 @@
         @foreach (var cat in ViewBag.Categorias)
         {
             <li style="display:inline">
-                <a asp-action="Index" asp-controller="Productos" asp-route-sucursalId="@cat.Id">@cat.Nombre</a>
+                <a asp-action="Index" asp-controller="Productos" asp-route-categoriaId="@cat.Id">@cat.Nombre</a>
             </li>
         }
     </ul>
