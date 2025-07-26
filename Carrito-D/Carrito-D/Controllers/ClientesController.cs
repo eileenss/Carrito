@@ -100,7 +100,7 @@ namespace Carrito_D.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [Authorize("Cliente")]
+        [Authorize(Roles = "Cliente")]
         public IActionResult Edit(int id, [Bind("Id,Cuil,Telefono,Direccion")] EditCliente cliente) 
         {
             if (id != cliente.Id)
@@ -135,7 +135,7 @@ namespace Carrito_D.Controllers
                         throw;
                     }
                 }
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction(nameof(Details));
             }
             return View(cliente);
         }
