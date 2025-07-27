@@ -1,85 +1,108 @@
-﻿<!DOCTYPE html>
+﻿@functions {
+    //función para determinar la ruta activa en el menú de navegación
+        string IsActive(string controller, string action)
+    {
+        var currentController = ViewContext.RouteData.Values["controller"].ToString();
+        var currentAction = ViewContext.RouteData.Values["action"].ToString();
+        return (currentController == controller && currentAction == action) ? "active" : string.Empty;
+    }
+}
+
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - Carrito_D</title>
-    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
-    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/Carrito_D.styles.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/css/styles.css" asp-append-version="true" />
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
 
+    <!--Bootstrap-->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-LN+7fdVzj6u52u30Kp6M/trliBMCMKTyK833zpbD+pXdCLuTusPj697FH4R/5mcr" crossorigin="anonymous">
+
+    <!--Styles-->
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/components.css" asp-append-version="true" />
 
 </head>
-<body>
+
+<body class="bg-main">
     <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
+        <nav class="navbar navbar-expand-md navbar-custom shadow-sm mb-4">
             <div class="container-fluid">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index"></a>
+
+              <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">
+                    <img src=./img/LOGO.png alt="Home" width="50" height="50" />
+              </a>
+
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
                         aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
+
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <ul class="navbar-nav flex-grow-1">
-                        @*<li class="nav-item">
-                        <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
-                        </li>*@
+                    <ul class="navbar-nav flex-grow-1">         
+                        
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">
-                                <img src=./img/LOGO.png alt="Home" width="50" height="50" />
-                            </a>
+                            <a class="nav-link @IsActive("Home", "Index")" asp-area="" asp-controller="Home" asp-action="Index">Inicio</a>
                         </li>
+
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Productos" asp-action="Index">Productos</a>
+                            <a class="nav-link @IsActive("Productos", "Index")" asp-area="" asp-controller="Productos" asp-action="Index">Productos</a>
                         </li>
+
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Sucursales" asp-action="Index">Sucursales</a>
+                            <a class="nav-link @IsActive("Sucursales", "Index")" asp-area="" asp-controller="Sucursales" asp-action="Index">Sucursales</a>
                         </li>
+
                         @if (signInManager.IsSignedIn(User))
                         {
                             @if (User.IsInRole("Admin") || User.IsInRole("Empleado"))
                             {
                                 <li class="nav-item">
-                                    <a class="nav-link text-dark" asp-area="" asp-controller="Categorias" asp-action="Index">Categorias</a>
+                                    <a class="nav-link @IsActive("Categorias", "Index")" asp-area="" asp-controller="Categorias" asp-action="Index">Categorías</a>
                                 </li>
+
                                 <li class="nav-item">
-                                    <a class="nav-link text-dark" asp-area="" asp-controller="Clientes" asp-action="Index">Clientes</a>
+                                    <a class="nav-link @IsActive("Clientes", "Index")" asp-area="" asp-controller="Clientes" asp-action="Index">Clientes</a>
                                 </li>
+
                                 <li class="nav-item">
-                                    <a class="nav-link text-dark" asp-area="" asp-controller="Empleados" asp-action="Index">Empleados</a>
+                                    <a class="nav-link @IsActive(" Empleados", "Index" )" asp-area="" asp-controller="Empleados" asp-action="Index">Empleados</a>
                                 </li>
+
                                 <li class="nav-item">
-                                    <a class="nav-link text-dark" asp-area="" asp-controller="StockItems" asp-action="Index">Stock</a>
+                                    <a class="nav-link @IsActive("StockItems", "Index")" asp-area="" asp-controller="StockItems" asp-action="Index">Stock</a>
                                 </li>
+
                                 <li class="nav-item">
-                                    <a class="nav-link text-dark" asp-area="" asp-controller="Compras" asp-action="Index">Compras</a>
+                                    <a class="nav-link @IsActive("Compras", "Index")" asp-area="" asp-controller="Compras" asp-action="Index">Compras</a>
                                 </li>
                             }
                             else
                             {
                                 <li class="nav-item">
-                                    <a class="nav-link text-dark" asp-area="" asp-controller="CarritoItems" asp-action="MiCarrito">Mi carrito</a>
+                                    <a class="nav-link @IsActive("CarritoItems", "Index")" asp-area="" asp-controller="CarritoItems" asp-action="MiCarrito">Mi carrito</a>
                                 </li>
+
                                 <li class="nav-item">
-                                    <a class="nav-link text-dark" asp-area="" asp-controller="Compras" asp-action="Index">Mis compras</a>
+                                    <a class="nav-link @IsActive("Compras", "Index")" asp-area="" asp-controller="Compras" asp-action="Index">Mis compras</a>
                                 </li>
+
                                 <li class="nav-item">
-                                    <a class="nav-link text-dark" asp-area="" asp-controller="Clientes" asp-action="Details">Mi perfil</a>
+                                    <a class="nav-link @IsActive("Clientes", "Index")" asp-area="" asp-controller="Clientes" asp-action="Details">Mi perfil</a>
                                 </li>
                             }
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Account" asp-action="CerrarSesion">Cerrar sesion</a>
+                            <li class="nav-item ms-auto">
+                                <a class="btn btn-sesion" asp-area="" asp-controller="Account" asp-action="CerrarSesion">Cerrar sesion</a>
                             </li>
                         }
                         else
                         {
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Account" asp-action="IniciarSesion">Iniciar Sesion</a>
+                            <li class="nav-item ms-auto">
+                                <a class="btn btn-sesion" asp-area="" asp-controller="Account" asp-action="IniciarSesion">Iniciar Sesion</a>
                             </li>
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Account" asp-action="Registrar">Registrate</a>
+
+                            <li class="nav-item ms-auto">
+                                <a class="btn  btn-sesion" asp-area="" asp-controller="Account" asp-action="Registrar">Registrate</a>
                             </li>
                         }
                     </ul>
@@ -87,6 +110,7 @@
             </div>
         </nav>
     </header>
+
     <div class="container">
         <main role="main" class="pb-3">
             @RenderBody()
@@ -98,9 +122,12 @@
             &copy; 2023 - Carrito_D - <a asp-controller="Precarga" asp-action="Seed">Precarga</a>
         </div>
     </footer>
+
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
-    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js" integrity="sha384-ndDqU0Gzau9qJ1lfW4pNLlhNTkCfHzAVBReH9diLvGRem5+R9g2FzA8ZGN954O5Q" crossorigin="anonymous"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
+
     @await RenderSectionAsync("Scripts", required: false)
+
 </body>
 </html>
